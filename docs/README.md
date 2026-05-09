@@ -1,0 +1,30 @@
+# Documentation hub
+
+Start here for **navigation-only** docs. Implementation patterns live next to code (**`src/*/README.md`**) and in **`.cursor/architecture/`**.
+
+## Canonical index
+
+The full **per-folder source guide** table (App Router, packages, store, security, …) is in the repository root **[`README.md`](../README.md)** — scroll to **Documentation map (per-folder guides)**.
+
+## What lives under `docs/`
+
+| Path | Purpose |
+|------|---------|
+| **[`security/README.md`](security/README.md)** | Links to **`SECURITY.md`**, trust model in root README, and **`src/api`** |
+
+Add new top-level doc folders here (playbooks, runbooks) and link them from this file when they are stable.
+
+## Route constants vs `src/app` (audit)
+
+**[`src/config/routes.ts`](../src/config/routes.ts)** exports path constants for navigation. They should stay aligned with real **`src/app/**/page.tsx`** segments.
+
+**Implemented in `src/app/(dashboard)/` today** (representative paths):
+
+`/`, `/leads`, `/leads/find`, `/leads/to-call-log`, `/lead-detail-page`, `/lead-contacts`, `/lead-contact-detail-page`, `/lead-emails`, `/lead-emails/queue`, `/lead-emails/sent`
+
+**`routes.ts` exports** (`FIND_LEADS_PATH`, `LEAD_DETAIL_PATH`, `TO_CALL_LOG_PATH`, email paths, `LEAD_CONTACT_DETAIL_PATH`, `buildLeadContactDetailHref`) match the segments above. When you add or remove a dashboard route, update **`routes.ts`** and this list.
+
+## Related
+
+- **[`.cursor/architecture/README.md`](../.cursor/architecture/README.md)** — ADRs
+- **[`.cursor/rules/AGENTS.md`](../.cursor/rules/AGENTS.md)** — agent / contributor rules

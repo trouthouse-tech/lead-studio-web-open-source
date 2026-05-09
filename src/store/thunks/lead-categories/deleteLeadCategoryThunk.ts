@@ -1,0 +1,25 @@
+import { deleteLeadCategory } from '@/api/lead-categories';
+import type { AppThunk } from '../../store';
+import { getAllLeadCategoriesThunk } from './getAllLeadCategoriesThunk';
+
+type ResponseType = Promise<200 | 400 | 500>;
+
+export const deleteLeadCategoryThunk = (id: string): AppThunk<ResponseType> => {
+  return async (dispatch): ResponseType => {
+    try {
+      if (!id) {
+        return 400;
+      }
+
+      const response = await deleteLeadCategory(id);
+      if (!response.success) {
+        return 400;
+      }
+
+      return await dispatch(getAllLeadCategoriesThunk());
+    } catch (error: unknown) {
+      console.error('❌ deleteLeadCategoryThunk error:', error);
+      return 500;
+    }
+  };
+};
