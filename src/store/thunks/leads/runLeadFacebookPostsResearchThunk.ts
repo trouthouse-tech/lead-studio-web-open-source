@@ -16,7 +16,7 @@ type RunLeadFacebookPostsResearchThunkOptions = {
 };
 
 /**
- * POST lead-facebook-posts-research (Next proxy → Express).
+ * POST lead-facebook-posts-research (Express /api/services/lead-facebook-posts-research).
  * `step`: `fetch_posts` (Apify only), `score_posts` (AI from saved posts), `full` (both — default for API clients that omit step).
  */
 export const runLeadFacebookPostsResearchThunk = (

@@ -1,3 +1,5 @@
+import { API_CONFIG } from '@/config/api';
+
 export type CommercialLeadResearchQueueItem = {
   id: string;
   batch_id: string;
@@ -18,7 +20,7 @@ export type GetCommercialLeadResearchQueueResponse =
   | { success: false; error?: string };
 
 /**
- * Fetches recent commercial lead research queue rows (Next → Express).
+ * Fetches recent commercial lead research queue rows (Express GET /api/data/commercial-lead-research-queue).
  */
 export const getCommercialLeadResearchQueue = async (
   limit?: number
@@ -27,7 +29,8 @@ export const getCommercialLeadResearchQueue = async (
     typeof limit === 'number' && Number.isFinite(limit)
       ? `?limit=${encodeURIComponent(String(limit))}`
       : '';
-  return fetch(`/api/leads/commercial-lead-research-queue${qs}`, {
+  return fetch(`${API_CONFIG.SERVER_URL}/api/data/commercial-lead-research-queue${qs}`, {
     method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
   });
 };

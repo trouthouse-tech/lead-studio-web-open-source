@@ -1,15 +1,16 @@
+import { API_CONFIG } from '@/config/api';
 import type { LeadContact } from '@/model/lead-contact';
 import type { ApiResponse } from '../types';
 
 /**
- * Uses Next.js same-origin proxy so the browser does not depend on NEXT_PUBLIC_SERVER_URL.
+ * GET lead contacts for one lead (Express GET /api/data/lead-contacts/lead/:leadId).
  */
 export const getLeadContactsByLeadId = async (
   leadId: string
 ): Promise<ApiResponse<LeadContact[]>> => {
   try {
     const response = await fetch(
-      `/api/leads/${encodeURIComponent(leadId)}/lead-contacts`,
+      `${API_CONFIG.SERVER_URL}/api/data/lead-contacts/lead/${encodeURIComponent(leadId)}`,
       {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },

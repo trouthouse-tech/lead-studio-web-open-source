@@ -14,6 +14,15 @@ The full **per-folder source guide** table (App Router, packages, store, securit
 
 Add new top-level doc folders here (playbooks, runbooks) and link them from this file when they are stable.
 
+## API server
+
+Lead Studio OSS web calls this Express API directly via `NEXT_PUBLIC_SERVER_URL` (dev default `http://localhost:3005`).
+
+- **Repo:** [lead-studio-express-server](https://github.com/lead-open-source/lead-studio-express-server) — run `npm run dev` on port 3005.
+- **No Next.js BFF:** research and commercial-queue clients in `src/api/leads/` POST/GET Express paths under `/api/services/*` and `/api/data/*`.
+
+Legacy `mentorai-server` Luckee-only routes removed from the private server (residential leads, lead digest, services studio, user background studio) are **not** ported here.
+
 ## Route constants vs `src/app` (audit)
 
 **[`src/config/routes.ts`](../src/config/routes.ts)** exports path constants for navigation. They should stay aligned with real **`src/app/**/page.tsx`** segments.

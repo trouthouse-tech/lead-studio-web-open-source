@@ -94,6 +94,3 @@ export const getMentoraiServerBaseUrl = (): string | null => {
     process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '');
   return base?.trim() || null;
 };
-
-/** Lead digest tenant settings + preview on mentorai-server (`src/data/tenant-lead-digest/`). */
-export const MENTORAI_TENANT_LEAD_DIGEST_PATH = '/api/data/tenant-lead-digest' as const;

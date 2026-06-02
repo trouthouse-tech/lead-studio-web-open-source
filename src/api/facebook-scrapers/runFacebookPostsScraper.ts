@@ -1,20 +1,17 @@
+import { API_CONFIG } from '@/config/api';
 import type { ApiResponse } from '../types';
 import type { FacebookScraperProfileInput } from './types';
 
 export type { FacebookScraperProfileInput } from './types';
 
 /**
- * Browser → same-origin /api/scrapers/facebook-posts/run → mentorai n8n proxy.
+ * POST Facebook posts scraper run (Express POST /api/scrapers/facebook-posts/run).
  */
 export const runFacebookPostsScraper = async (
   input: FacebookScraperProfileInput
 ): Promise<ApiResponse<unknown>> => {
   try {
-    if (typeof window === 'undefined') {
-      return { success: false, error: 'runFacebookPostsScraper must run in the browser' };
-    }
-
-    const response = await fetch(`${window.location.origin}/api/scrapers/facebook-posts/run`, {
+    const response = await fetch(`${API_CONFIG.SERVER_URL}/api/scrapers/facebook-posts/run`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ profileUrl: input.profileUrl.trim() }),

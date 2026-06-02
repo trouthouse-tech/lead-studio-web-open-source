@@ -1,12 +1,14 @@
+import { API_CONFIG } from '@/config/api';
+
 /**
- * Triggers same-domain website URL discovery for one lead (Next.js proxy → Express).
+ * Triggers same-domain website URL discovery for one lead (Express POST /api/services/lead-same-domain-url-discovery).
  */
 export const postLeadSameDomainUrlDiscoveryForLead = async (
   leadId: string
 ): Promise<Response> => {
-  return fetch(`/api/leads/${encodeURIComponent(leadId)}/lead-same-domain-url-discovery`, {
+  return fetch(`${API_CONFIG.SERVER_URL}/api/services/lead-same-domain-url-discovery`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({}),
+    body: JSON.stringify({ leadId }),
   });
 };

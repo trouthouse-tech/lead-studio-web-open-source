@@ -1,22 +1,32 @@
+import { API_CONFIG } from '@/config/api';
+
 export type LeadFacebookPostsResearchStep = 'fetch_posts' | 'score_posts' | 'full';
 
 type PostLeadFacebookPostsResearchOptions = {
   step?: LeadFacebookPostsResearchStep;
+  force?: boolean;
 };
 
 /**
- * Triggers Facebook posts research for a lead (Next.js proxy → Express).
+ * Triggers Facebook posts research for a lead (Express POST /api/services/lead-facebook-posts-research).
  * Use `fetch_posts` for Apify retrieval only, `score_posts` for AI score from saved posts, or `full` for both.
  */
 export const postLeadFacebookPostsResearchForLead = async (
   leadId: string,
   options?: PostLeadFacebookPostsResearchOptions
 ): Promise<Response> => {
-  const body: { step?: LeadFacebookPostsResearchStep } = {};
+  const body: {
+    leadId: string;
+    step?: LeadFacebookPostsResearchStep;
+    force?: boolean;
+  } = { leadId };
   if (options?.step) {
     body.step = options.step;
   }
-  return fetch(`/api/leads/${encodeURIComponent(leadId)}/lead-facebook-posts-research`, {
+  if (options?.force === true) {
+    body.force = true;
+  }
+  return fetch(`${API_CONFIG.SERVER_URL}/api/services/lead-facebook-posts-research`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),

@@ -8,7 +8,7 @@ export type LeadFacebookPageResearchOutcome =
   | { ok: false; message: string };
 
 /**
- * POST lead-facebook-page-research for current lead (Next proxy → Express, Apify page scrape).
+ * POST lead-facebook-page-research for current lead (Express /api/services/lead-facebook-page-research, Apify page scrape).
  */
 export const runLeadFacebookPageResearchThunk = (): AppThunk<
   Promise<LeadFacebookPageResearchOutcome>

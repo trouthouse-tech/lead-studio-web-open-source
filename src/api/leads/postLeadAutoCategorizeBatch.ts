@@ -1,3 +1,4 @@
+import { API_CONFIG } from '@/config/api';
 import type {
   PostLeadAutoCategorizeBatchCategoryPayload,
   PostLeadAutoCategorizeBatchLeadPayload,
@@ -5,18 +6,21 @@ import type {
 } from './postLeadAutoCategorizeBatch.types';
 
 /**
- * POST /api/leads/auto-categorize-batch — batch suggest categories (existing ids or null). Server resolves tenant user when `userId` is omitted.
+ * POST /api/services/lead-auto-categorize-batch — batch suggest categories (existing ids or null). Server resolves tenant user when `userId` is omitted.
  */
 export const postLeadAutoCategorizeBatch = async (
   categories: PostLeadAutoCategorizeBatchCategoryPayload[],
   leads: PostLeadAutoCategorizeBatchLeadPayload[]
 ): Promise<PostLeadAutoCategorizeBatchResponseBody> => {
   try {
-    const response = await fetch('/api/leads/auto-categorize-batch', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ categories, leads }),
-    });
+    const response = await fetch(
+      `${API_CONFIG.SERVER_URL}/api/services/lead-auto-categorize-batch`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ categories, leads }),
+      }
+    );
 
     let json: PostLeadAutoCategorizeBatchResponseBody = {};
     try {

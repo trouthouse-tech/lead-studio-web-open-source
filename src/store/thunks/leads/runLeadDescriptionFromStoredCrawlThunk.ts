@@ -6,7 +6,7 @@ export type LeadDescriptionFromStoredCrawlOutcome =
   | { ok: false; message: string };
 
 /**
- * POST description-from-stored-crawl for current lead (Next proxy → Express, no Apify).
+ * POST description-from-stored-crawl for current lead (Express /api/services/lead-description-from-stored-crawl, no Apify).
  */
 export const runLeadDescriptionFromStoredCrawlThunk = (): AppThunk<
   Promise<LeadDescriptionFromStoredCrawlOutcome>

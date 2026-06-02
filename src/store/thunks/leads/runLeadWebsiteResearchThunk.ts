@@ -4,7 +4,7 @@ import { postLeadWebsiteResearchForLead } from '@/api/leads';
 type ResponseType = Promise<200 | 400 | 500>;
 
 /**
- * POST manual website research (Next proxy → Express).
+ * POST manual website research (Express /api/services/lead-website-research).
  * Pass `targetLeadId` from list rows; otherwise uses `currentLead.id`.
  */
 export const runLeadWebsiteResearchThunk = (targetLeadId?: string): AppThunk<ResponseType> => {

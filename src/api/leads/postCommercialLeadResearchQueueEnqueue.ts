@@ -1,3 +1,5 @@
+import { API_CONFIG } from '@/config/api';
+
 export type PostCommercialLeadResearchQueueEnqueueResponseBody = {
   success?: boolean;
   batchId?: string;
@@ -7,12 +9,12 @@ export type PostCommercialLeadResearchQueueEnqueueResponseBody = {
 };
 
 /**
- * Enqueues one commercial lead research row per lead (Next → Express); worker runs via cron.
+ * Enqueues one commercial lead research row per lead (Express POST /api/data/commercial-lead-research-queue/enqueue); worker runs via cron.
  */
 export const postCommercialLeadResearchQueueEnqueue = async (
   leadIds: string[]
 ): Promise<Response> => {
-  return fetch('/api/leads/commercial-lead-research-queue/enqueue', {
+  return fetch(`${API_CONFIG.SERVER_URL}/api/data/commercial-lead-research-queue/enqueue`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ leadIds }),

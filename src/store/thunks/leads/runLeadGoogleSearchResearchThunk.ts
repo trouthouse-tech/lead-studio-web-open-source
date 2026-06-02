@@ -27,7 +27,7 @@ type ResponseType = Promise<RunLeadGoogleSearchResearchResult>;
  * POST lead Google search for one platform — updates that profile URL when found.
  * Pass `targetLeadId` from list rows; otherwise uses `currentLead.id`.
  *
- * Flow: Next.js POST `/api/leads/:leadId/lead-google-search` → Express `/api/services/lead-google-search`
+ * Flow: browser POST `${API_CONFIG.SERVER_URL}/api/services/lead-google-search/:platform` with `{ leadId }`
  * → mentorai-server `processGoogleSerpScrape` (Programmable Search / Custom Search JSON API) → AI URL pick → optional Apify (Facebook page). The browser never calls Google directly.
  */
 export type RunLeadGoogleSearchResearchThunkOptions = {

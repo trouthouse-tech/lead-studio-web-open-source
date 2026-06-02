@@ -1,15 +1,17 @@
+import { API_CONFIG } from '@/config/api';
+
 /**
- * Triggers Playwright nav/footer website URL discovery for one lead (Next.js proxy → Express).
+ * Triggers Playwright nav/footer website URL discovery for one lead (Express POST /api/services/lead-playwright-website-url-discovery).
  */
 export const postLeadPlaywrightWebsiteUrlDiscoveryForLead = async (
   leadId: string
 ): Promise<Response> => {
   return fetch(
-    `/api/leads/${encodeURIComponent(leadId)}/lead-playwright-website-url-discovery`,
+    `${API_CONFIG.SERVER_URL}/api/services/lead-playwright-website-url-discovery`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({}),
+      body: JSON.stringify({ leadId }),
     }
   );
 };
