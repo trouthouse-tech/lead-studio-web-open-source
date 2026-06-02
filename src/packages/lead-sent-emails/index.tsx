@@ -9,6 +9,7 @@ import {
 } from '@/store/thunks';
 import { LeadSentEmailsFilters } from './LeadSentEmailsFilters';
 import { LeadSentEmailsList } from './LeadSentEmailsList';
+import { LeadSentEmailsStats } from './stats';
 
 export { LeadSentEmailRow } from './LeadSentEmailRow';
 
@@ -26,6 +27,7 @@ export const LeadSentEmailsPage = () => {
 
   return (
     <div className={styles.pageContainer}>
+      <LeadSentEmailsStats />
       <LeadSentEmailsFilters />
       <LeadSentEmailsList />
     </div>
