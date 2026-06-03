@@ -17,6 +17,9 @@ export const LEAD_EMAIL_QUEUE_PATH = '/lead-emails/queue';
 /** Sent outbound emails */
 export const LEAD_SENT_EMAILS_PATH = '/lead-emails/sent';
 
+/** Workspace service account setup (read-only docs in app) */
+export const EMAIL_SETUP_PATH = '/settings/email';
+
 /** Query: `?leadId=&contactId=` */
 export const LEAD_CONTACT_DETAIL_PATH = '/lead-contact-detail-page';
 

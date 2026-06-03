@@ -32,7 +32,7 @@ const getDefaultUrl = (): string => {
 };
 
 const getServerUrl = (): string => {
-  // Express API base URL (mentorai-server `/api/data/*` and service routes) — not the Next.js app.
+  // Express API base URL (lead-studio-express-server `/api/data/*` and service routes) — not the Next.js app.
   const explicit = process.env.NEXT_PUBLIC_SERVER_URL?.trim();
   const fallbackFromApi = process.env.NEXT_PUBLIC_API_URL?.trim();
   /** Local lead-studio-express-server; default port 3032 (see lead-studio-express-server/index.ts). */

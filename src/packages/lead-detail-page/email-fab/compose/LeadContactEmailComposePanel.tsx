@@ -31,6 +31,7 @@ import {
   EmailSubjectInput,
   EmailBodyInput,
   EmailAttachmentInput,
+  EmailSendingIdentitySelect,
 } from './inputs';
 
 type Props = {
@@ -316,10 +317,7 @@ export const LeadContactEmailComposePanel = (props: Props) => {
         </span>
       </div>
       <div className={styles.fromRow}>
-        <span className={styles.fromLabel}>From</span>
-        <span className={styles.fromHint}>
-          Sending identity is configured on your mentorai-server (e.g. GMAIL_SEND_AS_EMAIL).
-        </span>
+        <EmailSendingIdentitySelect />
       </div>
       <div className={styles.fields}>
         <EmailSubjectInput />

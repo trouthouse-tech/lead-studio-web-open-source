@@ -64,7 +64,7 @@ export const Sidebar = () => {
 
       <div className={styles.footer}>
         {!collapsed ? (
-          <p className={styles.footerText}>Point NEXT_PUBLIC_SERVER_URL at your mentorai-server instance.</p>
+          <p className={styles.footerText}>Point NEXT_PUBLIC_SERVER_URL at lead-studio-express-server.</p>
         ) : null}
       </div>
     </aside>

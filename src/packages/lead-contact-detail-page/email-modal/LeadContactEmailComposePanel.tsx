@@ -34,6 +34,7 @@ import {
   EmailBodyInput,
   EmailAttachmentInput,
 } from './inputs';
+import { EmailSendingIdentitySelect } from '@/packages/lead-detail-page/email-fab/compose/inputs';
 
 type Props = {
   /** `drawer` matches `fab` layout (toast on save, compact actions) for the sent-emails right panel. */
@@ -318,10 +319,7 @@ export const LeadContactEmailComposePanel = (props: Props) => {
         </span>
       </div>
       <div className={styles.fromRow}>
-        <span className={styles.fromLabel}>From</span>
-        <span className={styles.fromHint}>
-          Sending identity is configured on your mentorai-server (e.g. GMAIL_SEND_AS_EMAIL).
-        </span>
+        <EmailSendingIdentitySelect />
       </div>
       <div className={styles.fields}>
         <EmailSubjectInput />

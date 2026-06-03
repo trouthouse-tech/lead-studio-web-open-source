@@ -1,0 +1,1 @@
+export { listEmailSendingIdentities } from './listEmailSendingIdentities';

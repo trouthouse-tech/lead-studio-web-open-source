@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). Point **`NEXT_PUBLIC_SERVER_URL`** at your **mentorai-server** (or compatible Express) instance; default in code is `http://localhost:3032` when unset in development. Copy **`.env.example`** to `.env.local` and adjust.
+Open [http://localhost:3000](http://localhost:3000). Point **`NEXT_PUBLIC_SERVER_URL`** at **lead-studio-express-server**; default in code is `http://localhost:3032` when unset in development. Copy **`.env.example`** to `.env.local` and adjust. Email sending uses a Workspace service account on express — see **`docs/email-sending.md`**.
 
 ## Layout
 
