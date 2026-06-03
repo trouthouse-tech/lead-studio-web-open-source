@@ -20,7 +20,7 @@ Central place for **URL construction** (Express vs Next), **`process.env` wiring
 ## Environment variables
 
 - **`NEXT_PUBLIC_*`** — Embedded in the **client bundle**. Safe only for **non-secret** values (public API base URLs). Documented in repo root **`.env.example`** and **`SECURITY.md`**.
-- **`API_CONFIG.SERVER_URL`** — Browser → **Express** (mentorai-server) for `/api/data/*` and many `src/api` calls. In **dev**, defaults to **`http://localhost:3005`** when `NEXT_PUBLIC_SERVER_URL` is unset (does **not** fall back to `NEXT_PUBLIC_API_URL`—often `:3000` for this Next app).
+- **`API_CONFIG.SERVER_URL`** — Browser → **Express** (mentorai-server) for `/api/data/*` and many `src/api` calls. In **dev**, defaults to **`http://localhost:3032`** when `NEXT_PUBLIC_SERVER_URL` is unset (does **not** fall back to `NEXT_PUBLIC_API_URL`—often `:3000` for this Next app).
 - **`API_CONFIG.DEFAULT`** — Primarily the **Next app** URL (`NEXT_PUBLIC_API_URL` or localhost:3000)—do not confuse with Express.
 - **`getMentoraiServerBaseUrl()`** — **`EXPRESS_SERVER_URL`** first (server-only), then public fallbacks; intended for **`src/app/api/**/route.ts`**, not for leaking secrets to the client.
 

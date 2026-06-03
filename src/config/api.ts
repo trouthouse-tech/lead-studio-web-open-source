@@ -35,8 +35,8 @@ const getServerUrl = (): string => {
   // Express API base URL (mentorai-server `/api/data/*` and service routes) — not the Next.js app.
   const explicit = process.env.NEXT_PUBLIC_SERVER_URL?.trim();
   const fallbackFromApi = process.env.NEXT_PUBLIC_API_URL?.trim();
-  /** Local mentorai-server; default port 3005 (see mentorai-server/index.ts). */
-  const devDefault = 'http://localhost:3005';
+  /** Local lead-studio-express-server; default port 3032 (see lead-studio-express-server/index.ts). */
+  const devDefault = 'http://localhost:3032';
 
   if (isProductionEnvironment() && !isNextProductionBuildPhase()) {
     const url = explicit || fallbackFromApi;
@@ -54,7 +54,7 @@ const getServerUrl = (): string => {
 };
 
 export const API_CONFIG = {
-  LOCAL: 'http://localhost:3005',
+  LOCAL: 'http://localhost:3032',
   DEFAULT: getDefaultUrl(),
   SERVER_URL: getServerUrl(),
 } as const;

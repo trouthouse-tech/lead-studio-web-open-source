@@ -16,9 +16,9 @@ Add new top-level doc folders here (playbooks, runbooks) and link them from this
 
 ## API server
 
-Lead Studio OSS web calls this Express API directly via `NEXT_PUBLIC_SERVER_URL` (dev default `http://localhost:3005`).
+Lead Studio OSS web calls this Express API directly via `NEXT_PUBLIC_SERVER_URL` (dev default `http://localhost:3032`).
 
-- **Repo:** [lead-studio-express-server](https://github.com/lead-open-source/lead-studio-express-server) — run `npm run dev` on port 3005.
+- **Repo:** [lead-studio-express-server](https://github.com/lead-open-source/lead-studio-express-server) — run `npm run dev` on port 3032.
 - **No Next.js BFF:** research and commercial-queue clients in `src/api/leads/` POST/GET Express paths under `/api/services/*` and `/api/data/*`.
 
 Legacy `mentorai-server` Luckee-only routes removed from the private server (residential leads, lead digest, services studio, user background studio) are **not** ported here.

@@ -18,7 +18,7 @@ export const postLeadLovableDesignPromptForLead = async (
   } catch {
     throw new Error(
       response.status === 404
-        ? 'Lovable design prompt route was not found. Set NEXT_PUBLIC_SERVER_URL to your mentorai-server base (e.g. http://localhost:3005) and restart both servers.'
+        ? 'Lovable design prompt route was not found. Set NEXT_PUBLIC_SERVER_URL to your mentorai-server base (e.g. http://localhost:3032) and restart both servers.'
         : 'Server returned a non-JSON response. Check the Network tab and NEXT_PUBLIC_SERVER_URL.'
     );
   }
