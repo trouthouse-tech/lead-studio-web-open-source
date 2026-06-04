@@ -17,7 +17,8 @@ Optional:
 
 - Per-identity env vars from `email_sending_identities` rows (`send_as_env_key` → address)
 - `GMAIL_PUBSUB_TOPIC` + `gmail.readonly` scope for reply detection
-- `EMAIL_OPEN_TRACKING_BASE_URL` for open pixels
+- `EMAIL_OPEN_TRACKING_BASE_URL` — public HTTPS URL of express (see [Open tracking](#open-tracking) below)
+- `EMAIL_OPEN_TRACKING_REDIRECT_URL` — optional 302 target instead of a 1×1 GIF
 - `CRON_SECRET` for `POST /api/email/test` and research workers
 
 ## Google Workspace setup (summary)
@@ -44,3 +45,16 @@ NEXT_PUBLIC_SERVER_URL=http://localhost:3032
 ```
 
 The browser calls Express directly for send-now, queue, and drafts. Secrets stay on the server only.
+
+## Open tracking
+
+Opens for emails sent via **Gmail API** are tracked with a **1×1 pixel**, not SendGrid webhooks.
+
+1. In Supabase, run `sql/lead_sent_emails_open_tracking_token.sql` from **lead-studio-express-server**.
+2. On express, set `EMAIL_OPEN_TRACKING_BASE_URL` to the same host you use for webhooks (e.g. `https://your-app.up.railway.app`). Use ngrok or similar when testing locally so mail clients can load the image.
+3. Send a lead email from the UI. In the sent message HTML (or `lead_sent_emails.open_tracking_token`), confirm a token exists.
+4. Open the email (or `curl` the pixel URL). The **Sent emails** view should show `opened_at`, `opened_count`, and `delivery_status: opened`.
+
+Pixel endpoint: `GET {EMAIL_OPEN_TRACKING_BASE_URL}/api/email/open?t=<token>`
+
+Details: `src/services/email/README.md` in lead-studio-express-server.
