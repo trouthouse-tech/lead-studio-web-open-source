@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useAppDispatch } from '@/store/hooks';
+import { getAllLeadCategoriesThunk } from '@/store/thunks/lead-categories';
 import { getAllLeadsThunk } from '@/store/thunks/leads/getAllLeadsThunk';
 import { loadSavedFiltersThunk } from '@/store/thunks/saved-filters';
 import { LeadsFilters } from './filters';
@@ -13,6 +14,7 @@ export const Leads = () => {
 
   useEffect(() => {
     dispatch(getAllLeadsThunk());
+    dispatch(getAllLeadCategoriesThunk());
     dispatch(loadSavedFiltersThunk());
   }, [dispatch]);
 

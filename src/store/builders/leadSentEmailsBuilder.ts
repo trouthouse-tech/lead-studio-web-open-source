@@ -16,7 +16,7 @@ type LeadSentEmailsBuilderState = {
 };
 
 const initialState: LeadSentEmailsBuilderState = {
-  dateRangeFilter: null,
+  dateRangeFilter: 'this_week',
   statCardFilter: null,
   onlySingleSentPerLead: false,
 };
