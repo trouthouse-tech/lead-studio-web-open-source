@@ -40,7 +40,7 @@ Open [http://localhost:3000](http://localhost:3000) for the **marketing landing*
 
 Architecture ADRs: **`.cursor/architecture/README.md`**. Agent rules: **`.cursor/rules/AGENTS.md`**.
 
-OSS governance (benchmarks, release checklist, security audits, web+API wire contract): [mentorai-server `data/open-source/`](https://github.com/trouthouse-tech/mentorai-server/tree/main/data/open-source). **Pair quickstart:** [lead-studio-express-server `docs/oss-quickstart.md`](https://github.com/lead-open-source/lead-studio-express-server/blob/main/docs/oss-quickstart.md). Companion API: [lead-studio-express-server](https://github.com/lead-open-source/lead-studio-express-server). License: MIT — see **`LICENSE`**.
+OSS governance (benchmarks, release checklist, security audits, web+API wire contract): [mentorai-server `data/open-source/`](https://github.com/trouthouse-tech/mentorai-server/tree/main/data/open-source). **Pair quickstart:** [docs/oss-quickstart.md](https://github.com/Luckee-Core/lead-studio-express-server/blob/main/docs/oss-quickstart.md). Companion API: [lead-studio-express-server](https://github.com/Luckee-Core/lead-studio-express-server). Studio map: [getting-started](https://github.com/Luckee-Core/getting-started). License: MIT — see **`LICENSE`**.
 
 ## Local development and trust
 

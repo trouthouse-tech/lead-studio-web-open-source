@@ -2,7 +2,7 @@
 
 ## Supported use
 
-**Local / trusted development** is the primary assumption for this open-source web app: you run Next and [lead-studio-express-server](https://github.com/lead-open-source/lead-studio-express-server) on your machine or a controlled network. See the **“Local development and trust”** section in `README.md` for env vars, client vs server secrets, and where HTTP traffic is sent.
+**Local / trusted development** is the primary assumption for this open-source web app: you run Next and [lead-studio-express-server](https://github.com/Luckee-Core/lead-studio-express-server) on your machine or a controlled network. See the **“Local development and trust”** section in `README.md` for env vars, client vs server secrets, and where HTTP traffic is sent.
 
 ## Reporting a vulnerability
 

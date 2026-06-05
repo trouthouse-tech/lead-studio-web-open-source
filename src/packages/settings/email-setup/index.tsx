@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { GITHUB_EXPRESS_REPO_URL } from '@/config/landing-links';
 
 /**
  * Read-only checklist: Workspace service account sending (no Gmail OAuth connect UI).
@@ -55,7 +56,7 @@ export const EmailSetup = () => {
 
       <p className={styles.footer}>
         Full steps:{' '}
-        <Link href="https://github.com/lead-open-source/lead-studio-express-server/blob/main/src/services/email/README.md">
+        <Link href={`${GITHUB_EXPRESS_REPO_URL}/blob/main/src/services/email/README.md`}>
           express server email README
         </Link>
         {' · '}

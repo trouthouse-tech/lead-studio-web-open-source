@@ -1,6 +1,11 @@
 'use client';
 
-import { GITHUB_EXPRESS_REPO_URL } from '@/config/landing-links';
+import {
+  GETTING_STARTED_REPO_URL,
+  GITHUB_EXPRESS_REPO_URL,
+  GITHUB_WEB_REPO_URL,
+  OSS_QUICKSTART_URL,
+} from '@/config/landing-links';
 
 type IntroStepProps = {
   onNext: () => void;
@@ -13,19 +18,33 @@ export const IntroStep = (props: IntroStepProps) => {
     <section className={styles.section}>
       <h2 className={styles.h2}>Welcome to Lead Studio</h2>
       <p className={styles.p}>
-        This open-source slice pairs a Next.js CRM with{' '}
-        <strong>lead-studio-express-server</strong> (Supabase + research workers). This
-        wizard verifies your stack before you use the dashboard.
+        This open-source slice pairs a Next.js CRM with an Express API (Supabase + research
+        workers). This wizard verifies your stack before you use the dashboard.
       </p>
       <ul className={styles.list}>
         <li>
-          Express API repo:{' '}
+          Web repo:{' '}
+          <a href={GITHUB_WEB_REPO_URL} className={styles.link} target="_blank" rel="noreferrer">
+            lead-studio-web-open-source
+          </a>
+        </li>
+        <li>
+          API repo:{' '}
           <a href={GITHUB_EXPRESS_REPO_URL} className={styles.link} target="_blank" rel="noreferrer">
             lead-studio-express-server
           </a>
         </li>
         <li>
-          Full quickstart: express repo <code className={styles.code}>docs/oss-quickstart.md</code>
+          Pair quickstart:{' '}
+          <a href={OSS_QUICKSTART_URL} className={styles.link} target="_blank" rel="noreferrer">
+            docs/oss-quickstart.md
+          </a>
+        </li>
+        <li>
+          Luckee studio map:{' '}
+          <a href={GETTING_STARTED_REPO_URL} className={styles.link} target="_blank" rel="noreferrer">
+            getting-started
+          </a>
         </li>
       </ul>
       <button type="button" className={styles.primaryButton} onClick={onNext}>
@@ -50,9 +69,6 @@ const styles = {
   `,
   link: `
     text-orange-600 hover:text-orange-700 underline
-  `,
-  code: `
-    text-sm bg-gray-100 px-1 rounded
   `,
   primaryButton: `
     px-4 py-2 rounded-md bg-orange-500 text-white font-medium
