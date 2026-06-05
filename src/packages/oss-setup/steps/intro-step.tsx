@@ -16,10 +16,11 @@ export const IntroStep = (props: IntroStepProps) => {
 
   return (
     <section className={styles.section}>
-      <h2 className={styles.h2}>Welcome to Lead Studio</h2>
+      <h2 className={styles.h2}>Before you open the dashboard</h2>
       <p className={styles.p}>
-        This open-source slice pairs a Next.js CRM with an Express API (Supabase + research
-        workers). This wizard verifies your stack before you use the dashboard.
+        Lead Studio is two repos: this Next.js app and{' '}
+        <strong>lead-studio-express-server</strong> (Supabase + research workers). This wizard
+        checks that your API URL responds before the CRM unlocks.
       </p>
       <ul className={styles.list}>
         <li>

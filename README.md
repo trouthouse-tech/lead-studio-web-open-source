@@ -1,67 +1,74 @@
 # Lead Studio Web (open source)
 
-Next.js app for **Lead Studio**: Redux, dashboard routes under `src/app`, feature UI in `src/packages`, and HTTP clients in **`src/api`** (browser → Express and/or same-origin Next routes). See **`SECURITY.md`** for how to report issues and what “supported” means for local vs production.
+Next.js front end for **Lead Studio** — the self-hosted lead CRM that pairs with [**lead-studio-express-server**](https://github.com/Luckee-Core/lead-studio-express-server).
 
-## Run
+If you have been stitching together Google Maps, spreadsheets, and sent-mail folders, this is the dashboard slice: discover businesses, track contacts, queue outbound email, and log calls in one place. Redux for app state, feature UI in `src/packages`, HTTP clients in `src/api` (browser → Express).
+
+See **`SECURITY.md`** before you point this at anything beyond localhost.
+
+## Run it locally
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) for the **marketing landing**; the app dashboard is at **`/dashboard`**. Point **`NEXT_PUBLIC_SERVER_URL`** at **lead-studio-express-server**; default in code is `http://localhost:3032` when unset in development. Copy **`.env.example`** to `.env.local` and adjust. Email sending uses a Workspace service account on express — see **`docs/email-sending.md`**.
+- Marketing landing: [http://localhost:3000](http://localhost:3000)
+- App dashboard: **`/dashboard`**
+- First-run wizard: **[http://localhost:3000/setup](http://localhost:3000/setup)** — confirms your Express URL and health check before the dashboard unlocks
 
-## Layout
+Copy **`.env.example`** → **`.env.local`**. Set **`NEXT_PUBLIC_SERVER_URL`** to your Express base URL (dev default when unset: `http://localhost:3032`).
 
-- **`src/app`** — App Router pages and layouts (see **`src/app/README.md`** for conventions vs `.cursor/architecture`)
-- **`src/components`** — Shared dashboard shell (`AppLayout`, sidebar, header); see **`src/components/README.md`**
-- **`src/packages`** — Feature modules (screens/workflows); see **`src/packages/README.md`**
-- **`src/model`** — Shared domain **`type`** definitions (entities, breadcrumbs); see **`src/model/README.md`**
-- **`src/api`** — `fetch` / `apiClient` wrappers; see **`src/api/README.md`**
-- **`src/store`** — Redux (slices, thunks, dumps); see **`src/store/README.md`**
-- **`src/utils`** — Pure helpers by domain; see **`src/utils/README.md`**
-- **`src/config`** — `api.ts` (URLs + env), `routes.ts` (path constants); see **`src/config/README.md`**
-- **`docs`** — Hub + security index; see **`docs/README.md`**
+Outbound email is sent by Express using a Google Workspace **service account** — configure secrets on the server, not in this web app. See **`docs/email-sending.md`** here and the express email README when you wire sending.
 
-### Documentation map (per-folder guides)
+## Repo layout
 
-| Path | Topics |
-|------|--------|
-| [`src/app/README.md`](src/app/README.md) | App Router, thin pages, breadcrumbs |
-| [`src/components/README.md`](src/components/README.md) | Shared shell vs packages |
-| [`src/packages/README.md`](src/packages/README.md) | Feature modules, thunks layout |
-| [`src/model/README.md`](src/model/README.md) | Domain types |
-| [`src/api/README.md`](src/api/README.md) | HTTP clients, env |
-| [`src/store/README.md`](src/store/README.md) | Redux, thunks, dumps |
-| [`src/utils/README.md`](src/utils/README.md) | Pure utilities |
-| [`src/config/README.md`](src/config/README.md) | URLs, route constants |
-| [`docs/README.md`](docs/README.md) | Documentation hub (`docs/` only) |
-| [`docs/security/README.md`](docs/security/README.md) | Security doc index |
+| Path | What lives here |
+|------|-----------------|
+| **`src/app`** | App Router pages and layouts — see **`src/app/README.md`** |
+| **`src/components`** | Shared dashboard shell (`AppLayout`, sidebar, header) — **`src/components/README.md`** |
+| **`src/packages`** | Feature modules (screens/workflows) — **`src/packages/README.md`** |
+| **`src/model`** | Shared domain **`type`** definitions — **`src/model/README.md`** |
+| **`src/api`** | `fetch` / `apiClient` wrappers — **`src/api/README.md`** |
+| **`src/store`** | Redux slices, thunks, dumps — **`src/store/README.md`** |
+| **`src/utils`** | Pure helpers by domain — **`src/utils/README.md`** |
+| **`src/config`** | URLs, env, route constants — **`src/config/README.md`** |
+| **`docs`** | Hub + security index — **`docs/README.md`** |
 
 Architecture ADRs: **`.cursor/architecture/README.md`**. Agent rules: **`.cursor/rules/AGENTS.md`**.
 
-OSS governance (benchmarks, release checklist, security audits, web+API wire contract): [mentorai-server `data/open-source/`](https://github.com/trouthouse-tech/mentorai-server/tree/main/data/open-source). **Pair quickstart:** [docs/oss-quickstart.md](https://github.com/Luckee-Core/lead-studio-express-server/blob/main/docs/oss-quickstart.md). Companion API: [lead-studio-express-server](https://github.com/Luckee-Core/lead-studio-express-server). Studio map: [getting-started](https://github.com/Luckee-Core/getting-started). License: MIT — see **`LICENSE`**.
+## Pair with Express
+
+This repo is half of a two-repo setup. The other half is [**lead-studio-express-server**](https://github.com/Luckee-Core/lead-studio-express-server) (Supabase, research workers, email queue).
+
+| Resource | Link |
+|----------|------|
+| Pair quickstart | [`docs/oss-quickstart.md`](https://github.com/Luckee-Core/lead-studio-express-server/blob/main/docs/oss-quickstart.md) |
+| Studio map (all Luckee OSS repos) | [`getting-started`](https://github.com/Luckee-Core/getting-started) |
+| OSS governance (checklists, wire contract) | [`mentorai-server/data/open-source/`](https://github.com/trouthouse-tech/mentorai-server/tree/main/data/open-source) |
+
+License: MIT — see **`LICENSE`**.
 
 ## Local development and trust
 
-This repo is written for **solo or trusted-team use on your machine** by default: Next and Express should listen on **`127.0.0.1`** (or sit behind a firewall) **until** Express enforces real authentication.
+Written for **solo or trusted-team use on your machine** by default. Run Next and Express on **`127.0.0.1`** (or behind a firewall) until Express enforces real authentication.
 
-- **`NEXT_PUBLIC_*` variables are embedded in the client bundle.** Never put private API keys or server-only secrets in them. Use server-only env vars (no `NEXT_PUBLIC_` prefix) in **`app/api/**/route.ts`** or on Express.
-- **`src/api`** does not attach `Authorization` headers by itself; it assumes your **Express** (or BFF) policy—often “open on localhost” during development. Treat any API reachable from the LAN or internet as **requiring auth, HTTPS, CORS, and rate limits** before you expose it.
+**Client vs server secrets**
 
-### Where HTTP traffic goes
+- **`NEXT_PUBLIC_*` variables ship in the browser bundle.** Never put private API keys or server-only secrets there. Use server-only env (no `NEXT_PUBLIC_` prefix) in **`app/api/**/route.ts`** or on Express.
+- **`src/api`** does not attach `Authorization` headers by itself. It assumes your Express policy — often “open on localhost” during development. Treat any API reachable from the LAN or the public internet as **requiring auth, HTTPS, CORS, and rate limits** before you expose it.
 
-**Browser → Express** — All CRM and research clients in `src/api/` call `API_CONFIG.SERVER_URL` (from `NEXT_PUBLIC_SERVER_URL`, default `http://localhost:3032` in dev) + `/api/data/...` or `/api/services/...`. There is no Next.js BFF for lead flows in this OSS slice.
+**Where HTTP traffic goes**
 
-**First-run setup** — Open `/setup` to confirm your Express URL and run a health check before the dashboard unlocks.
+All CRM and research clients in `src/api/` call `API_CONFIG.SERVER_URL` (from `NEXT_PUBLIC_SERVER_URL`) + `/api/data/...` or `/api/services/...`. There is no Next.js BFF for lead flows in this OSS slice.
 
-### Elevated / future (before wider or production deploy)
+**Before a wider or production deploy**
 
-- Enforce **authZ** on Express for every mutating and sensitive read route; prefer **cookies or short-lived tokens** with clear same-site / CORS rules if the app and API differ by origin.
-- Add **`app/api`** proxies with **body size limits**, **auth** (e.g. session or shared secret for cron-style routes), and **allowlists** for any outbound URL (integrations, n8n, etc.).
-- Run **`npm audit`** (or `pnpm audit`) before releases; keep lockfiles committed.
-- Forks and production deploys: fill in the **maintainer email placeholder** in **`SECURITY.md`** if GitHub private advisories are not enough; optionally add **`security.txt`** on your deployed domain (see **`SECURITY.md`**).
+- Enforce **authZ** on Express for every mutating and sensitive read route.
+- Add **`app/api`** proxies with body size limits and auth if you introduce a BFF layer.
+- Run **`npm audit`** before releases; keep lockfiles committed.
+- Fill in the maintainer email placeholder in **`SECURITY.md`** if GitHub private advisories are not enough.
 
-## As GitHub template
+## Use as a GitHub template
 
-If you reuse this repo as a template: Repo → Settings → General → check **Template repository**.
+Repo → Settings → General → check **Template repository**.
