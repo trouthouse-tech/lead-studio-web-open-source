@@ -3,6 +3,7 @@ import { CurrentLeadActions } from '../../current';
 import { createEmptyLead } from '../../current/create-empty-lead';
 import { LeadBuilderActions } from '../../builders';
 import { logLeadActivityThunk } from '../lead-activities';
+import { getLeadContactsByLeadIdThunk } from '../lead-contacts';
 import { loadLeadWebsiteScrapeLatestSummaryThunk } from './loadLeadWebsiteScrapeLatestSummaryThunk';
 
 type ResponseType = Promise<200>;
@@ -10,7 +11,7 @@ type ResponseType = Promise<200>;
 /**
  * Sets the current lead in Redux from the leads dump by id.
  * Call when a lead is selected (e.g. from the leads list or when opening the detail page by URL).
- * Also resets lead detail UI state and loads website scrape summary for the lead.
+ * Also resets lead detail UI state, loads contacts for the lead, and loads website scrape summary.
  */
 export const setCurrentLeadThunk = (leadId: string): AppThunk<ResponseType> => {
   return (dispatch, getState): ResponseType => {
@@ -22,6 +23,7 @@ export const setCurrentLeadThunk = (leadId: string): AppThunk<ResponseType> => {
     dispatch(LeadBuilderActions.setWebsiteScrapeLatestLoading(false));
     dispatch(LeadBuilderActions.setWebsiteResearchConfirmModalOpen(false));
     if (lead.id) {
+      void dispatch(getLeadContactsByLeadIdThunk(lead.id));
       void dispatch(
         logLeadActivityThunk({
           leadId: lead.id,

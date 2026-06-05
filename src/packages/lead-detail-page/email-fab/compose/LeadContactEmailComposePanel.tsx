@@ -201,6 +201,10 @@ export const LeadContactEmailComposePanel = (props: Props) => {
         }),
       );
       if (res.ok) {
+        await dispatch(updateLeadContactStatusThunk(contactId, 'contacted'));
+        if (leadId) {
+          await dispatch(updateLeadThunk(leadId, { status: 'contacted' }));
+        }
         alert('Sent.');
         void dispatch(getLeadSentEmailsByContactIdThunk(contactId));
       } else {
