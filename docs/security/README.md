@@ -6,6 +6,7 @@ This folder exists so security-related notes have a stable path in the tree. **A
 |----------|---------|
 | **[`SECURITY.md`](../../SECURITY.md)** (repo root) | How to report vulnerabilities, GitHub advisories, optional email / `security.txt`, scope limits |
 | **[`README.md`](../../README.md)** — *Local development and trust* | Threat model for local dev, `NEXT_PUBLIC_*`, where HTTP traffic goes, production checklist |
+| **[`oss-audit-notes.md`](oss-audit-notes.md)** | Summary OSS security audit notes (web) |
 
 There is no separate architecture diagram here; the root README carries deployment and trust-boundary context for now.
 

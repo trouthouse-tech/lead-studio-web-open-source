@@ -40,6 +40,8 @@ Open [http://localhost:3000](http://localhost:3000) for the **marketing landing*
 
 Architecture ADRs: **`.cursor/architecture/README.md`**. Agent rules: **`.cursor/rules/AGENTS.md`**.
 
+OSS governance (benchmarks, release checklist, security audits, web+API wire contract): [mentorai-server `data/open-source/`](https://github.com/trouthouse-tech/mentorai-server/tree/main/data/open-source). **Pair quickstart:** [lead-studio-express-server `docs/oss-quickstart.md`](https://github.com/lead-open-source/lead-studio-express-server/blob/main/docs/oss-quickstart.md). Companion API: [lead-studio-express-server](https://github.com/lead-open-source/lead-studio-express-server). License: MIT — see **`LICENSE`**.
+
 ## Local development and trust
 
 This repo is written for **solo or trusted-team use on your machine** by default: Next and Express should listen on **`127.0.0.1`** (or sit behind a firewall) **until** Express enforces real authentication.
@@ -49,8 +51,9 @@ This repo is written for **solo or trusted-team use on your machine** by default
 
 ### Where HTTP traffic goes
 
-1. **Browser → Express** — Many calls use `API_CONFIG.SERVER_URL` + `/api/data/...` (mentorai-server style).
-2. **Browser → Next (same origin)** — Some lead/research helpers use relative **`/api/leads/...`**. Those hit the Next origin unless you add matching **`app/api`** route handlers or change those clients to call **`API_CONFIG.SERVER_URL`** on Express instead.
+**Browser → Express** — All CRM and research clients in `src/api/` call `API_CONFIG.SERVER_URL` (from `NEXT_PUBLIC_SERVER_URL`, default `http://localhost:3032` in dev) + `/api/data/...` or `/api/services/...`. There is no Next.js BFF for lead flows in this OSS slice.
+
+**First-run setup** — Open `/setup` to confirm your Express URL and run a health check before the dashboard unlocks.
 
 ### Elevated / future (before wider or production deploy)
 

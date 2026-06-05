@@ -27,6 +27,7 @@ import {
 import {
   breadcrumbBuilder,
   dashboardBuilder,
+  ossSetupBuilder,
   googleMapsScraperBuilder,
   leadBuilder,
   leadContactBuilder,
@@ -72,6 +73,7 @@ const rootReducer = combineReducers({
   leadContactEmailBuilder,
   googleMapsScraperBuilder,
   dashboardBuilder,
+  ossSetupBuilder,
   leadDetailEmailFab,
   breadcrumbBuilder,
   toCallLogBuilder,

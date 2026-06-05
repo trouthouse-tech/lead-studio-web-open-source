@@ -3,6 +3,9 @@
  */
 export { DASHBOARD_PATH } from './landing-links';
 
+/** First-run OSS stack setup wizard */
+export const OSS_SETUP_PATH = '/setup';
+
 export const FIND_LEADS_PATH = '/leads/find';
 
 export const LEAD_DETAIL_PATH = '/lead-detail-page';
