@@ -48,7 +48,8 @@ Follow ADR **003**: Tailwind utility strings (often collected in a **`styles`** 
 
 ## Examples (non-exhaustive)
 
-- **`dashboard/`** — Home dashboard shell and widgets.
+- **`landing/`** — Public marketing page at `/` (no `AppLayout`, no Redux).
+- **`dashboard/`** — App home dashboard at `/dashboard`.
 - **`leads/`** — Commercial leads list, filters, create lead.
 - **`lead-detail-page/`**, **`lead-contact-detail-page/`** — Detail workspaces.
 

@@ -1,6 +1,8 @@
 /**
  * Frontend route paths. Use these instead of hardcoded strings for navigation.
  */
+export { DASHBOARD_PATH } from './landing-links';
+
 export const FIND_LEADS_PATH = '/leads/find';
 
 export const LEAD_DETAIL_PATH = '/lead-detail-page';

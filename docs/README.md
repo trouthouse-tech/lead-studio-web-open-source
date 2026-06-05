@@ -31,11 +31,15 @@ Legacy `mentorai-server` Luckee-only routes removed from the private server (res
 
 **[`src/config/routes.ts`](../src/config/routes.ts)** exports path constants for navigation. They should stay aligned with real **`src/app/**/page.tsx`** segments.
 
+**Marketing** (`src/app/page.tsx`):
+
+`/` — public landing (`src/packages/landing`)
+
 **Implemented in `src/app/(dashboard)/` today** (representative paths):
 
-`/`, `/leads`, `/leads/find`, `/leads/to-call-log`, `/lead-detail-page`, `/lead-contacts`, `/lead-contact-detail-page`, `/lead-emails`, `/lead-emails/queue`, `/lead-emails/sent`, `/settings/email`
+`/dashboard`, `/leads`, `/leads/find`, `/leads/to-call-log`, `/lead-detail-page`, `/lead-contacts`, `/lead-contact-detail-page`, `/lead-emails`, `/lead-emails/queue`, `/lead-emails/sent`, `/settings/email`
 
-**`routes.ts` exports** (`FIND_LEADS_PATH`, `LEAD_DETAIL_PATH`, `TO_CALL_LOG_PATH`, email paths, `LEAD_CONTACT_DETAIL_PATH`, `buildLeadContactDetailHref`) match the segments above. When you add or remove a dashboard route, update **`routes.ts`** and this list.
+**`routes.ts` exports** (`DASHBOARD_PATH`, `FIND_LEADS_PATH`, `LEAD_DETAIL_PATH`, `TO_CALL_LOG_PATH`, email paths, `LEAD_CONTACT_DETAIL_PATH`, `buildLeadContactDetailHref`) match the segments above. External marketing links live in **`src/config/landing-links.ts`**. When you add or remove a route, update **`routes.ts`**, **`landing-links.ts`** (if applicable), and this list.
 
 ## Related
 

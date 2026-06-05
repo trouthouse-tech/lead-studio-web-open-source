@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { PanelLeft, PanelLeftClose, Rows3 } from 'lucide-react';
+import { DASHBOARD_PATH } from '@/config/routes';
 import { getAppSidebarSections } from './get-app-sidebar-sections';
 
 /**
@@ -16,7 +17,7 @@ export const Sidebar = () => {
 
   const isActiveHref = useCallback(
     (href: string) => {
-      if (href === '/') return pathname === '/';
+      if (href === DASHBOARD_PATH) return pathname === DASHBOARD_PATH;
       return pathname === href || pathname.startsWith(`${href}/`);
     },
     [pathname],
@@ -25,7 +26,7 @@ export const Sidebar = () => {
   return (
     <aside className={styles.sidebar(collapsed)}>
       <div className={styles.logoArea}>
-        <Link href="/" className={styles.logoLink}>
+        <Link href={DASHBOARD_PATH} className={styles.logoLink}>
           <span className={styles.logoMark}>LS</span>
           {!collapsed && <span className={styles.logoText}>Lead Studio</span>}
         </Link>

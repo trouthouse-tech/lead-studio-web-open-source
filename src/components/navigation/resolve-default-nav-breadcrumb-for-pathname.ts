@@ -1,3 +1,4 @@
+import { DASHBOARD_PATH } from '@/config/routes';
 import { getNavigationLinks, type NavigationLink, type NavigationRoute } from './get-navigation-links';
 
 const isNavigationRoute = (link: NavigationLink): link is NavigationRoute => 'href' in link;
@@ -16,8 +17,8 @@ export const resolveDefaultNavBreadcrumbForPathname = (pathname: string): Defaul
   let activeNavigationLink: NavigationLink | undefined;
   for (const link of navigationLinks) {
     if (isNavigationRoute(link)) {
-      if (link.href === '/') {
-        if (pathname === '/') {
+      if (link.href === DASHBOARD_PATH) {
+        if (pathname === DASHBOARD_PATH) {
           activeNavigationLink = link;
           break;
         }

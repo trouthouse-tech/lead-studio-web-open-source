@@ -7,7 +7,8 @@ Central place for **URL construction** (Express vs Next), **`process.env` wiring
 | File | Role |
 |------|------|
 | **`api.ts`** | `API_CONFIG` (`DEFAULT`, `SERVER_URL`), production guards, helpers (`getMentoraiDataApiBaseUrl`, `getMentoraiServerBaseUrl` for optional Next BFF / server-only code). |
-| **`routes.ts`** | Path string constants (`FIND_LEADS_PATH`, `LEAD_CONTACT_DETAIL_PATH`, `buildLeadContactDetailHref`, …)—avoid scattering `'\/foo'` across packages. |
+| **`routes.ts`** | Path string constants (`DASHBOARD_PATH`, `FIND_LEADS_PATH`, `LEAD_CONTACT_DETAIL_PATH`, `buildLeadContactDetailHref`, …)—avoid scattering `'\/foo'` across packages. |
+| **`landing-links.ts`** | Marketing URLs (`GITHUB_WEB_REPO_URL`, `DOCS_HUB_URL`, `LUCKEE_URL`, …) and `DASHBOARD_PATH` (re-exported from `routes.ts`). |
 | **`index.ts`** | Barrel re-export. |
 
 ## Conventions (see `.cursor/architecture/`)
