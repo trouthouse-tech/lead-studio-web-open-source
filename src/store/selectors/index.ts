@@ -10,5 +10,6 @@ export {
   selectDashboardLatestLeadRows,
   selectRecentLeadRows,
   type DashboardActivityRow,
+  type DashboardLatestLeadRow,
   type RecentLeadRow,
 } from './dashboardActivitySelectors';

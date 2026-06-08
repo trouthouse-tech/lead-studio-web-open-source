@@ -27,9 +27,10 @@ export type LeadSentEmail = {
   from_email?: string | null;
   email_sending_identity_id?: string | null;
   variation_id?: number | null;
+  /** Gmail API message id. */
   sg_message_id?: string | null;
   opened_at?: Date | string | null;
   opened_count?: number | null;
-  /** SendGrid lifecycle: sent, delivered, bounced, deferred, opened */
+  /** Delivery lifecycle: sent, delivered, bounced, deferred, opened */
   delivery_status?: LeadSentEmailDeliveryStatus | null;
 };

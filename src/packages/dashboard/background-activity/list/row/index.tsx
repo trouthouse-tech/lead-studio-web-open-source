@@ -56,7 +56,7 @@ export const RecentLeadsListRow = (props: RecentLeadsListRowProps) => {
 
 const styles = {
   card: `
-    flex h-full w-full cursor-pointer flex-col rounded-lg border border-slate-200 bg-white
+    flex w-full cursor-pointer flex-col rounded-lg border border-slate-200 bg-white
     px-4 pb-4 pt-4 text-left shadow-sm transition-shadow
     hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400
   `,

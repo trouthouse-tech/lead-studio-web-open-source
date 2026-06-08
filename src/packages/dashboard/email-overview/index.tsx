@@ -6,13 +6,13 @@ import { LeadContactEmailQueueList } from '@/packages/lead-email-queue/LeadConta
 import { LeadSentEmailsList } from '@/packages/lead-sent-emails/LeadSentEmailsList';
 
 /**
- * Dashboard bottom: outbound queue and sent history side by side on large screens.
+ * Dashboard: outbound queue and sent history stacked vertically.
  */
 export const DashboardEmailOverview = () => {
   return (
     <div className={styles.root}>
-      <section className={styles.card} aria-labelledby="dash-email-queue-heading">
-        <div className={styles.cardHeader}>
+      <section className={styles.section} aria-labelledby="dash-email-queue-heading">
+        <div className={styles.sectionHeader}>
           <div>
             <h2 id="dash-email-queue-heading" className={styles.title}>
               Email queue
@@ -28,8 +28,8 @@ export const DashboardEmailOverview = () => {
         </div>
       </section>
 
-      <section className={styles.card} aria-labelledby="dash-sent-emails-heading">
-        <div className={styles.cardHeader}>
+      <section className={styles.section} aria-labelledby="dash-sent-emails-heading">
+        <div className={styles.sectionHeader}>
           <div>
             <h2 id="dash-sent-emails-heading" className={styles.title}>
               Sent emails
@@ -50,13 +50,13 @@ export const DashboardEmailOverview = () => {
 
 const styles = {
   root: `
-    grid grid-cols-1 gap-6 xl:grid-cols-2 w-full min-w-0
+    flex flex-col gap-8 w-full min-w-0
   `,
-  card: `
-    min-w-0 flex flex-col rounded-xl border border-slate-200 bg-white p-4 shadow-sm
+  section: `
+    min-w-0 flex flex-col w-full
   `,
-  cardHeader: `
-    flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4 shrink-0 pb-3 border-b border-slate-100 mb-3
+  sectionHeader: `
+    flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4 shrink-0 pb-3 mb-3
   `,
   title: `
     text-sm font-semibold text-slate-900

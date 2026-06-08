@@ -27,6 +27,7 @@ import {
   sendLeadContactEmailNowThunk,
   uploadLeadContactEmailAttachmentThunk,
 } from '@/store/thunks/lead-contact-emails';
+import { tiptapContentToPlainText } from '@/utils/content';
 import {
   EmailSubjectInput,
   EmailBodyInput,
@@ -306,6 +307,34 @@ export const LeadContactEmailComposePanel = (props: Props) => {
     void runQueue({ schedule_for: 'date', schedule_date: ymd });
   };
 
+  const handleCreateNew = () => {
+    const bodyHasContent = tiptapContentToPlainText(currentEmail.body).trim().length > 0;
+    const hasContent =
+      Boolean(currentEmail.id) ||
+      currentEmail.subject.trim().length > 0 ||
+      bodyHasContent ||
+      currentEmail.pendingAttachmentFile !== null ||
+      currentEmail.attachment_ids.length > 0;
+
+    if (!hasContent) return;
+
+    if (
+      !window.confirm('Discard the current email and start a new draft?')
+    ) {
+      return;
+    }
+
+    setQueueMenuOpen(false);
+    dispatch(CurrentLeadContactEmailActions.reset());
+    dispatch(
+      CurrentLeadContactEmailActions.updateFields({
+        lead_id: leadId,
+        lead_contact_id: contactId,
+        subject: '',
+      })
+    );
+  };
+
   const panelClass =
     variant === 'modal' ? styles.panelModal : styles.panelFab;
   const actionsClass =
@@ -334,6 +363,14 @@ export const LeadContactEmailComposePanel = (props: Props) => {
             Cancel
           </button>
         ) : null}
+        <button
+          type="button"
+          onClick={handleCreateNew}
+          disabled={isSaving || sending || queuing}
+          className={styles.createNew}
+        >
+          Create new
+        </button>
         <button
           type="button"
           onClick={handleSendNow}
@@ -463,6 +500,11 @@ const styles = {
   cancel: `
     px-4 py-2 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100
     border-none bg-transparent cursor-pointer
+  `,
+  createNew: `
+    px-3 py-1.5 text-xs font-medium text-gray-700 rounded-lg
+    border border-gray-200 bg-white hover:bg-gray-50 cursor-pointer disabled:opacity-45
+    sm:px-4 sm:py-2 sm:text-sm
   `,
   send: `
     px-3 py-1.5 text-xs font-medium text-white bg-emerald-600 rounded-lg

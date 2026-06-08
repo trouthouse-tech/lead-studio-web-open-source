@@ -9,6 +9,7 @@ export const PLAYWRIGHT_WEBSITE_URL_DISCOVERY_RUN_DISABLED_TITLE =
 export const LEAD_STATUSES: { value: string; label: string }[] = [
   { value: 'not_contacted', label: 'Not contacted' },
   { value: 'contacted', label: 'Contacted' },
+  { value: 'in_call_log', label: 'In call log' },
   { value: 'not_answered', label: 'Not answered' },
   { value: 'lost', label: 'Lost' },
   { value: 'archived', label: 'Archived' },

@@ -48,7 +48,7 @@ The browser calls Express directly for send-now, queue, and drafts. Secrets stay
 
 ## Open tracking
 
-Opens for emails sent via **Gmail API** are tracked with a **1×1 pixel**, not SendGrid webhooks.
+Opens for emails sent via **Gmail API** are tracked with a **1×1 pixel**.
 
 1. In Supabase, run `sql/lead_sent_emails_open_tracking_token.sql` from **lead-studio-express-server**.
 2. On express, set `EMAIL_OPEN_TRACKING_BASE_URL` to the same host you use for webhooks (e.g. `https://your-app.up.railway.app`). Use ngrok or similar when testing locally so mail clients can load the image.

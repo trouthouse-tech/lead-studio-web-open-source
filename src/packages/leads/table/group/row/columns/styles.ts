@@ -47,6 +47,11 @@ export const leadsTableRowColumnStyles = {
     border-none bg-transparent cursor-pointer font-medium
   `,
   statusValue: `text-sm text-gray-700`,
+  statusSelect: `
+    px-2 py-1 text-sm border border-gray-300 rounded bg-white
+    focus:ring-1 focus:ring-blue-500 focus:border-blue-500 focus:outline-none
+    cursor-pointer hover:border-gray-400 transition-colors
+  `,
   actionsCell: `px-3 py-2 text-sm text-center relative`,
   menuContainer: `relative inline-flex`,
   menuButton: `

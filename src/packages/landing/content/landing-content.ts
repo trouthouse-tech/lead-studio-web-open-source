@@ -97,7 +97,7 @@ export const LANDING_CONTENT: LandingContent = {
     tags: ['© 2026', 'Open source', 'Self-hostable'],
   },
   dashboardMock: {
-    title: 'Commercial Leads',
+    title: 'Leads',
     queuedLabel: '12 queued',
     chips: ['All', 'Cafés', 'Trades', 'Healthcare', 'Retail'],
     groupLabel: 'Group · Cafés (24)',

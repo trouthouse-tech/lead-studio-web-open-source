@@ -143,11 +143,10 @@ export const DashboardQueuedCallLogPanel = () => {
 
 const styles = {
   panel: `
-    rounded-xl border border-slate-200 bg-white p-4 shadow-sm
     flex flex-col min-h-0 min-w-0 w-full
   `,
   panelHeader: `
-    flex items-start justify-between gap-2 shrink-0 pb-3 border-b border-slate-100
+    flex items-start justify-between gap-2 shrink-0 pb-3
   `,
   heading: `
     text-sm font-semibold text-slate-900

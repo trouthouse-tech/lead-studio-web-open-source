@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
+import type { Lead, LeadContact } from '@/model';
 import type { RootState } from '../store';
 
 export type DashboardActivityRow = {
@@ -13,6 +14,24 @@ export type RecentLeadRow = {
   leadName: string;
   leadSummary: string;
   lastActivityAt: string;
+};
+
+export type DashboardLatestLeadRow = RecentLeadRow & {
+  status: Lead['status'];
+  topContactName: string | null;
+  topContactEmail: string | null;
+};
+
+const getPrimaryContactForLead = (
+  leadId: string,
+  leadContacts: Record<string, LeadContact>
+): LeadContact | undefined => {
+  return Object.values(leadContacts)
+    .filter((contact) => contact.lead_id === leadId)
+    .sort(
+      (a, b) =>
+        new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+    )[0];
 };
 
 const sortRows = (rows: DashboardActivityRow[]): DashboardActivityRow[] => {
@@ -83,26 +102,36 @@ export const selectLeadContactActivityRows = createSelector(
 const DASHBOARD_LATEST_LEADS_LIMIT = 6;
 
 /**
- * Six most recently updated leads (by `updated_at`) for the home dashboard grid.
+ * Six most recently updated leads (by `updated_at`) for the home dashboard table.
  */
 export const selectDashboardLatestLeadRows = createSelector(
-  [(state: RootState) => state.leads],
-  (leads): RecentLeadRow[] => {
+  [
+    (state: RootState) => state.leads,
+    (state: RootState) => state.leadContacts,
+  ],
+  (leads, leadContacts): DashboardLatestLeadRow[] => {
     return Object.values(leads)
       .sort(
         (a, b) =>
           new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
       )
       .slice(0, DASHBOARD_LATEST_LEADS_LIMIT)
-      .map((lead) => ({
-        leadId: lead.id,
-        leadName: lead.business_name || lead.name?.trim() || 'Unnamed lead',
-        leadSummary:
-          lead.description?.trim() ||
-          lead.summary?.content?.trim() ||
-          'No summary yet.',
-        lastActivityAt: lead.updated_at,
-      }));
+      .map((lead) => {
+        const topContact = getPrimaryContactForLead(lead.id, leadContacts);
+
+        return {
+          leadId: lead.id,
+          leadName: lead.business_name || lead.name?.trim() || 'Unnamed lead',
+          leadSummary:
+            lead.description?.trim() ||
+            lead.summary?.content?.trim() ||
+            'No summary yet.',
+          lastActivityAt: lead.updated_at,
+          status: lead.status,
+          topContactName: topContact?.name ?? null,
+          topContactEmail: topContact?.email?.trim() || null,
+        };
+      });
   }
 );
 
