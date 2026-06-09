@@ -45,6 +45,7 @@ export const LeadContactEmailsTableRow = (props: Props) => {
   const openCompose = () => {
     if (!emailData) return;
     dispatch(CurrentLeadContactEmailActions.setEmail(emailData));
+    dispatch(LeadContactEmailBuilderActions.setPreviewEmailId(emailData.id));
     dispatch(LeadContactEmailBuilderActions.openEmailModal());
   };
 

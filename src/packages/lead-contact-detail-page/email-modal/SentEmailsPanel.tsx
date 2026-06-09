@@ -3,11 +3,15 @@
 import { useMemo } from 'react';
 import { useAppSelector } from '@/store/hooks';
 import { EmailListItem } from './components/EmailListItem';
+import { EmailPreviewPanel } from './components/EmailPreviewPanel';
 
 export const SentEmailsPanel = () => {
   const currentLeadContact = useAppSelector((s) => s.currentLeadContact);
   const leadSentEmails = useAppSelector((s) => s.leadSentEmails);
   const leadContactEmails = useAppSelector((s) => s.leadContactEmails);
+  const previewEmailId = useAppSelector(
+    (s) => s.leadContactEmailBuilder.previewEmailId
+  );
   const contactId = currentLeadContact.id;
 
   const emails = useMemo(() => {
@@ -36,21 +40,41 @@ export const SentEmailsPanel = () => {
     return m;
   }, [leadSentEmails, contactId]);
 
+  const previewEmail = useMemo(
+    () => emails.find((e) => e.id === previewEmailId) ?? null,
+    [emails, previewEmailId]
+  );
+
+  const previewSentRecord = previewEmail
+    ? sentByEmailId[previewEmail.id] ?? null
+    : null;
+
   return (
     <div className={styles.panel}>
-      <h3 className={styles.h}>Emails ({emails.length})</h3>
-      <div className={styles.list}>
-        {emails.length === 0 ? (
-          <p className={styles.empty}>No saved emails yet.</p>
-        ) : (
-          emails.map((email) => (
-            <EmailListItem
-              key={email.id}
-              email={email}
-              sentRecord={sentByEmailId[email.id] ?? null}
-            />
-          ))
-        )}
+      <div className={styles.listColumn}>
+        <div className={styles.listHeader}>
+          <span className={styles.count}>{emails.length} saved</span>
+        </div>
+        <div className={styles.list}>
+          {emails.length === 0 ? (
+            <p className={styles.empty}>No saved emails yet.</p>
+          ) : (
+            emails.map((email) => (
+              <EmailListItem
+                key={email.id}
+                email={email}
+                sentRecord={sentByEmailId[email.id] ?? null}
+                isSelected={previewEmailId === email.id}
+              />
+            ))
+          )}
+        </div>
+      </div>
+      <div className={styles.previewColumn}>
+        <EmailPreviewPanel
+          email={previewEmail}
+          sentRecord={previewSentRecord}
+        />
       </div>
     </div>
   );
@@ -58,9 +82,16 @@ export const SentEmailsPanel = () => {
 
 const styles = {
   panel: `
-    border-l border-gray-100 p-4 overflow-y-auto bg-slate-50/80 min-h-[320px] lg:min-h-0
+    flex-1 min-h-0 grid grid-cols-1 md:grid-cols-[minmax(220px,280px)_1fr]
   `,
-  h: `text-sm font-semibold text-gray-800 mb-3`,
-  list: ``,
-  empty: `text-sm text-gray-500 italic py-4`,
+  listColumn: `
+    flex flex-col min-h-0 border-b md:border-b-0 md:border-r border-gray-200 bg-slate-50/80
+  `,
+  listHeader: `
+    shrink-0 px-4 py-2 border-b border-gray-100
+  `,
+  count: `text-xs font-medium text-gray-500`,
+  list: `flex-1 min-h-0 overflow-y-auto p-3`,
+  empty: `text-sm text-gray-500 italic py-4 px-1`,
+  previewColumn: `min-h-0 min-w-0 overflow-hidden`,
 };

@@ -54,6 +54,7 @@ export const LeadContactEmails = () => {
         subject: '',
       })
     );
+    dispatch(LeadContactEmailBuilderActions.setPreviewEmailId(null));
     dispatch(LeadContactEmailBuilderActions.openEmailModal());
   };
 
@@ -61,6 +62,7 @@ export const LeadContactEmails = () => {
     const selected = Object.values(leadContactEmails).find((e) => e.id === emailId);
     if (!selected) return;
     dispatch(CurrentLeadContactEmailActions.setEmail(selected));
+    dispatch(LeadContactEmailBuilderActions.setPreviewEmailId(selected.id));
     dispatch(LeadContactEmailBuilderActions.openEmailModal());
   };
 

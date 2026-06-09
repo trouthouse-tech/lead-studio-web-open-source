@@ -13,5 +13,13 @@ export const EmailEditorPanel = () => {
     dispatch(CurrentLeadContactEmailActions.reset());
   };
 
-  return <LeadContactEmailComposePanel variant="modal" onCancel={close} />;
+  return (
+    <div className={styles.wrap}>
+      <LeadContactEmailComposePanel variant="modal" onCancel={close} />
+    </div>
+  );
+};
+
+const styles = {
+  wrap: `flex-1 min-h-0 overflow-hidden flex flex-col`,
 };

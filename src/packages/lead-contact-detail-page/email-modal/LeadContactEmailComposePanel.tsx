@@ -478,7 +478,9 @@ export const LeadContactEmailComposePanel = (props: Props) => {
 };
 
 const styles = {
-  panelModal: `p-5 overflow-y-auto bg-white border-x border-gray-100 min-h-[320px] lg:min-h-0`,
+  panelModal: `
+    flex flex-col flex-1 min-h-0 overflow-y-auto bg-white p-5
+  `,
   panelFab: `
     flex flex-col flex-1 min-h-0 h-full overflow-y-auto bg-white p-4
   `,

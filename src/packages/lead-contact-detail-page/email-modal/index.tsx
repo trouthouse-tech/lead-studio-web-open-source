@@ -27,7 +27,11 @@ export const LeadContactEmailModal = () => {
     };
     if (isOpen) {
       document.addEventListener('keydown', onKey);
-      return () => document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.removeEventListener('keydown', onKey);
+        document.body.style.overflow = '';
+      };
     }
   }, [isOpen, handleClose]);
 
@@ -47,10 +51,16 @@ export const LeadContactEmailModal = () => {
             <X className={styles.closeIcon} />
           </button>
         </div>
-        <div className={styles.body}>
-          <LeadContactInfoPanel />
-          <EmailEditorPanel />
-          <SentEmailsPanel />
+        <LeadContactInfoPanel />
+        <div className={styles.columns}>
+          <div className={styles.composeColumn}>
+            <h2 className={styles.columnTitle}>Current email</h2>
+            <EmailEditorPanel />
+          </div>
+          <div className={styles.historyColumn}>
+            <h2 className={styles.columnTitle}>Previous emails</h2>
+            <SentEmailsPanel />
+          </div>
         </div>
       </div>
       <SaveToast />
@@ -60,15 +70,13 @@ export const LeadContactEmailModal = () => {
 
 const styles = {
   overlay: `
-    fixed inset-0 z-50 flex items-center justify-center p-4
-    bg-black/40 backdrop-blur-[2px]
+    fixed inset-0 z-50 flex flex-col bg-white
   `,
   modal: `
-    bg-white rounded-2xl shadow-2xl border border-gray-200
-    w-full max-w-[1400px] max-h-[92vh] flex flex-col overflow-hidden
+    flex flex-col h-full w-full overflow-hidden
   `,
   header: `
-    flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0
+    flex items-center justify-between px-6 py-4 border-b border-gray-200 shrink-0
   `,
   title: `text-lg font-semibold text-gray-900`,
   close: `
@@ -76,8 +84,17 @@ const styles = {
     border-none bg-transparent cursor-pointer
   `,
   closeIcon: `h-5 w-5`,
-  body: `
-    flex-1 min-h-0 overflow-hidden
-    grid grid-cols-1 lg:grid-cols-[minmax(200px,1fr)_2.2fr_minmax(200px,1fr)] gap-0
+  columns: `
+    flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-gray-200
+  `,
+  composeColumn: `
+    flex flex-col min-h-0 min-w-0 overflow-hidden
+  `,
+  historyColumn: `
+    flex flex-col min-h-0 min-w-0 overflow-hidden bg-slate-50/50
+  `,
+  columnTitle: `
+    shrink-0 px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide
+    border-b border-gray-100 bg-white
   `,
 };

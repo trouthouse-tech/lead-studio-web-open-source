@@ -1,8 +1,8 @@
 'use client';
 
 import { useCallback } from 'react';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { CurrentLeadContactEmailActions } from '@/store/current';
+import { useAppDispatch } from '@/store/hooks';
+import { LeadContactEmailBuilderActions } from '@/store/builders';
 import type { LeadContactEmail } from '@/model/lead-contact-email';
 import type { LeadSentEmail } from '@/model/lead-sent-email';
 import { formatDateTimeWithTime } from '@/utils/date-time';
@@ -11,9 +11,8 @@ import { tiptapContentToPlainText } from '@/utils/content';
 type Props = {
   email: LeadContactEmail;
   sentRecord?: LeadSentEmail | null;
+  isSelected?: boolean;
 };
-
-const isCreate = (id: string) => !id;
 
 const statusLabel = (sent?: LeadSentEmail | null) => {
   if (!sent) return 'Saved';
@@ -37,25 +36,14 @@ const preview = (body: LeadContactEmail['body']) => {
 };
 
 export const EmailListItem = (props: Props) => {
-  const { email, sentRecord } = props;
+  const { email, sentRecord, isSelected = false } = props;
   const dispatch = useAppDispatch();
-  const cur = useAppSelector((s) => s.currentLeadContactEmail);
 
-  const date = sentRecord
-    ? sentRecord.sent_at
-    : email.created_at;
+  const date = sentRecord ? sentRecord.sent_at : email.created_at;
+
   const onClick = useCallback(() => {
-    if (isCreate(cur.id)) {
-      if (
-        !window.confirm(
-          'Discard unsaved draft and load this email?'
-        )
-      ) {
-        return;
-      }
-    }
-    dispatch(CurrentLeadContactEmailActions.setEmail(email));
-  }, [cur.id, email, dispatch]);
+    dispatch(LeadContactEmailBuilderActions.setPreviewEmailId(email.id));
+  }, [email.id, dispatch]);
 
   return (
     <div
@@ -68,7 +56,7 @@ export const EmailListItem = (props: Props) => {
           onClick();
         }
       }}
-      className={styles.item}
+      className={`${styles.item} ${isSelected ? styles.selected : ''}`}
     >
       <div className={styles.sub}>{email.subject || '(No subject)'}</div>
       {preview(email.body) ? (
@@ -86,6 +74,9 @@ const styles = {
   item: `
     p-3 bg-white rounded-xl border border-gray-200 mb-2 cursor-pointer
     hover:border-blue-300 hover:bg-sky-50/40 transition-colors text-left
+  `,
+  selected: `
+    border-blue-400 bg-sky-50 ring-1 ring-blue-200
   `,
   sub: `text-sm font-medium text-gray-900`,
   prev: `text-xs text-gray-500 mt-1 line-clamp-2`,
