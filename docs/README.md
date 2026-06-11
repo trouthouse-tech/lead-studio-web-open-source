@@ -18,7 +18,7 @@ Add new top-level doc folders here (playbooks, runbooks) and link them from this
 
 ## Email sending
 
-See **[`email-sending.md`](email-sending.md)** — Workspace service account on express (no Gmail OAuth connect in the web app).
+See **`mentorai-server/data/how-to/lead-studio-email-sending.md`** — Workspace service account on express (no Gmail OAuth connect in the web app). In-app checklist: `/settings/email`.
 
 ## API server
 

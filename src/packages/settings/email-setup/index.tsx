@@ -1,7 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { GITHUB_EXPRESS_REPO_URL } from '@/config/landing-links';
+import {
+  GITHUB_EXPRESS_REPO_URL,
+  LEAD_STUDIO_EMAIL_SENDING_DOC_URL,
+} from '@/config/landing-links';
 
 /**
  * Read-only checklist: Workspace service account sending (no Gmail OAuth connect UI).
@@ -56,11 +59,18 @@ export const EmailSetup = () => {
 
       <p className={styles.footer}>
         Full steps:{' '}
+        <a
+          href={LEAD_STUDIO_EMAIL_SENDING_DOC_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.link}
+        >
+          lead-studio-email-sending.md
+        </a>
+        {' · '}
         <Link href={`${GITHUB_EXPRESS_REPO_URL}/blob/main/src/services/email/README.md`}>
           express server email README
         </Link>
-        {' · '}
-        <span className={styles.muted}>Also see docs/email-sending.md in this repo.</span>
       </p>
     </div>
   );
@@ -76,5 +86,5 @@ const styles = {
   list: `list-disc pl-5 text-sm text-gray-700 space-y-1`,
   pre: `rounded-lg bg-gray-50 border border-gray-200 p-3 text-xs text-gray-800 overflow-x-auto`,
   footer: `text-sm text-gray-600`,
-  muted: `text-gray-500`,
+  link: `text-orange-600 hover:text-orange-700 underline`,
 };

@@ -19,7 +19,7 @@ npm run dev
 
 Copy **`.env.example`** → **`.env.local`**. Set **`NEXT_PUBLIC_SERVER_URL`** to your Express base URL (dev default when unset: `http://localhost:3032`).
 
-Outbound email is sent by Express using a Google Workspace **service account** — configure secrets on the server, not in this web app. See **`docs/email-sending.md`** here and the express email README when you wire sending.
+Outbound email is sent by Express using a Google Workspace **service account** — configure secrets on the server, not in this web app. See **`mentorai-server/data/how-to/lead-studio-email-sending.md`** and the express `src/services/email/README.md` when you wire sending.
 
 ## Repo layout
 

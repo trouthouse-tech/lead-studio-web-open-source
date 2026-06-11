@@ -20,3 +20,7 @@ export const GETTING_STARTED_REPO_URL =
   'https://github.com/Luckee-Core/getting-started';
 
 export const LUCKEE_URL = 'https://luckeeapp.com';
+
+/** Lead Studio email setup how-to (mentorai-server data). */
+export const LEAD_STUDIO_EMAIL_SENDING_DOC_URL =
+  'https://github.com/trouthouse-tech/mentorai-server/blob/main/data/how-to/lead-studio-email-sending.md';
