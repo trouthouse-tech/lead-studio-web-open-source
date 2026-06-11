@@ -70,7 +70,7 @@ export const LeadsTable = () => {
         <p className={styles.emptyDescription}>
           {hasFiltersSubset
             ? 'Try adjusting your filters or clear them to see all leads.'
-            : 'Create your first lead to start tracking potential customers.'}
+            : 'Open Find Leads or add one manually — keep the pipeline here, not in another spreadsheet.'}
         </p>
       </div>
     );

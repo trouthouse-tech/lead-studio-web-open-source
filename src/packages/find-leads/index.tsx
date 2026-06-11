@@ -10,8 +10,8 @@ export const FindLeads = () => {
   return (
     <div className={styles.wrap}>
       <p className={styles.intro}>
-        Search Google Maps for local businesses. Matches are saved as leads in your pipeline
-        automatically.
+        Search Google Maps by category and city. What you pick lands in Commercial Leads — one flow,
+        no copy-paste across tabs.
       </p>
       <SearchResultsPreview />
       <GoogleMapsScraperForm />

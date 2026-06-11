@@ -18,9 +18,9 @@ export const IntroStep = (props: IntroStepProps) => {
     <section className={styles.section}>
       <h2 className={styles.h2}>Before you open the dashboard</h2>
       <p className={styles.p}>
-        Lead Studio is two repos: this Next.js app and{' '}
-        <strong>lead-studio-express-server</strong> (Supabase + research workers). This wizard
-        checks that your API URL responds before the CRM unlocks.
+        Lead Studio is two repos — this Next.js app and{' '}
+        <strong>lead-studio-express-server</strong> (Supabase, research, email queue). Point env
+        vars at your stack; this wizard confirms Express responds before the dashboard opens.
       </p>
       <ul className={styles.list}>
         <li>

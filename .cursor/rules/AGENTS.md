@@ -7,6 +7,8 @@ BEFORE implementing ANY feature, you MUST:
 
 Entry points for humans: **`src/app/README.md`**, **`src/components/README.md`**.
 
+Before editing **user-facing copy** (landing, metadata, empty states, onboarding, labels), read **`mentorai-server/data/context/lead-studio-copy-voice.md`** and **`mentorai-server/data/context/drafting-constraints.md`**.
+
 ## Non-Negotiable Rules
 
 ### Redux

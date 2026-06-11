@@ -2,7 +2,7 @@
 
 Next.js front end for **Lead Studio** — the self-hosted lead CRM that pairs with [**lead-studio-express-server**](https://github.com/Luckee-Core/lead-studio-express-server).
 
-If you have been stitching together Google Maps, spreadsheets, and sent-mail folders, this is the dashboard slice: discover businesses, track contacts, queue outbound email, and log calls in one place. Redux for app state, feature UI in `src/packages`, HTTP clients in `src/api` (browser → Express).
+For **solo founders and owner-operators** still stitching together Google Maps, spreadsheets, and sent-mail folders: discover businesses, track contacts, queue outbound email, and log calls in one self-hosted dashboard. Redux for app state, feature UI in `src/packages`, HTTP clients in `src/api` (browser → Express). Copy and positioning: **`mentorai-server/data/context/lead-studio-copy-voice.md`**.
 
 See **`SECURITY.md`** before you point this at anything beyond localhost.
 
@@ -15,7 +15,7 @@ npm run dev
 
 - Marketing landing: [http://localhost:3000](http://localhost:3000)
 - App dashboard: **`/dashboard`**
-- First-run wizard: **[http://localhost:3000/setup](http://localhost:3000/setup)** — confirms your Express URL and health check before the dashboard unlocks
+- First-run wizard: **[http://localhost:3000/setup](http://localhost:3000/setup)** — confirms your Express URL and health check before the dashboard opens
 
 Copy **`.env.example`** → **`.env.local`**. Set **`NEXT_PUBLIC_SERVER_URL`** to your Express base URL (dev default when unset: `http://localhost:3032`).
 

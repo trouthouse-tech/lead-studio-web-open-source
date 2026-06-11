@@ -15,8 +15,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Lead Studio",
-  description: "Commercial leads and contacts (open source)",
+  title: {
+    default: "Lead Studio — Open-source · self-hosted lead CRM",
+    template: "%s | Lead Studio",
+  },
+  description:
+    "Find businesses, work follow-ups, and keep the trail — Next.js + Express on your Supabase, not another spreadsheet export.",
+  icons: {
+    icon: [{ url: "/logo.svg", type: "image/svg+xml" }],
+    shortcut: "/logo.svg",
+    apple: "/logo.svg",
+  },
 };
 
 export default function RootLayout({

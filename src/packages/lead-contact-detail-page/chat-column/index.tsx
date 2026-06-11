@@ -44,10 +44,10 @@ export const LeadContactChatColumn = () => {
       <div className={styles.header}>
         <h2 className={styles.title}>
           <MessageSquare className={styles.titleIcon} />
-          AI contact coach
+          Outreach coach
         </h2>
         <p className={styles.subtitle}>
-          Ask AI for strategy on how to deliver value to this contact.
+          Ask what to say next — given this thread and the lead record.
         </p>
       </div>
 
@@ -61,8 +61,8 @@ export const LeadContactChatColumn = () => {
             <Sparkles className={styles.emptyIcon} />
             <p className={styles.emptyTitle}>Start the conversation</p>
             <p className={styles.emptySub}>
-              Example: &quot;I exchanged two emails with the CEO. How can I deliver value in my
-              next follow-up?&quot;
+              Example: &quot;I exchanged two emails with the owner. What should my next follow-up
+              say?&quot;
             </p>
           </div>
         ) : (
@@ -95,7 +95,7 @@ export const LeadContactChatColumn = () => {
               void sendMessage();
             }
           }}
-          placeholder={isPosting ? 'AI is replying...' : 'Ask AI how to craft your next response...'}
+          placeholder={isPosting ? 'Replying…' : 'Where does the thread stand? What do you need help drafting?'}
         />
         <button
           type="button"

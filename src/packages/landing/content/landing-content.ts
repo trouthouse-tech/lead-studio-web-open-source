@@ -3,10 +3,10 @@ import type { LandingContent } from './landing-content.types';
 export const LANDING_CONTENT: LandingContent = {
   brandName: 'Lead Studio',
   hero: {
-    kicker: 'Self-hosted lead CRM',
+    kicker: 'Open source · Self-hosted',
     titleLines: ['Find the business.', 'Work the follow-up.', 'Keep the trail.'],
     subhead:
-      'If you are still copying names out of Google Maps into a spreadsheet, this is the pipeline I ship for teams that want lead data in their own Supabase — not another SaaS export at month-end.',
+      'If you are still copying names out of Google Maps into a spreadsheet, this is the lead pipeline I ship for solo founders and owner-operators who want the rows in their own Supabase — not another SaaS export at month-end.',
     primaryCta: 'Open the dashboard',
     secondaryCta: 'Clone on GitHub',
     stats: [
@@ -58,7 +58,7 @@ export const LANDING_CONTENT: LandingContent = {
   selfHost: {
     kicker: '04 — Self-host',
     title: 'Two repos you can run on localhost today.',
-    body: 'Next.js for the CRM UI. Express for Supabase, research workers, and the email queue. Fork it, point env vars at your project, keep the rows.',
+    body: 'Same split as every Luckee OSS studio: Next.js for the CRM UI, Express for Supabase, research workers, and the email queue. Fork both, point env vars at your project, keep the rows.',
     terminalLines: [
       'git clone Luckee-Core/lead-studio-web-open-source',
       'git clone Luckee-Core/lead-studio-express-server',
@@ -78,7 +78,7 @@ export const LANDING_CONTENT: LandingContent = {
   },
   ecosystem: {
     kicker: 'Ecosystem',
-    body: 'Lead Studio is one open-source studio in the Luckee lineup — focused tools you can self-host when you want the same architecture as Core without the hosted bill.',
+    body: 'Luckee splits Core into bite-sized open-source studios — same Next.js + Express architecture and patterns. Lead Studio is the outbound leads slice; adopt it first, stack more studios when you need them.',
     linkLabel: 'luckeeapp.com',
   },
   finalCta: {

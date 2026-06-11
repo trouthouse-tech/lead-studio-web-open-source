@@ -12,6 +12,8 @@ The full **per-folder source guide** table (App Router, packages, store, securit
 |------|---------|
 | **[`security/README.md`](security/README.md)** | Links to **`SECURITY.md`**, trust model in root README, and **`src/api`** |
 
+Copy and positioning for Lead Studio UI/landing: **`mentorai-server/data/context/lead-studio-copy-voice.md`** (with **`drafting-constraints.md`**).
+
 Add new top-level doc folders here (playbooks, runbooks) and link them from this file when they are stable.
 
 ## Email sending
