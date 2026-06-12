@@ -19,6 +19,10 @@ npm run dev
 
 Copy **`.env.example`** → **`.env.local`**. Set **`NEXT_PUBLIC_SERVER_URL`** to your Express base URL (dev default when unset: `http://localhost:3032`).
 
+### Full dev stack (Mac)
+
+Use **[Luckee Dev Hub](https://github.com/Luckee-Core/luckee-hub)** to run Express + Next.js, open Cursor, and launch Chrome for Lead Studio (and other studios). See **[`scripts/README.md`](scripts/README.md)**.
+
 Outbound email is sent by Express using a Google Workspace **service account** — configure secrets on the server, not in this web app. See **`mentorai-server/data/how-to/lead-studio-email-sending.md`** and the express `src/services/email/README.md` when you wire sending.
 
 ## Repo layout
