@@ -2,11 +2,11 @@ import { MarketingLanding } from '@/packages/landing';
 
 export const metadata = {
   description:
-    'Find businesses, work follow-ups, and keep the trail — Next.js + Express on your Supabase, not another spreadsheet export.',
+    'Find businesses, log calls, and send email from one list. Open-source software you run yourself. Your lead data stays in your database.',
   openGraph: {
-    title: 'Lead Studio — Open-source · self-hosted lead CRM',
+    title: 'Lead Studio',
     description:
-      'Find the business. Work the follow-up. Keep the trail. Self-hostable lead pipeline for teams that want their data in Supabase.',
+      'Keep track of your leads. Find businesses, log calls, and send email from one list.',
     type: 'website',
   },
 };

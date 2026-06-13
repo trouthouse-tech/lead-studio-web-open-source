@@ -1,5 +1,5 @@
 import { ArrowRight } from 'lucide-react';
-import { DOCS_HUB_URL } from '@/config/landing-links';
+import { OSS_QUICKSTART_URL } from '@/config/landing-links';
 import { LANDING_CONTENT } from '../content';
 
 /**
@@ -24,7 +24,7 @@ export const SelfHost = () => {
             ))}
           </div>
           <a
-            href={DOCS_HUB_URL}
+            href={OSS_QUICKSTART_URL}
             target="_blank"
             rel="noopener noreferrer"
             className={styles.docsLink}

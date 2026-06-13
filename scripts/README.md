@@ -1,25 +1,19 @@
 # Local dev launcher
 
-Use **[Luckee Dev Hub](https://github.com/Luckee-Core/luckee-hub)** + **[luckee-hub-express-server](https://github.com/Luckee-Core/luckee-hub-express-server)** to start Lead Studio (Express + Next.js), open your Cursor workspace, and launch Chrome.
+Use **Luckee Dev Hub** to run Lead Studio (Express + Next.js), open Cursor, and launch Chrome.
 
-## Setup
+**Full documentation:** [`mentorai-server/data/how-to/central-hub/`](https://github.com/trouthouse-tech/mentorai-server/tree/main/data/how-to/central-hub) — start at [setup-and-run.md](https://github.com/trouthouse-tech/mentorai-server/blob/main/data/how-to/central-hub/setup-and-run.md).
 
-```bash
-# Clone luckee-hub and luckee-hub-express-server (see getting-started repo)
-cd luckee-hub-express-server
-cp hub.local.json.example hub.local.json
-# Edit hub.local.json — set webDir / expressDir / workspaceFile for lead-studio
-```
-
-Ensure `.env` exists in **lead-studio-express-server** and `.env.local` in this repo.
-
-## Run
+## Quick start
 
 ```bash
+cd luckee-hub-express-server && cp hub.local.json.example hub.local.json
+# Add lead-studio paths to hub.local.json (see central-hub/hub-local-config.md)
 zsh luckee-hub/scripts/start-luckee-hub-dev.sh
-# Or install Desktop app: zsh luckee-hub/scripts/install-luckee-hub-dev-app.sh
 ```
 
-Open [http://localhost:4100](http://localhost:4100) and press **Run** on Lead Studio.
+Open [http://localhost:4100](http://localhost:4100) → **Run** on Lead Studio.
+
+Ensure `.env` in **lead-studio-express-server** and `.env.local` in this web repo.
 
 Debug log: `/tmp/luckee-hub/launcher.log`

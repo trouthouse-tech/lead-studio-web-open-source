@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import { ArrowRight, Github } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import {
   DASHBOARD_PATH,
-  GITHUB_WEB_REPO_URL,
   LUCKEE_URL,
+  OSS_QUICKSTART_URL,
 } from '@/config/landing-links';
 import { LANDING_CONTENT } from '../content';
 
@@ -24,12 +24,11 @@ export const FinalCta = () => {
             <ArrowRight className={`cta-arrow h-4 w-4`} />
           </Link>
           <a
-            href={GITHUB_WEB_REPO_URL}
+            href={OSS_QUICKSTART_URL}
             target="_blank"
             rel="noopener noreferrer"
             className={styles.outlineCta}
           >
-            <Github className="h-4 w-4" />
             {c.secondaryCta}
           </a>
           <a
