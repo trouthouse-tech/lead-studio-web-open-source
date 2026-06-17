@@ -74,6 +74,7 @@ export const LeadSentEmailRow = (props: LeadSentEmailRowProps) => {
     (email.campaign_email_variation_id ? '—' : null) ??
     '—';
   const campaignDisplay = email.campaign_id ? '—' : 'Custom';
+  const offeringTitle = email.cold_email_offering?.title ?? '—';
 
   return (
     <>
@@ -152,6 +153,9 @@ export const LeadSentEmailRow = (props: LeadSentEmailRowProps) => {
         {formatDateTimeWithTime(email.sent_at)}
       </td>
       <td className={styles.tableCell}>{email.from_name ?? 'N/A'}</td>
+      <td className={styles.tableCell} title={email.cold_email_offering?.hook ?? undefined}>
+        {offeringTitle}
+      </td>
       <td className={styles.tableCell}>{String(variationDisplay)}</td>
       <td className={styles.tableCell}>{campaignDisplay}</td>
       <td className={styles.tableCellActions}>

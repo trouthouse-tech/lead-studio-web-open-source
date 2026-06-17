@@ -25,6 +25,9 @@ export const LEAD_SENT_EMAILS_PATH = '/lead-emails/sent';
 /** Workspace service account setup (read-only docs in app) */
 export const EMAIL_SETUP_PATH = '/settings/email';
 
+/** Cold email outreach offerings catalog */
+export const COLD_EMAIL_OFFERINGS_PATH = '/settings/cold-email-offerings';
+
 /** Query: `?leadId=&contactId=` */
 export const LEAD_CONTACT_DETAIL_PATH = '/lead-contact-detail-page';
 

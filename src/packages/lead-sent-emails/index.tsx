@@ -7,6 +7,7 @@ import {
   getAllLeadSentEmailsThunk,
   getAllLeadsThunk,
 } from '@/store/thunks';
+import { getAllColdEmailOfferingsThunk } from '@/store/thunks/cold-email-offerings';
 import { LeadSentEmailsFilters } from './LeadSentEmailsFilters';
 import { LeadSentEmailsList } from './LeadSentEmailsList';
 import { LeadSentEmailsStats } from './stats';
@@ -23,6 +24,7 @@ export const LeadSentEmailsPage = () => {
     void dispatch(getAllLeadSentEmailsThunk());
     void dispatch(getAllLeadsThunk());
     void dispatch(getAllLeadContactsThunk());
+    void dispatch(getAllColdEmailOfferingsThunk());
   }, [dispatch]);
 
   return (

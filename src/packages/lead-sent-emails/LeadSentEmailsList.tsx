@@ -37,6 +37,9 @@ export const LeadSentEmailsList = () => {
   const onlySingleSentPerLead = useAppSelector(
     (state) => state.leadSentEmailsBuilder.onlySingleSentPerLead
   );
+  const coldEmailOfferingFilterId = useAppSelector(
+    (state) => state.leadSentEmailsBuilder.coldEmailOfferingFilterId
+  );
 
   const [sortColumn, setSortColumn] = useState<SortColumn>('sent_at');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
@@ -111,6 +114,12 @@ export const LeadSentEmailsList = () => {
       });
     }
 
+    if (coldEmailOfferingFilterId) {
+      filtered = filtered.filter(
+        (email) => email.cold_email_offering_id === coldEmailOfferingFilterId,
+      );
+    }
+
     return filtered;
   }, [
     leadSentEmailsRecord,
@@ -118,6 +127,7 @@ export const LeadSentEmailsList = () => {
     dateRangeFilter,
     statCardFilter,
     onlySingleSentPerLead,
+    coldEmailOfferingFilterId,
   ]);
 
   const sortedEmails = useMemo(() => {
@@ -197,6 +207,7 @@ export const LeadSentEmailsList = () => {
               </div>
             </th>
             <th className={styles.tableHeaderCell}>From Name</th>
+            <th className={styles.tableHeaderCell}>Offering</th>
             <th className={styles.tableHeaderCell}>Variation</th>
             <th className={styles.tableHeaderCell}>Campaign</th>
             <th className={styles.tableHeaderCell}>Actions</th>

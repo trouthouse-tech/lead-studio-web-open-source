@@ -27,4 +27,5 @@ export type LeadContactEmail = {
   created_at: Date | string;
   updated_at: Date | string;
   email_sending_identity_id?: string | null;
+  cold_email_offering_id?: string | null;
 };

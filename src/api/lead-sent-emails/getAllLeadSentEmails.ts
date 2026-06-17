@@ -7,12 +7,15 @@ import type { ApiResponse } from '../types';
  * Expects backend GET /api/data/lead-sent-emails.
  * If the endpoint is missing (404) or returns non-JSON, returns empty array.
  */
-export const getAllLeadSentEmails = async (): Promise<
+export const getAllLeadSentEmails = async (
+  includeOfferings = true,
+): Promise<
   ApiResponse<(LeadSentEmail & { lead_id?: string })[]>
 > => {
   try {
+    const qs = includeOfferings ? '?include_offerings=true' : '';
     const response = await fetch(
-      `${API_CONFIG.SERVER_URL}/api/data/lead-sent-emails`,
+      `${API_CONFIG.SERVER_URL}/api/data/lead-sent-emails${qs}`,
       { method: 'GET', headers: { 'Content-Type': 'application/json' } }
     );
 

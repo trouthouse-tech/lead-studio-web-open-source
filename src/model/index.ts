@@ -22,3 +22,4 @@ export * from './llm-model';
 export * from './google-maps-scrape-run';
 export * from './to-call-log';
 export * from './lovable-design-prompt';
+export * from './cold-email-offering';

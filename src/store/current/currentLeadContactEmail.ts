@@ -13,6 +13,8 @@ type CurrentLeadContactEmailState = {
   campaign_ids: string[];
   /** Selected row from email_sending_identities; empty string means use server default (GMAIL_SEND_AS_EMAIL). */
   email_sending_identity_id: string;
+  /** Selected cold email offering; empty string means none. */
+  cold_email_offering_id: string;
   attachment_ids: string[];
   pendingAttachmentFile: File | null;
 };
@@ -30,6 +32,7 @@ const initialState: CurrentLeadContactEmailState = {
   body: emptyBody,
   campaign_ids: [],
   email_sending_identity_id: '',
+  cold_email_offering_id: '',
   attachment_ids: [],
   pendingAttachmentFile: null,
 };
@@ -46,6 +49,7 @@ export const currentLeadContactEmailSlice = createSlice({
       body: action.payload.body,
       campaign_ids: action.payload.campaign_ids ?? [],
       email_sending_identity_id: action.payload.email_sending_identity_id ?? '',
+      cold_email_offering_id: action.payload.cold_email_offering_id ?? '',
       attachment_ids: [],
       pendingAttachmentFile: null,
     }),

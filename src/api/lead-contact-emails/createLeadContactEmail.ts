@@ -12,6 +12,7 @@ export type CreateLeadContactEmailInput = {
   body: TiptapContent;
   campaign_ids?: string[];
   email_sending_identity_id?: string | null;
+  cold_email_offering_id?: string | null;
 };
 
 export const createLeadContactEmail = async (

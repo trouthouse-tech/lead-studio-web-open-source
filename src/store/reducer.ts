@@ -15,6 +15,7 @@ import {
   llmModels,
   savedFilters,
   toCallLogs,
+  coldEmailOfferings,
 } from './dumps';
 
 import {
@@ -59,6 +60,7 @@ const rootReducer = combineReducers({
   llmModels,
   googleMapsScrapeRuns,
   toCallLogs,
+  coldEmailOfferings,
 
   currentLead,
   currentLeadContact,

@@ -34,6 +34,7 @@ import {
   EmailSubjectInput,
   EmailBodyInput,
   EmailAttachmentInput,
+  ColdEmailOfferingSelect,
 } from './inputs';
 import { EmailSendingIdentitySelect } from '@/packages/lead-detail-page/email-fab/compose/inputs';
 
@@ -133,6 +134,9 @@ export const LeadContactEmailComposePanel = (props: Props) => {
         email_sending_identity_id: currentEmail.email_sending_identity_id.trim()
           ? currentEmail.email_sending_identity_id.trim()
           : null,
+        cold_email_offering_id: currentEmail.cold_email_offering_id.trim()
+          ? currentEmail.cold_email_offering_id.trim()
+          : null,
       })
     );
 
@@ -180,6 +184,7 @@ export const LeadContactEmailComposePanel = (props: Props) => {
           body: savedEmail.body,
           campaign_ids: savedEmail.campaign_ids ?? [],
           email_sending_identity_id: savedEmail.email_sending_identity_id ?? '',
+          cold_email_offering_id: savedEmail.cold_email_offering_id ?? '',
           attachment_ids: nextIds,
           pendingAttachmentFile: null,
         })
@@ -354,6 +359,7 @@ export const LeadContactEmailComposePanel = (props: Props) => {
       <div className={styles.fromRow}>
         <EmailSendingIdentitySelect />
       </div>
+      <ColdEmailOfferingSelect variant={variant} />
       <div className={styles.fields}>
         <EmailSubjectInput />
         <EmailBodyInput />

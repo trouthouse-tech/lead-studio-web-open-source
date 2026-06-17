@@ -1,5 +1,6 @@
 import {
   DASHBOARD_PATH,
+  COLD_EMAIL_OFFERINGS_PATH,
   EMAIL_SETUP_PATH,
   FIND_LEADS_PATH,
   LEAD_EMAIL_QUEUE_PATH,
@@ -22,6 +23,7 @@ export const getAppSidebarSections = (): SidebarSection[] => [
       { name: 'Lead contacts', href: '/lead-contacts' },
       { name: 'Email queue', href: LEAD_EMAIL_QUEUE_PATH },
       { name: 'Sent emails', href: LEAD_SENT_EMAILS_PATH },
+      { name: 'Cold email offerings', href: COLD_EMAIL_OFFERINGS_PATH },
       { name: 'Email setup', href: EMAIL_SETUP_PATH },
     ],
   },

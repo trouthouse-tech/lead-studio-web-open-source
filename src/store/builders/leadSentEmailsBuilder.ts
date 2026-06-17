@@ -13,12 +13,15 @@ type LeadSentEmailsBuilderState = {
   statCardFilter: StatCardFilter;
   /** When true, only rows whose lead has exactly one sent email in the store (follow-up queue). */
   onlySingleSentPerLead: boolean;
+  /** Filter by cold email offering id; empty string means all. */
+  coldEmailOfferingFilterId: string;
 };
 
 const initialState: LeadSentEmailsBuilderState = {
   dateRangeFilter: 'this_week',
   statCardFilter: null,
   onlySingleSentPerLead: false,
+  coldEmailOfferingFilterId: '',
 };
 
 const leadSentEmailsBuilderSlice = createSlice({
@@ -39,6 +42,9 @@ const leadSentEmailsBuilderSlice = createSlice({
     },
     setOnlySingleSentPerLead: (state, action: PayloadAction<boolean>) => {
       state.onlySingleSentPerLead = action.payload;
+    },
+    setColdEmailOfferingFilterId: (state, action: PayloadAction<string>) => {
+      state.coldEmailOfferingFilterId = action.payload;
     },
   },
 });

@@ -33,4 +33,10 @@ export type LeadSentEmail = {
   opened_count?: number | null;
   /** Delivery lifecycle: sent, delivered, bounced, deferred, opened */
   delivery_status?: LeadSentEmailDeliveryStatus | null;
+  cold_email_offering_id?: string | null;
+  cold_email_offering?: {
+    id: string;
+    title: string;
+    hook: string;
+  } | null;
 };

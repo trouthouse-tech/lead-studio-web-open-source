@@ -19,6 +19,7 @@ export const saveCurrentLeadContactEmailThunk = (emailData: {
   body: CreateLeadContactEmailInput['body'];
   campaign_ids?: string[];
   email_sending_identity_id?: string | null;
+  cold_email_offering_id?: string | null;
 }): AppThunk<ResponseType> => {
   return async (dispatch): ResponseType => {
     try {
@@ -28,6 +29,7 @@ export const saveCurrentLeadContactEmailThunk = (emailData: {
           body: emailData.body,
           campaign_ids: emailData.campaign_ids,
           email_sending_identity_id: emailData.email_sending_identity_id,
+          cold_email_offering_id: emailData.cold_email_offering_id,
         };
         const response = await updateLeadContactEmail(emailData.id, updates);
         if (!response.success || !response.data) return 400;
@@ -41,6 +43,7 @@ export const saveCurrentLeadContactEmailThunk = (emailData: {
         body: emailData.body,
         campaign_ids: emailData.campaign_ids || [],
         email_sending_identity_id: emailData.email_sending_identity_id,
+        cold_email_offering_id: emailData.cold_email_offering_id,
       };
       const response = await createLeadContactEmail(createData);
       if (!response.success || !response.data) return 400;

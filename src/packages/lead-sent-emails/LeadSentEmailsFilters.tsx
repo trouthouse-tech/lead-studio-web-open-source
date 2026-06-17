@@ -1,9 +1,10 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { LeadSentEmailsBuilderActions } from '@/store/builders';
 import { getAllLeadSentEmailsThunk } from '@/store/thunks/lead-sent-emails';
+import { getAllColdEmailOfferingsThunk } from '@/store/thunks/cold-email-offerings';
 import type { DateRangeFilter } from '@/utils/date-time';
 import type { StatCardFilter } from '@/store/builders/leadSentEmailsBuilder';
 
@@ -33,6 +34,22 @@ export const LeadSentEmailsFilters = () => {
   const onlySingleSentPerLead = useAppSelector(
     (state) => state.leadSentEmailsBuilder.onlySingleSentPerLead
   );
+  const coldEmailOfferingFilterId = useAppSelector(
+    (state) => state.leadSentEmailsBuilder.coldEmailOfferingFilterId
+  );
+  const offeringsById = useAppSelector((state) => state.coldEmailOfferings);
+
+  const offerings = useMemo(
+    () =>
+      Object.values(offeringsById)
+        .filter((row) => !row.is_archived)
+        .sort((a, b) => a.title.localeCompare(b.title)),
+    [offeringsById],
+  );
+
+  useEffect(() => {
+    void dispatch(getAllColdEmailOfferingsThunk());
+  }, [dispatch]);
 
   const handleDateRangeChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -47,6 +64,13 @@ export const LeadSentEmailsFilters = () => {
   const handleClearStatFilter = useCallback(() => {
     dispatch(LeadSentEmailsBuilderActions.clearStatCardFilter());
   }, [dispatch]);
+
+  const handleOfferingFilterChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      dispatch(LeadSentEmailsBuilderActions.setColdEmailOfferingFilterId(e.target.value));
+    },
+    [dispatch],
+  );
 
   const handleRefresh = useCallback(async () => {
     await dispatch(getAllLeadSentEmailsThunk());
@@ -74,6 +98,19 @@ export const LeadSentEmailsFilters = () => {
             <option value="this_week">This Week</option>
             <option value="last_week">Last Week</option>
             <option value="l30">L30</option>
+          </select>
+          <select
+            value={coldEmailOfferingFilterId}
+            onChange={handleOfferingFilterChange}
+            className={styles.filterSelect}
+            aria-label="Filter by offering"
+          >
+            <option value="">All offerings</option>
+            {offerings.map((offering) => (
+              <option key={offering.id} value={offering.id}>
+                {offering.title}
+              </option>
+            ))}
           </select>
           <label className={styles.checkboxLabel}>
             <input

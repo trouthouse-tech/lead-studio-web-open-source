@@ -43,3 +43,6 @@ export { SavedFiltersActions } from './savedFilters';
 
 export { default as toCallLogs } from './toCallLogs';
 export { ToCallLogsActions } from './toCallLogs';
+
+export { default as coldEmailOfferings } from './coldEmailOfferings';
+export { ColdEmailOfferingsActions } from './coldEmailOfferings';
