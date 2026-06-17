@@ -15,10 +15,8 @@ import type {
 } from '@/model/lead-sent-email';
 import { formatDateTimeWithTime } from '@/utils/date-time';
 
-type LeadSentEmailWithLeadId = LeadSentEmail & { lead_id?: string };
-
 type LeadSentEmailRowProps = {
-  email: LeadSentEmailWithLeadId;
+  email: LeadSentEmail;
 };
 
 const STATUS_COLORS: Record<LeadSentEmail['status'], string> = {
@@ -42,6 +40,7 @@ export const LeadSentEmailRow = (props: LeadSentEmailRowProps) => {
   const dispatch = useAppDispatch();
   const leadContacts = useAppSelector((state) => state.leadContacts);
   const leads = useAppSelector((state) => state.leads);
+  const coldEmailOfferings = useAppSelector((state) => state.coldEmailOfferings);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleOpenLead = (leadId: string) => {
@@ -50,7 +49,11 @@ export const LeadSentEmailRow = (props: LeadSentEmailRowProps) => {
   };
 
   const contact = leadContacts[email.lead_contact_id];
-  const lead = contact?.lead_id ? leads[contact.lead_id] : undefined;
+  const leadId = contact?.lead_id?.trim() || null;
+  const lead = leadId ? leads[leadId] : undefined;
+  const offering = email.cold_email_offering_id
+    ? coldEmailOfferings[email.cold_email_offering_id]
+    : undefined;
   const delivery: LeadSentEmailDeliveryStatus =
     email.delivery_status ?? 'sent';
 
@@ -74,7 +77,7 @@ export const LeadSentEmailRow = (props: LeadSentEmailRowProps) => {
     (email.campaign_email_variation_id ? '—' : null) ??
     '—';
   const campaignDisplay = email.campaign_id ? '—' : 'Custom';
-  const offeringTitle = email.cold_email_offering?.title ?? '—';
+  const offeringTitle = offering?.title ?? '—';
 
   return (
     <>
@@ -112,10 +115,10 @@ export const LeadSentEmailRow = (props: LeadSentEmailRowProps) => {
               {contact.name || 'Unknown Contact'}
               {contact.email ? ` (${contact.email})` : ''}
             </button>
-            {email.lead_id ? (
+            {leadId ? (
               <button
                 type="button"
-                onClick={() => handleOpenLead(email.lead_id!)}
+                onClick={() => handleOpenLead(leadId)}
                 className={styles.leadLink}
                 title="Open lead in full studio"
               >
@@ -129,10 +132,10 @@ export const LeadSentEmailRow = (props: LeadSentEmailRowProps) => {
       </td>
       <td className={styles.tableCell}>
         {lead ? (
-          email.lead_id ? (
+          leadId ? (
             <button
               type="button"
-              onClick={() => handleOpenLead(email.lead_id!)}
+              onClick={() => handleOpenLead(leadId)}
               className={styles.clickableName}
               title={lead.business_name ?? lead.name ?? undefined}
             >
@@ -143,7 +146,7 @@ export const LeadSentEmailRow = (props: LeadSentEmailRowProps) => {
               {lead.business_name ?? lead.name ?? 'Unknown Lead'}
             </span>
           )
-        ) : email.lead_id ? (
+        ) : leadId ? (
           <span className={styles.loadingText}>Loading...</span>
         ) : (
           <span className={styles.emptyValue}>—</span>
@@ -153,7 +156,7 @@ export const LeadSentEmailRow = (props: LeadSentEmailRowProps) => {
         {formatDateTimeWithTime(email.sent_at)}
       </td>
       <td className={styles.tableCell}>{email.from_name ?? 'N/A'}</td>
-      <td className={styles.tableCell} title={email.cold_email_offering?.hook ?? undefined}>
+      <td className={styles.tableCell} title={offering?.hook ?? undefined}>
         {offeringTitle}
       </td>
       <td className={styles.tableCell}>{String(variationDisplay)}</td>

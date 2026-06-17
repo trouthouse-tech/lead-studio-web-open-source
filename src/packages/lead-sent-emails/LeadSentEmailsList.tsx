@@ -10,19 +10,13 @@ import type { LeadSentEmail } from '@/model/lead-sent-email';
 type SortColumn = 'sent_at' | 'status' | 'delivery_status';
 type SortDirection = 'asc' | 'desc';
 
-type SentEmailRow = LeadSentEmail & { lead_id?: string };
-
 const resolveLeadIdForSentEmail = (
-  email: SentEmailRow,
+  email: LeadSentEmail,
   leadContactsById: Record<string, LeadContact>
 ): string | null => {
-  const fromRow = email.lead_id?.trim();
-  if (fromRow) {
-    return fromRow;
-  }
   const contact = leadContactsById[email.lead_contact_id];
-  const fromContact = contact?.lead_id?.trim();
-  return fromContact || null;
+  const leadId = contact?.lead_id?.trim();
+  return leadId || null;
 };
 
 export const LeadSentEmailsList = () => {
@@ -54,7 +48,7 @@ export const LeadSentEmailsList = () => {
   };
 
   const sentEmails = useMemo(() => {
-    const allEmails = Object.values(leadSentEmailsRecord) as SentEmailRow[];
+    const allEmails = Object.values(leadSentEmailsRecord) as LeadSentEmail[];
 
     const leadIdCounts = new Map<string, number>();
     for (const email of allEmails) {
