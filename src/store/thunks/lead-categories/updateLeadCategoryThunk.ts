@@ -1,7 +1,9 @@
+import { coerceErrorFields, reportThunkError } from '@/api/thunk-errors';
 import { updateLeadCategory } from '@/api/lead-categories';
 import { normalizeLeadCategoryName } from '@/utils/leads';
 import type { AppThunk } from '../../store';
 import { getAllLeadCategoriesThunk } from './getAllLeadCategoriesThunk';
+import { mapApiFailureToThunkStatus } from '@/api/_shared';
 
 type ResponseType = Promise<200 | 400 | 500>;
 
@@ -22,11 +24,18 @@ export const updateLeadCategoryThunk = (
       });
 
       if (!response.success) {
-        return 400;
+        return mapApiFailureToThunkStatus(response);
       }
 
       return await dispatch(getAllLeadCategoriesThunk());
     } catch (error: unknown) {
+      const { message, stack } = coerceErrorFields(error);
+      reportThunkError({
+        event: 'failedToUpdateLeadCategory',
+        message,
+        stack,
+        thunkName: 'updateLeadCategoryThunk',
+      });
       console.error('❌ updateLeadCategoryThunk error:', error);
       return 500;
     }

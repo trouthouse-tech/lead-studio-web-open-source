@@ -9,9 +9,8 @@ import { LeadsFiltersCategoryMenuOption } from './menu/option';
 export const LeadsFiltersCategoryInput = () => {
   const dispatch = useAppDispatch();
   const leadCategories = useAppSelector((state) => state.leadCategories);
-  const selectedCategoryIds = useAppSelector(
-    (state) => state.leadsFilters.selectedCategoryIds
-  );
+  const leadsFilters = useAppSelector((state) => state.leadsFilters);
+  const selectedCategoryIds = leadsFilters.selectedCategoryIds;
   const containerRef = useRef<HTMLDivElement>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [categoryQuery, setCategoryQuery] = useState('');

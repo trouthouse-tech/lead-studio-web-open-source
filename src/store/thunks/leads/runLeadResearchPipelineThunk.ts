@@ -1,8 +1,9 @@
-import type { AppThunk } from '../../store';
+import { mapApiFailureToThunkStatus } from '@/api/_shared';
 import {
   postCommercialLeadResearchQueueEnqueue,
   type PostCommercialLeadResearchQueueEnqueueResponseBody,
 } from '@/api/leads';
+import type { AppThunk } from '../../store';
 import { getAllLeadsThunk } from './getAllLeadsThunk';
 
 export type RunLeadResearchPipelineResult =
@@ -25,47 +26,38 @@ export const runLeadResearchPipelineThunk = (): AppThunk<ResponseType> => {
       return { ok: false, status: 400, message: 'Select at least one lead' };
     }
 
-    try {
-      const res = await postCommercialLeadResearchQueueEnqueue(leadIds);
-      const text = await res.text();
-      let json: PostCommercialLeadResearchQueueEnqueueResponseBody = {};
-      try {
-        json = JSON.parse(text) as PostCommercialLeadResearchQueueEnqueueResponseBody;
-      } catch {
-        return { ok: false, status: 500, message: 'Invalid response' };
-      }
+    const result = await postCommercialLeadResearchQueueEnqueue(leadIds);
 
-      if (!res.ok) {
-        return {
-          ok: false,
-          status: res.status >= 500 ? 500 : 400,
-          message:
-            typeof json.message === 'string'
-              ? json.message
-              : typeof json.error === 'string'
-                ? json.error
-                : undefined,
-        };
-      }
-
-      if (json.success === false) {
-        return {
-          ok: false,
-          status: 400,
-          message: typeof json.error === 'string' ? json.error : undefined,
-        };
-      }
-
-      await dispatch(getAllLeadsThunk());
-
+    if (!result.success) {
+      const json = (result.data ?? result) as PostCommercialLeadResearchQueueEnqueueResponseBody;
       return {
-        ok: true,
-        batchId: typeof json.batchId === 'string' ? json.batchId : undefined,
-        insertedCount: typeof json.insertedCount === 'number' ? json.insertedCount : undefined,
+        ok: false,
+        status: mapApiFailureToThunkStatus(result),
+        message:
+          typeof json.message === 'string'
+            ? json.message
+            : typeof json.error === 'string'
+              ? json.error
+              : result.error,
       };
-    } catch (error: unknown) {
-      console.error('runLeadResearchPipelineThunk:', error);
-      return { ok: false, status: 500 };
     }
+
+    const json = (result.data ?? result) as PostCommercialLeadResearchQueueEnqueueResponseBody;
+
+    if (json.success === false) {
+      return {
+        ok: false,
+        status: 500,
+        message: typeof json.error === 'string' ? json.error : undefined,
+      };
+    }
+
+    await dispatch(getAllLeadsThunk());
+
+    return {
+      ok: true,
+      batchId: typeof json.batchId === 'string' ? json.batchId : undefined,
+      insertedCount: typeof json.insertedCount === 'number' ? json.insertedCount : undefined,
+    };
   };
 };

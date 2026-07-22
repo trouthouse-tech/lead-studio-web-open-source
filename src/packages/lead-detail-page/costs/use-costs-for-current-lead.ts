@@ -83,7 +83,8 @@ const mapLedgerToLine = (row: LeadCost): LeadCostLine => {
  */
 export const useCostsForCurrentLead = (): CostsForCurrentLead => {
   const dispatch = useAppDispatch();
-  const leadId = useAppSelector((state) => state.currentLead.id);
+  const currentLead = useAppSelector((state) => state.currentLead);
+  const leadId = currentLead.id;
   const llmModels = useAppSelector((state) => state.llmModels);
 
   const [aiRows, setAiRows] = useState<LeadAiExchangeCostRow[]>([]);

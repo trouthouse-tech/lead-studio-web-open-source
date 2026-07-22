@@ -16,6 +16,7 @@ import {
   savedFilters,
   toCallLogs,
   coldEmailOfferings,
+  emailSendingIdentities,
 } from './dumps';
 
 import {
@@ -28,7 +29,6 @@ import {
 import {
   breadcrumbBuilder,
   dashboardBuilder,
-  ossSetupBuilder,
   googleMapsScraperBuilder,
   leadBuilder,
   leadContactBuilder,
@@ -61,6 +61,7 @@ const rootReducer = combineReducers({
   googleMapsScrapeRuns,
   toCallLogs,
   coldEmailOfferings,
+  emailSendingIdentities,
 
   currentLead,
   currentLeadContact,
@@ -75,7 +76,6 @@ const rootReducer = combineReducers({
   leadContactEmailBuilder,
   googleMapsScraperBuilder,
   dashboardBuilder,
-  ossSetupBuilder,
   leadDetailEmailFab,
   breadcrumbBuilder,
   toCallLogBuilder,

@@ -22,10 +22,9 @@ import { LeadsSavedFilterModalToolbar } from '../saved-views';
  */
 export const LeadsFiltersModal = () => {
   const dispatch = useAppDispatch();
-  const open = useAppSelector((s) => s.leadsFiltersBuilder.isFiltersModalOpen);
-  const hasActiveFilters = useAppSelector(
-    (s) => s.leadsFiltersBuilder.hasActiveFilters
-  );
+  const leadsFiltersBuilder = useAppSelector((s) => s.leadsFiltersBuilder);
+  const open = leadsFiltersBuilder.isFiltersModalOpen;
+  const hasActiveFilters = leadsFiltersBuilder.hasActiveFilters;
 
   const close = useCallback(() => {
     dispatch(LeadsFiltersBuilderActions.setFiltersModalOpen(false));

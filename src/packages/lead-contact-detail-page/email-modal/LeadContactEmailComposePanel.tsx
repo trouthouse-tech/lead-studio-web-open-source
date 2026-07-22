@@ -50,7 +50,8 @@ export const LeadContactEmailComposePanel = (props: Props) => {
   const currentLead = useAppSelector((s) => s.currentLead);
   const currentLeadContact = useAppSelector((s) => s.currentLeadContact);
   const currentEmail = useAppSelector((s) => s.currentLeadContactEmail);
-  const isSaving = useAppSelector((s) => s.leadContactEmailBuilder.isSaving);
+  const leadContactEmailBuilder = useAppSelector((s) => s.leadContactEmailBuilder);
+  const isSaving = leadContactEmailBuilder.isSaving;
   const queueItemsById = useAppSelector((s) => s.leadContactEmailQueue);
 
   const leadId = currentLead?.id ?? '';

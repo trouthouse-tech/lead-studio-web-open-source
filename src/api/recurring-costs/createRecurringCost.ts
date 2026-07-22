@@ -1,6 +1,7 @@
-import { getApiClient } from '@/api/client';
+import { API_CONFIG } from '@/config/api';
+import { requestApi } from '../_shared';
 import type { RecurringCost, RecurringCostBillingInterval } from './types';
-import type { ApiResponse } from '../types';
+import type { ApiResult } from '../types';
 
 export type CreateRecurringCostBody = {
   name: string;
@@ -16,28 +17,22 @@ export type CreateRecurringCostBody = {
   notes?: string | null;
 };
 
-type CreateResponseBody = {
-  success: boolean;
-  data?: RecurringCost;
-  error?: string;
-};
-
 /**
  * POST /api/data/recurring-costs
  */
 export const createRecurringCost = async (
   body: CreateRecurringCostBody,
-): Promise<ApiResponse<RecurringCost>> => {
-  try {
-    const { data } = await getApiClient().post<CreateResponseBody>('/api/data/recurring-costs', body);
-    if (!data.success || !data.data) {
-      return { success: false, error: data.error ?? 'Failed to create recurring cost' };
-    }
-    return { success: true, data: data.data };
-  } catch (error: unknown) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Failed to create recurring cost',
-    };
+): Promise<ApiResult<RecurringCost>> => {
+  const result = await requestApi<RecurringCost>(
+    `${API_CONFIG.SERVER_URL}/api/data/recurring-costs`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    },
+  );
+  if (!result.success || !result.data) {
+    return { ...result, success: false, error: result.error ?? 'Failed to create recurring cost' };
   }
+  return result;
 };

@@ -1,6 +1,8 @@
+import { coerceErrorFields, reportThunkError } from '@/api/thunk-errors';
 import { deleteLeadCategory } from '@/api/lead-categories';
 import type { AppThunk } from '../../store';
 import { getAllLeadCategoriesThunk } from './getAllLeadCategoriesThunk';
+import { mapApiFailureToThunkStatus } from '@/api/_shared';
 
 type ResponseType = Promise<200 | 400 | 500>;
 
@@ -13,11 +15,18 @@ export const deleteLeadCategoryThunk = (id: string): AppThunk<ResponseType> => {
 
       const response = await deleteLeadCategory(id);
       if (!response.success) {
-        return 400;
+        return mapApiFailureToThunkStatus(response);
       }
 
       return await dispatch(getAllLeadCategoriesThunk());
     } catch (error: unknown) {
+      const { message, stack } = coerceErrorFields(error);
+      reportThunkError({
+        event: 'failedToDeleteLeadCategory',
+        message,
+        stack,
+        thunkName: 'deleteLeadCategoryThunk',
+      });
       console.error('❌ deleteLeadCategoryThunk error:', error);
       return 500;
     }

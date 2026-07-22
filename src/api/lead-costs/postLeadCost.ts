@@ -1,6 +1,7 @@
 import { API_CONFIG } from '@/config/api';
+import { requestApi } from '../_shared';
 import type { LeadCost, LeadCostType } from '@/model/lead-cost';
-import type { ApiResponse } from '../types';
+import type { ApiResult } from '../types';
 
 export type PostLeadCostBody = {
   lead_id: string;
@@ -14,9 +15,8 @@ export type PostLeadCostBody = {
  */
 export const postLeadCost = async (
   body: PostLeadCostBody,
-): Promise<ApiResponse<LeadCost>> => {
-  try {
-    const response = await fetch(`${API_CONFIG.SERVER_URL}/api/data/lead-costs`, {
+): Promise<ApiResult<LeadCost>> => {
+  const result = await requestApi<LeadCost>(`${API_CONFIG.SERVER_URL}/api/data/lead-costs`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -26,29 +26,6 @@ export const postLeadCost = async (
         cost_cents: body.cost_cents,
       }),
     });
-
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) {
-      return {
-        success: false,
-        error:
-          (data as { error?: string }).error ||
-          (data as { message?: string }).message ||
-          'Failed to create lead cost',
-      };
-    }
-
-    const created = (data as { data?: LeadCost }).data;
-    if (!created?.id) {
-      return { success: false, error: 'Invalid response from server' };
-    }
-
-    return { success: true, data: created };
-  } catch (error: unknown) {
-    console.error('❌ postLeadCost error:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Failed to create lead cost',
-    };
-  }
+  if (!result.success || result.httpStatus >= 400) return result;
+  return result;
 };

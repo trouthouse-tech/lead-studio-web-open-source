@@ -8,7 +8,8 @@ import type { GoogleMapsScrapeRun } from '@/model';
 
 export const SearchResultsPreview = () => {
   const dispatch = useAppDispatch();
-  const isScraping = useAppSelector((s) => s.googleMapsScraperBuilder.isScraping);
+  const googleMapsScraperBuilder = useAppSelector((s) => s.googleMapsScraperBuilder);
+  const isScraping = googleMapsScraperBuilder.isScraping;
   const currentScrapeRun = useAppSelector((s) => s.currentGoogleMapsScrapeRun) as GoogleMapsScrapeRun | null;
 
   const dismissSuccess = () => {

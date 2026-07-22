@@ -25,18 +25,12 @@ const formatFilterLabel = (filter: StatCardFilter): string => {
 
 export const LeadSentEmailsFilters = () => {
   const dispatch = useAppDispatch();
-  const dateRangeFilter = useAppSelector(
-    (state) => state.leadSentEmailsBuilder.dateRangeFilter
-  );
-  const statCardFilter = useAppSelector(
-    (state) => state.leadSentEmailsBuilder.statCardFilter
-  );
-  const onlySingleSentPerLead = useAppSelector(
-    (state) => state.leadSentEmailsBuilder.onlySingleSentPerLead
-  );
-  const coldEmailOfferingFilterId = useAppSelector(
-    (state) => state.leadSentEmailsBuilder.coldEmailOfferingFilterId
-  );
+  const leadSentEmailsBuilder = useAppSelector((state) => state.leadSentEmailsBuilder);
+  const dateRangeFilter = leadSentEmailsBuilder.dateRangeFilter;
+  const statCardFilter = leadSentEmailsBuilder.statCardFilter;
+  const onlySingleSentPerLead = leadSentEmailsBuilder.onlySingleSentPerLead;
+  const coldEmailOfferingFilterId = leadSentEmailsBuilder.coldEmailOfferingFilterId;
+
   const offeringsById = useAppSelector((state) => state.coldEmailOfferings);
 
   const offerings = useMemo(

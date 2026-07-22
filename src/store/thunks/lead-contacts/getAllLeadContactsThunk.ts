@@ -1,6 +1,8 @@
+import { coerceErrorFields, reportThunkError } from '@/api/thunk-errors';
 import type { AppThunk } from '../../store';
 import { getAllLeadContacts } from '@/api/lead-contacts';
 import { LeadContactsActions } from '../../dumps/leadContacts';
+import { mapApiFailureToThunkStatus } from '@/api/_shared';
 
 type ResponseType = Promise<200 | 400 | 500>;
 
@@ -23,8 +25,15 @@ export const getAllLeadContactsThunk = (): AppThunk<ResponseType> => {
         return 200;
       }
 
-      return 400;
+      return mapApiFailureToThunkStatus(response);
     } catch (error: unknown) {
+      const { message, stack } = coerceErrorFields(error);
+      reportThunkError({
+        event: 'failedToGetAllLeadContacts',
+        message,
+        stack,
+        thunkName: 'getAllLeadContactsThunk',
+      });
       console.error('❌ getAllLeadContactsThunk error:', error);
       return 500;
     }

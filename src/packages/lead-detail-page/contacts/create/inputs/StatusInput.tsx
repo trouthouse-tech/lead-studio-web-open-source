@@ -15,7 +15,8 @@ const STATUS_OPTIONS = LEAD_CONTACT_STATUS_ORDER.map((value) => ({
 
 export const ContactStatusInput = () => {
   const dispatch = useAppDispatch();
-  const status = useAppSelector((state) => state.currentLeadContact.status);
+  const currentLeadContact = useAppSelector((state) => state.currentLeadContact);
+  const status = currentLeadContact.status;
 
   return (
     <label className={styles.fieldGroup}>

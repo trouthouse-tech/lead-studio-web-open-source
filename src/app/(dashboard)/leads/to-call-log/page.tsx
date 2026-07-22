@@ -9,7 +9,7 @@ export default function ToCallLogPage() {
   const crumbs = useMemo(
     () => [
       { label: 'Commercial leads', href: '/leads' },
-      { label: 'To Call Log' },
+      { label: 'Call List' },
     ],
     [],
   );

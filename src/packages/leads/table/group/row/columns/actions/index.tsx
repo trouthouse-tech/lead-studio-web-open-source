@@ -16,9 +16,8 @@ export const LeadsTableRowActionsColumn = (
 ) => {
   const { lead } = props;
   const dispatch = useAppDispatch();
-  const menuOpenId = useAppSelector(
-    (state) => state.leadBuilder.leadsTableMenuOpenId
-  );
+  const leadBuilder = useAppSelector((state) => state.leadBuilder);
+  const menuOpenId = leadBuilder.leadsTableMenuOpenId;
   const menuContainerRef = useRef<HTMLDivElement | null>(null);
   const isMenuOpen = menuOpenId === lead.id;
 

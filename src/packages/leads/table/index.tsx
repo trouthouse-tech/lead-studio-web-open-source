@@ -9,9 +9,8 @@ import { useLeadsTableData } from './hook';
 
 export const LeadsTable = () => {
   const dispatch = useAppDispatch();
-  const selectedLeadIds = useAppSelector(
-    (state) => state.leadBuilder.selectedLeadIds
-  );
+  const leadBuilder = useAppSelector((state) => state.leadBuilder);
+  const selectedLeadIds = leadBuilder.selectedLeadIds;
   const leadCategories = useAppSelector((state) => state.leadCategories);
 
   const {

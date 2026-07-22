@@ -1,3 +1,4 @@
+import { coerceErrorFields, reportThunkError } from '@/api/thunk-errors';
 import type { AppThunk } from '@/store';
 import { addToQueue, type AddToQueueInput } from '@/api/lead-contact-email-queue';
 import { LeadContactEmailQueueActions } from '../../dumps/leadContactEmailQueue';
@@ -30,6 +31,13 @@ export const addLeadContactEmailToQueueThunk = (
       dispatch(LeadContactEmailQueueActions.updateQueueItem(normalized));
       return { ok: true };
     } catch (error: unknown) {
+      const { message, stack } = coerceErrorFields(error);
+      reportThunkError({
+        event: 'failedToAddLeadContactEmailToQueue',
+        message,
+        stack,
+        thunkName: 'addLeadContactEmailToQueueThunk',
+      });
       console.error('❌ addLeadContactEmailToQueueThunk error:', error);
       return {
         ok: false,

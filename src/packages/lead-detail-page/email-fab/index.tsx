@@ -34,7 +34,8 @@ const normalizeExternalUrl = (raw: string | null | undefined): string | null => 
 export const EmailFab = () => {
   const dispatch = useAppDispatch();
   const lead = useAppSelector((s) => s.currentLead);
-  const isExpanded = useAppSelector((s) => s.leadDetailEmailFab.isExpanded);
+  const leadDetailEmailFab = useAppSelector((s) => s.leadDetailEmailFab);
+  const isExpanded = leadDetailEmailFab.isExpanded;
   const leadContactsRecord = useAppSelector((s) => s.leadContacts);
   const leadContactEmails = useAppSelector((s) => s.leadContactEmails);
   const leadSentEmails = useAppSelector((s) => s.leadSentEmails);

@@ -1,3 +1,4 @@
+import { coerceErrorFields, reportThunkError } from '@/api/thunk-errors';
 import { postLeadAutoCategorizeBatch } from '@/api/leads';
 import { LeadBuilderActions } from '@/store/builders';
 import {
@@ -130,6 +131,13 @@ export const autoCategorizeUncategorizedBatchThunk = (): AppThunk<ResponseType> 
 
       return { ok: true, updated, skipped };
     } catch (error: unknown) {
+      const { message, stack } = coerceErrorFields(error);
+      reportThunkError({
+        event: 'failedToAutoCategorizeUncategorizedBatch',
+        message,
+        stack,
+        thunkName: 'autoCategorizeUncategorizedBatchThunk',
+      });
       console.error('autoCategorizeUncategorizedBatchThunk:', error);
       return { ok: false, status: 500 };
     } finally {

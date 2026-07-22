@@ -5,7 +5,8 @@ import { useAppSelector } from '@/store/hooks';
 const LABEL = 'Primary services';
 
 export const PrimaryServicesFact = () => {
-  const raw = useAppSelector((s) => s.currentLead.summary?.facts?.primary_services);
+  const currentLead = useAppSelector((s) => s.currentLead);
+  const raw = currentLead.summary?.facts?.primary_services;
   const value = typeof raw === 'string' ? raw.trim() : '';
   if (!value) return null;
 

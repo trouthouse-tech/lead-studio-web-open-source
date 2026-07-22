@@ -1,3 +1,4 @@
+import { coerceErrorFields, reportThunkError } from '@/api/thunk-errors';
 import type { AppThunk } from '../../store';
 import { DashboardBuilderActions } from '@/store/builders/dashboardBuilder';
 import { getAllLeadsThunk } from '@/store/thunks/leads/getAllLeadsThunk';
@@ -36,6 +37,13 @@ export const initializeDashboardOnboardingThunk =
 
         return 200;
       } catch (e) {
+        const { message, stack } = coerceErrorFields(e);
+        reportThunkError({
+          event: 'failedToInitializeDashboardOnboarding',
+          message,
+          stack,
+          thunkName: 'initializeDashboardOnboardingThunk',
+        });
         console.error('initializeDashboardOnboardingThunk', e);
         dispatch(DashboardBuilderActions.setOnboardingHydrated(true));
         dispatch(DashboardBuilderActions.setOnboardingPhase('collect_intent'));

@@ -3,6 +3,7 @@ import { createLead } from '@/api/leads';
 import { createLeadContact } from '@/api/lead-contacts';
 import { LeadsActions } from '../../dumps/leads';
 import { LeadContactsActions } from '../../dumps/leadContacts';
+import { mapApiFailureToThunkStatus } from '@/api/_shared';
 
 type ResponseType = Promise<200 | 400 | 500>;
 
@@ -48,7 +49,7 @@ export const createManualLeadThunk = (): AppThunk<ResponseType> => {
     });
 
     if (!leadRes.success || !leadRes.data) {
-      return 400;
+      return mapApiFailureToThunkStatus(leadRes);
     }
 
     dispatch(LeadsActions.addLead(leadRes.data));

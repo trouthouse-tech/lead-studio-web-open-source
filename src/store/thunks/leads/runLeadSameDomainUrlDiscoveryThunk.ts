@@ -1,8 +1,9 @@
-import type { AppThunk } from '../../store';
+import { mapApiFailureToThunkStatus } from '@/api/_shared';
 import {
   postLeadSameDomainUrlDiscoveryForLead,
   type PostLeadSameDomainUrlDiscoveryResponseBody,
 } from '@/api/leads';
+import type { AppThunk } from '../../store';
 
 export type RunLeadSameDomainUrlDiscoveryResult =
   | { ok: true; leadUpdated: boolean; linkCount: number }
@@ -23,42 +24,33 @@ export const runLeadSameDomainUrlDiscoveryThunk = (
       return { ok: false, status: 400 };
     }
 
-    try {
-      const res = await postLeadSameDomainUrlDiscoveryForLead(leadId);
-      const text = await res.text();
-      let json: PostLeadSameDomainUrlDiscoveryResponseBody = {};
-      try {
-        json = JSON.parse(text) as PostLeadSameDomainUrlDiscoveryResponseBody;
-      } catch {
-        return { ok: false, status: 400 };
-      }
+    const result = await postLeadSameDomainUrlDiscoveryForLead(leadId);
 
-      if (!res.ok) {
-        return {
-          ok: false,
-          status: res.status >= 500 ? 500 : 400,
-          error: typeof json.error === 'string' ? json.error : undefined,
-          message: typeof json.message === 'string' ? json.message : undefined,
-        };
-      }
-
-      if (json.success === false) {
-        return {
-          ok: false,
-          status: 400,
-          error: typeof json.error === 'string' ? json.error : undefined,
-          message: typeof json.message === 'string' ? json.message : undefined,
-        };
-      }
-
+    if (!result.success) {
+      const json = (result.data ?? result) as PostLeadSameDomainUrlDiscoveryResponseBody;
       return {
-        ok: true,
-        leadUpdated: json.leadUpdated === true,
-        linkCount: typeof json.linkCount === 'number' ? json.linkCount : 0,
+        ok: false,
+        status: mapApiFailureToThunkStatus(result),
+        error: typeof json.error === 'string' ? json.error : result.error,
+        message: typeof json.message === 'string' ? json.message : undefined,
       };
-    } catch (error: unknown) {
-      console.error('runLeadSameDomainUrlDiscoveryThunk:', error);
-      return { ok: false, status: 500 };
     }
+
+    const json = (result.data ?? result) as PostLeadSameDomainUrlDiscoveryResponseBody;
+
+    if (json.success === false) {
+      return {
+        ok: false,
+        status: 500,
+        error: typeof json.error === 'string' ? json.error : undefined,
+        message: typeof json.message === 'string' ? json.message : undefined,
+      };
+    }
+
+    return {
+      ok: true,
+      leadUpdated: json.leadUpdated === true,
+      linkCount: typeof json.linkCount === 'number' ? json.linkCount : 0,
+    };
   };
 };

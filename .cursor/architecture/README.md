@@ -19,7 +19,9 @@ ADRs keep implementation consistent across the project by documenting:
 5. [File organization](./005-file-organization.md) — Folder boundaries, naming rules, and import conventions.
 6. [Constants and utilities](./006-constants-utilities.md) — Shared constants, pure helpers, and extraction rules.
 7. [Redux dashboard breadcrumbs](./007-redux-dashboard-breadcrumbs.md) — Serializable trail, resolver hook, route registration.
-8. [Standalone chat studio UI contract](./016-standalone-chat-studio-ui-contract.md) — Inline two-pane shell (55/45), scroll ownership, no slot-prop layout components; OSS alignment.
+8. [Detail page routing](./008-detail-page-routing.md) — `{entity}-detail-page`, no `[id]` routes; Redux `current*`.
+11. [Client API error handling](./011-client-api-error-handling.md) — `requestApi`, `ApiResult`, thunk status mapping.
+16. [Standalone chat studio UI contract](./016-standalone-chat-studio-ui-contract.md) — Inline two-pane shell (55/45), scroll ownership, no slot-prop layout components; OSS alignment.
 
 ## How to Use
 

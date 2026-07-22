@@ -15,7 +15,6 @@ npm run dev
 
 - Marketing landing: [http://localhost:3000](http://localhost:3000)
 - App dashboard: **`/dashboard`**
-- First-run wizard: **[http://localhost:3000/setup](http://localhost:3000/setup)** — confirms your Express URL and health check before the dashboard opens
 
 Copy **`.env.example`** → **`.env.local`**. Set **`NEXT_PUBLIC_SERVER_URL`** to your Express base URL (dev default when unset: `http://localhost:3032`).
 

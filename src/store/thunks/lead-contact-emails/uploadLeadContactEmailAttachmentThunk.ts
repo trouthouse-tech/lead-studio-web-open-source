@@ -1,4 +1,6 @@
+import { coerceErrorFields, reportThunkError } from '@/api/thunk-errors';
 import type { AppThunk } from '@/store';
+import { mapApiFailureToThunkStatus } from '@/api/_shared';
 import { uploadAttachment, type UploadAttachmentInput } from '@/api/lead-contact-email-attachments';
 import { LeadContactEmailAttachmentsActions } from '../../dumps/leadContactEmailAttachments';
 import type { LeadContactEmailAttachment } from '@/model/lead-contact-email-attachment';
@@ -21,13 +23,20 @@ export const uploadLeadContactEmailAttachmentThunk = (
       const response = await uploadAttachment(input);
       if (!response.success || !response.data) {
         return {
-          status: 400,
+          status: mapApiFailureToThunkStatus(response),
           error: response.error || 'Upload failed',
         };
       }
       dispatch(LeadContactEmailAttachmentsActions.addAttachment(response.data));
       return { status: 200, data: response.data };
     } catch (error: unknown) {
+      const { message, stack } = coerceErrorFields(error);
+      reportThunkError({
+        event: 'failedToUploadLeadContactEmailAttachment',
+        message,
+        stack,
+        thunkName: 'uploadLeadContactEmailAttachmentThunk',
+      });
       console.error('❌ uploadLeadContactEmailAttachmentThunk error:', error);
       return {
         status: 500,

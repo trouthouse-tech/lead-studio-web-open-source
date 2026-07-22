@@ -1,5 +1,6 @@
-import type { AppThunk } from '@/store';
+import { mapApiFailureToThunkStatus } from '@/api/_shared';
 import { getLeadContactChatMessages } from '@/api/services';
+import type { AppThunk } from '@/store';
 import { LeadContactChatActions } from '../../dumps';
 
 type Status = Promise<200 | 400 | 500>;
@@ -21,22 +22,26 @@ export const loadLeadContactChatMessagesThunk = (
     dispatch(
       LeadContactChatActions.setErrorForContact({ leadContactId, error: null }),
     );
+
     try {
-      const messages = await getLeadContactChatMessages(leadContactId);
+      const result = await getLeadContactChatMessages(leadContactId);
+      if (!result.success || !result.data) {
+        dispatch(
+          LeadContactChatActions.setErrorForContact({
+            leadContactId,
+            error: result.error ?? 'Failed to load contact chat',
+          }),
+        );
+        return mapApiFailureToThunkStatus(result);
+      }
+
       dispatch(
-        LeadContactChatActions.setMessagesForContact({ leadContactId, messages }),
-      );
-      return 200;
-    } catch (error: unknown) {
-      const message =
-        error instanceof Error ? error.message : 'Failed to load contact chat';
-      dispatch(
-        LeadContactChatActions.setErrorForContact({
+        LeadContactChatActions.setMessagesForContact({
           leadContactId,
-          error: message,
+          messages: result.data,
         }),
       );
-      return 500;
+      return 200;
     } finally {
       dispatch(
         LeadContactChatActions.setLoadingForContact({

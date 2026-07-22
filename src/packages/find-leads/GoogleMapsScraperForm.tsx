@@ -14,7 +14,8 @@ const generateSearchName = (query: string, city: string) => {
 
 export const GoogleMapsScraperForm = () => {
   const dispatch = useAppDispatch();
-  const isScraping = useAppSelector((s) => s.googleMapsScraperBuilder.isScraping);
+  const googleMapsScraperBuilder = useAppSelector((s) => s.googleMapsScraperBuilder);
+  const isScraping = googleMapsScraperBuilder.isScraping;
   const [query, setQuery] = useState('');
   const [city, setCity] = useState('');
   const [state, setState] = useState('');

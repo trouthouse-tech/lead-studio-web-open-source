@@ -1,3 +1,4 @@
+import { coerceErrorFields, reportThunkError } from '@/api/thunk-errors';
 import type { AppThunk } from '@/store';
 import { getLeadAiExchangeCostsForLead } from '@/api/leads';
 import { getLeadCostsByLeadId } from '@/api/lead-costs';
@@ -30,6 +31,13 @@ export const fetchLeadCostsForLeadThunk = (leadId: string): AppThunk<ResponseTyp
 
       return { status: 200, aiRows, ledgerRows };
     } catch (error: unknown) {
+      const { message, stack } = coerceErrorFields(error);
+      reportThunkError({
+        event: 'failedToFetchLeadCostsForLead',
+        message,
+        stack,
+        thunkName: 'fetchLeadCostsForLeadThunk',
+      });
       console.error('❌ fetchLeadCostsForLeadThunk error:', error);
       return 500;
     }

@@ -7,9 +7,8 @@ import type { LeadSentEmail } from '@/model/lead-sent-email';
 
 export const SentStatCard = () => {
   const leadSentEmailsRecord = useAppSelector((state) => state.leadSentEmails);
-  const dateRangeFilter = useAppSelector(
-    (state) => state.leadSentEmailsBuilder.dateRangeFilter
-  );
+  const leadSentEmailsBuilder = useAppSelector((state) => state.leadSentEmailsBuilder);
+  const dateRangeFilter = leadSentEmailsBuilder.dateRangeFilter;
 
   const count = useMemo(() => {
     const allEmails = Object.values(leadSentEmailsRecord) as LeadSentEmail[];

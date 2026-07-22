@@ -4,10 +4,9 @@ import { Fragment, useEffect, useMemo, useState } from 'react';
 import { ChevronDown, Loader2, Search } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { GoogleMapsScrapeRunsActions } from '@/store/dumps/googleMapsScrapeRuns';
-import { getAllGoogleMapsScrapeRuns } from '@/api/google-maps-scrape-runs';
 import { getAllLeadsThunk } from '@/store/thunks/leads/getAllLeadsThunk';
 import { setCurrentLeadThunk } from '@/store/thunks/leads';
+import { getAllGoogleMapsScrapeRunsThunk } from '@/store/thunks/google-maps-scrape-runs';
 import { filterLeadsFromGoogleMapsScrapeRun } from '@/utils/leads';
 import { LEAD_DETAIL_PATH } from '@/config/routes';
 import type { GoogleMapsScrapeRun, GoogleMapsScrapeRunStatus, Lead } from '@/model';
@@ -122,17 +121,7 @@ export const ScrapeRunsList = () => {
   const [expandedRunId, setExpandedRunId] = useState<string | null>(null);
 
   useEffect(() => {
-    const load = async () => {
-      try {
-        const response = await getAllGoogleMapsScrapeRuns();
-        if (response.success && response.data?.length) {
-          dispatch(GoogleMapsScrapeRunsActions.setGoogleMapsScrapeRuns(response.data));
-        }
-      } catch (e) {
-        console.error('Error loading scrape runs:', e);
-      }
-    };
-    void load();
+    void dispatch(getAllGoogleMapsScrapeRunsThunk());
     void dispatch(getAllLeadsThunk());
   }, [dispatch]);
 

@@ -28,7 +28,8 @@ import type { TiptapContent } from '@/model/lead-contact-email';
 
 export const EmailBodyInput = () => {
   const dispatch = useAppDispatch();
-  const body = useAppSelector((s) => s.currentLeadContactEmail.body);
+  const currentLeadContactEmail = useAppSelector((s) => s.currentLeadContactEmail);
+  const body = currentLeadContactEmail.body;
   const isInternal = useRef(false);
   const [showLink, setShowLink] = useState(false);
   const [linkUrl, setLinkUrl] = useState('');

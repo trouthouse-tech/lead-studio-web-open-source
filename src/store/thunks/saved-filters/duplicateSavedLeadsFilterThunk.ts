@@ -1,9 +1,11 @@
+import { coerceErrorFields, reportThunkError } from '@/api/thunk-errors';
 import { createSavedFilter } from '@/api/saved-filters';
 import type { LeadsFiltersState } from '@/store/filters';
 import type { PersistedLeadsFilters } from '@/utils/leads';
 import type { AppThunk } from '../../store';
 import { LeadsFiltersActions } from '@/store/filters';
 import { SavedFiltersActions } from '@/store/dumps/savedFilters';
+import { mapApiFailureToThunkStatus } from '@/api/_shared';
 
 type ResponseType = Promise<200 | 400 | 500>;
 
@@ -36,7 +38,7 @@ export const duplicateSavedLeadsFilterThunk = (
         filters,
       });
       if (!res.success || !res.data) {
-        return 400;
+        return mapApiFailureToThunkStatus(res);
       }
       dispatch(SavedFiltersActions.upsertSavedFilter(res.data));
       dispatch(
@@ -47,6 +49,13 @@ export const duplicateSavedLeadsFilterThunk = (
       );
       return 200;
     } catch (e) {
+      const { message, stack } = coerceErrorFields(e);
+      reportThunkError({
+        event: 'failedToDuplicateSavedLeadsFilter',
+        message,
+        stack,
+        thunkName: 'duplicateSavedLeadsFilterThunk',
+      });
       console.error('duplicateSavedLeadsFilterThunk', e);
       return 500;
     }

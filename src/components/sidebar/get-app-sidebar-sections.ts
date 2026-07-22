@@ -1,8 +1,5 @@
 import {
   DASHBOARD_PATH,
-  COLD_EMAIL_OFFERINGS_PATH,
-  EMAIL_SETUP_PATH,
-  FIND_LEADS_PATH,
   LEAD_EMAIL_QUEUE_PATH,
   LEAD_SENT_EMAILS_PATH,
   TO_CALL_LOG_PATH,
@@ -17,14 +14,11 @@ export const getAppSidebarSections = (): SidebarSection[] => [
     title: 'Lead Studio',
     links: [
       { name: 'Dashboard', href: DASHBOARD_PATH },
-      { name: 'Find leads', href: FIND_LEADS_PATH },
       { name: 'Commercial leads', href: '/leads' },
-      { name: 'To Call Log', href: TO_CALL_LOG_PATH },
+      { name: 'Call List', href: TO_CALL_LOG_PATH },
       { name: 'Lead contacts', href: '/lead-contacts' },
       { name: 'Email queue', href: LEAD_EMAIL_QUEUE_PATH },
       { name: 'Sent emails', href: LEAD_SENT_EMAILS_PATH },
-      { name: 'Cold email offerings', href: COLD_EMAIL_OFFERINGS_PATH },
-      { name: 'Email setup', href: EMAIL_SETUP_PATH },
     ],
   },
 ];

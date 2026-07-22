@@ -1,6 +1,7 @@
-import { getApiClient } from '@/api/client';
+import { API_CONFIG } from '@/config/api';
+import { requestApi } from '../_shared';
 import type { OneTimeCost, OneTimeCostCategory } from './types';
-import type { ApiResponse } from '../types';
+import type { ApiResult } from '../types';
 
 export type CreateOneTimeCostBody = {
   vendor: string;
@@ -12,28 +13,22 @@ export type CreateOneTimeCostBody = {
   notes?: string | null;
 };
 
-type CreateResponseBody = {
-  success: boolean;
-  data?: OneTimeCost;
-  error?: string;
-};
-
 /**
  * POST /api/data/one-time-costs
  */
 export const createOneTimeCost = async (
   body: CreateOneTimeCostBody,
-): Promise<ApiResponse<OneTimeCost>> => {
-  try {
-    const { data } = await getApiClient().post<CreateResponseBody>('/api/data/one-time-costs', body);
-    if (!data.success || !data.data) {
-      return { success: false, error: data.error ?? 'Failed to create one-time cost' };
-    }
-    return { success: true, data: data.data };
-  } catch (error: unknown) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Failed to create one-time cost',
-    };
+): Promise<ApiResult<OneTimeCost>> => {
+  const result = await requestApi<OneTimeCost>(
+    `${API_CONFIG.SERVER_URL}/api/data/one-time-costs`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    },
+  );
+  if (!result.success || !result.data) {
+    return { ...result, success: false, error: result.error ?? 'Failed to create one-time cost' };
   }
+  return result;
 };

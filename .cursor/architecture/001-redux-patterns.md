@@ -4,7 +4,7 @@
 Accepted
 
 ## Context
-This ADR defines mandatory Redux patterns for **roads-seller-web** so async flows, slice state, and reducer behavior remain predictable across features.
+This ADR defines mandatory Redux patterns for **lead-studio-web-open-source** so async flows, slice state, and reducer behavior remain predictable across features.
 
 ## Decision
 
@@ -13,34 +13,27 @@ All async flows must be implemented as handwritten thunk functions. Do not use `
 
 ✅ **Do**
 ```ts
-// src/store/orders/orders.thunks.ts
-import type { AppThunk } from "@/store/types";
-import { ordersLoadingStarted, ordersLoaded, ordersLoadingFailed } from "./orders.slice";
-import { fetchOrders } from "@/api/orders/client";
+// src/store/thunks/crm/job-thunks.ts
+import type { AppThunk } from "@/store";
+import { JobsActions } from "@/store/dumps/jobs";
+import { listJobsApi } from "@/api/job";
 
-export const loadOrders =
-  (): AppThunk<Promise<200 | 400 | 500>> =>
-  async (dispatch) => {
-    dispatch(ordersLoadingStarted());
-
-    const response = await fetchOrders();
-
-    if (response.status === 200) {
-      dispatch(ordersLoaded(response.data));
-      return 200;
-    }
-
-    dispatch(ordersLoadingFailed(response.status));
-    return response.status as 400 | 500;
-  };
+export const refreshJobsThunk = (): AppThunk<Promise<200 | 400 | 500>> => async (dispatch) => {
+  const result = await listJobsApi();
+  if (!result.success || !result.data) {
+    return 500;
+  }
+  dispatch(JobsActions.upsertJobs(result.data));
+  return 200;
+};
 ```
 
 ❌ **Don't**
 ```ts
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-export const loadOrders = createAsyncThunk("orders/load", async () => {
-  const response = await fetch("/api/orders");
+export const refreshJobs = createAsyncThunk("jobs/refresh", async () => {
+  const response = await fetch("/api/data/job/list");
   return response.json();
 });
 ```
@@ -52,118 +45,159 @@ Thunk return values are status-code unions. This keeps dispatch call sites expli
 
 ✅ **Do**
 ```ts
-// src/store/types.ts
-import type { Action } from "@reduxjs/toolkit";
-import type { ThunkAction } from "redux-thunk";
-import type { RootState } from "./store";
+import type { AppThunk } from "@/store";
 
-export type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  RootState,
-  unknown,
-  Action<string>
->;
-```
-
-```ts
-// src/store/orders/orders.thunks.ts
-import type { AppThunk } from "@/store/types";
-
-export const saveOrder =
-  (): AppThunk<Promise<200 | 400 | 500>> =>
-  async () => {
+export const updateJobThunk =
+  (input: { id: string; status: JobStatus }): AppThunk<Promise<200 | 400 | 500>> =>
+  async (dispatch) => {
+    const result = await updateJobApi(input);
+    if (!result.success || !result.data) {
+      return result.httpStatus === 400 ? 400 : 500;
+    }
+    dispatch(JobsActions.upsertJob(result.data));
     return 200;
   };
 ```
 
 ❌ **Don't**
 ```ts
-export const saveOrder = () => async () => {
+export const updateJob = () => async () => {
   return true; // ambiguous return contract
 };
 ```
 
+---
+
+### 3) Flat state layers: dumps, current, builders, config
+State is organized as **top-level slices** under `src/store/`, not nested `dumps/current/builders` keys inside a single feature slice.
+
+| Layer | Location | Holds |
+|-------|----------|--------|
+| **Dumps** | `src/store/dumps/{entity}.ts` | `Record<id, Entity>` — normalized catalogs from API |
+| **Current** | `src/store/current/{entity}.ts` | Full domain object for the open detail screen |
+| **Builders** | `src/store/builders/{feature}Builder.ts` | UI flags, wizard steps, modal open state — **primitives only** |
+| **Config** | `src/store/config/` | Env / app-level settings |
+
+✅ **Do**
 ```ts
-export const saveOrder = (): any => async () => {
-  return 200; // any is not allowed
+// src/store/dumps/jobs.ts
+type JobsState = Record<string, Job>;
+
+// src/store/current/currentJob.ts
+type CurrentJobState = Job;
+
+// src/store/builders/studioBuilder.ts
+type StudioBuilderState = {
+  isCreateGraphicModalOpen: boolean;
+  listLoadStatus: "idle" | "loading" | "error";
+};
+```
+
+```ts
+// src/store/reducer.ts
+const rootReducer = combineReducers({
+  jobs: jobsReducer,
+  currentJob: currentJobReducer,
+  studioBuilder: studioBuilderReducer,
+});
+```
+
+Sentinel: `currentJob.id === ""` means no job selected.
+
+❌ **Don't**
+```ts
+// Nested dumps/current inside one slice (legacy — do not add)
+type OrdersState = {
+  dumps: { list: Order[] };
+  current: { selectedOrderId: string | null };
+  builders: { step: string };
 };
 ```
 
 ---
 
-### 3) Slice state must always include: `dumps`, `current`, `builders`, `config`
-Every feature slice uses the same top-level shape. Do not omit or rename these keys.
+### 4) Current slices hold the editing object; builders hold primitives only
+For detail screens, store the full entity in a dedicated `current*` slice. Builder slices hold IDs, booleans, strings, and literal unions — never nested objects or maps.
 
 ✅ **Do**
 ```ts
-type OrdersState = {
-  dumps: {
-    list: Array<{ id: string; title: string }>;
-  };
-  current: {
-    selectedOrderId: string | null;
-    status: "idle" | "loading" | "ready" | "error";
-  };
-  builders: {
-    selectedItemIds: string[];
-    step: "base" | "review" | "submit";
-  };
-  config: {
-    pageSize: number;
-    sortBy: "createdAt" | "price";
-  };
-};
+// Opening a job detail screen
+dispatch(CurrentJobActions.setCurrentJob(job));
+router.push(JOB_DETAIL_PAGE_PATH);
 
-const initialState: OrdersState = {
-  dumps: { list: [] },
-  current: { selectedOrderId: null, status: "idle" },
-  builders: { selectedItemIds: [], step: "base" },
-  config: { pageSize: 20, sortBy: "createdAt" },
-};
+// Modal UI state separate from the entity
+dispatch(StudioBuilderActions.openCreateGraphicModal());
 ```
 
 ❌ **Don't**
 ```ts
-const initialState = {
-  items: [],
-  selected: null,
-  settings: {},
-}; // missing dumps/current/builders/config structure
+// Storing the editing entity in the same slice as modal state
+type BuilderState = {
+  isEditModalOpen: boolean;
+  editingJob: Job; // forbidden — use currentJob slice
+};
 ```
 
 ---
 
-### 4) Reducers must be logic-free (business logic belongs in thunks)
+### 5) Zero selector functions (strict)
+
+**Selector count in this template: zero.** That means:
+
+| Forbidden | Allowed |
+|-----------|---------|
+| `createSelector` / Reselect | — |
+| `src/store/selectors/` or `**/selectors.ts` | — |
+| `useAppSelector` with transforms (`.filter`, `Object.values`, `[id]`, joins) | `useAppSelector` reading **one whole top-level slice** only |
+| Storing view-models in Redux (`JobRow`, joined types) | `useMemo` in the component after reading raw slices |
+
+✅ **Do** — identity slice reads + `useMemo` in the component:
+
+```tsx
+const jobs = useAppSelector((state) => state.jobs);
+const currentJob = useAppSelector((state) => state.currentJob);
+const companies = useAppSelector((state) => state.companies);
+
+const jobList = useMemo(() => Object.values(jobs), [jobs]);
+
+const companyName = useMemo(() => {
+  const id = currentJob.companyId;
+  return id ? companies[id]?.name : undefined;
+}, [currentJob.companyId, companies]);
+```
+
+❌ **Don't** — derived logic inside `useAppSelector`:
+
+```tsx
+const jobList = useAppSelector((state) => Object.values(state.jobs)); // ❌
+const job = useAppSelector((state) => state.jobs[jobId]); // ❌
+const openJobs = useAppSelector((state) =>
+  Object.values(state.jobs).filter((j) => j.status === "OPEN"),
+); // ❌
+```
+
+```ts
+// src/store/selectors/job-selectors.ts  ❌
+export const selectOpenJobs = createSelector(...);
+```
+
+**Rule:** Each `useAppSelector` call passes `(state) => state.<sliceKey>` with **no** property access, indexing, or transformations on `state` inside the callback. Derive in `useMemo` (or inline in JSX for trivial cases).
+
+Entity-specific display shaping (e.g. “Job #123 — Draft”) belongs in the **package** component layer, not in selector modules and not in `src/utils/{entity}/`.
+
+---
+
+### 6) Reducers must be logic-free (business logic belongs in thunks)
 Reducers only apply payloads and set flags. Validation, branching, transformation, and side effects must live in thunks/services.
 
 ✅ **Do**
 ```ts
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-
-type OrdersState = {
-  dumps: { list: Array<{ id: string; title: string }> };
-  current: { status: "idle" | "loading" | "ready" | "error" };
-  builders: { selectedItemIds: string[]; step: "base" | "review" | "submit" };
-  config: { pageSize: number };
-};
-
-const initialState: OrdersState = {
-  dumps: { list: [] },
-  current: { status: "idle" },
-  builders: { selectedItemIds: [], step: "base" },
-  config: { pageSize: 20 },
-};
-
-const ordersSlice = createSlice({
-  name: "orders",
-  initialState,
+const jobsSlice = createSlice({
+  name: "jobs",
+  initialState: {} as Record<string, Job>,
   reducers: {
-    ordersLoadingStarted(state) {
-      state.current.status = "loading";
-    },
-    ordersLoaded(state, action: PayloadAction<Array<{ id: string; title: string }>>) {
-      state.dumps.list = action.payload;
-      state.current.status = "ready";
+    upsertJob(state, action: PayloadAction<Job>) {
+      state[action.payload.id] = action.payload;
     },
   },
 });
@@ -171,55 +205,22 @@ const ordersSlice = createSlice({
 
 ❌ **Don't**
 ```ts
-const ordersSlice = createSlice({
-  name: "orders",
-  initialState,
-  reducers: {
-    ordersLoaded(state, action) {
-      // business logic in reducer (forbidden)
-      const deduped = new Map(action.payload.map((item) => [item.id, item]));
-      state.dumps.list = Array.from(deduped.values()).filter((item) => item.title.length > 3);
-      if (state.dumps.list.length > 10) {
-        state.config.pageSize = 50;
-      }
-    },
-  },
-});
+upsertJob(state, action) {
+  const deduped = new Map(Object.values(state).map((j) => [j.id, j]));
+  // business logic in reducer (forbidden)
+}
 ```
 
 ---
 
-### 5) `builders` slices must not store objects
-`builders` can contain primitives, literal unions, and arrays of primitives only. Never store nested objects/maps in `builders`.
-
-✅ **Do**
-```ts
-type BuildersState = {
-  selectedItemIds: string[];
-  activeStep: "base" | "review" | "submit";
-  hasUnsavedChanges: boolean;
-};
-```
-
-❌ **Don't**
-```ts
-type BuildersState = {
-  form: {
-    title: string;
-    filters: {
-      status: string;
-      dateRange: { from: string; to: string };
-    };
-  };
-  byId: Record<string, { enabled: boolean }>;
-};
-```
+### 7) Modal and wizard state in builders
+Modal open/close, loading flags, and step enums belong in builder slices. The entity being edited always lives in a `current*` slice.
 
 ---
 
 ## Consequences
-- Async control flow is explicit and easier to trace in logs and debugging tools.
+- Async control flow is explicit and easier to trace.
 - Thunk return contracts are stable (`200 | 400 | 500`) and easy to consume in UI orchestration.
-- Shared state shape (`dumps/current/builders/config`) reduces onboarding and review friction.
+- Flat layers (`dumps/`, `current/`, `builders/`) match the codebase and reduce onboarding friction.
 - Reducers stay deterministic and simple to test.
-- `builders` remain serializable and lightweight for predictable state updates.
+- Single source of truth per entity id in dumps; detail screens read `current*` plus dumps.

@@ -1,4 +1,5 @@
 import { API_CONFIG } from '@/config/api';
+import { requestApi } from '../_shared';
 import type {
   PostLeadAutoCategorizeBatchCategoryPayload,
   PostLeadAutoCategorizeBatchLeadPayload,
@@ -12,35 +13,26 @@ export const postLeadAutoCategorizeBatch = async (
   categories: PostLeadAutoCategorizeBatchCategoryPayload[],
   leads: PostLeadAutoCategorizeBatchLeadPayload[]
 ): Promise<PostLeadAutoCategorizeBatchResponseBody> => {
-  try {
-    const response = await fetch(
-      `${API_CONFIG.SERVER_URL}/api/services/lead-auto-categorize-batch`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ categories, leads }),
-      }
-    );
+  const result = await requestApi<PostLeadAutoCategorizeBatchResponseBody>(
+    `${API_CONFIG.SERVER_URL}/api/services/lead-auto-categorize-batch`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ categories, leads }),
+    },
+  );
 
-    let json: PostLeadAutoCategorizeBatchResponseBody = {};
-    try {
-      json = (await response.json()) as PostLeadAutoCategorizeBatchResponseBody;
-    } catch {
-      return { success: false, error: 'Invalid JSON response' };
-    }
+  if (result.error?.includes('Invalid JSON')) {
+    return { success: false, error: 'Invalid JSON response' };
+  }
 
-    if (!response.ok || !json.success || !Array.isArray(json.assignments)) {
-      return {
-        success: false,
-        error: json.error ?? `Request failed (HTTP ${response.status})`,
-      };
-    }
-
-    return json;
-  } catch (error: unknown) {
+  const json = (result.data ?? result) as PostLeadAutoCategorizeBatchResponseBody;
+  if (!result.success || result.httpStatus >= 400 || !json.success || !Array.isArray(json.assignments)) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Network error',
+      error: json.error ?? result.error ?? `Request failed (HTTP ${result.httpStatus})`,
     };
   }
+
+  return json;
 };

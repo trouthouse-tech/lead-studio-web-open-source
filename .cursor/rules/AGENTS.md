@@ -1,54 +1,67 @@
-# Lead Studio Web — Next.js rules
+# Next.js — Agent Rules (Lead Studio Web)
 
 BEFORE implementing ANY feature, you MUST:
 1. Read `.cursor/architecture/README.md`.
-2. Read the relevant ADRs in `.cursor/architecture/` (this repo uses **001–007**, **016** — not the `010–015` filenames from other templates).
-3. Follow documented patterns EXACTLY; if no pattern exists, you MUST add an ADR first.
+2. Read the relevant ADRs (**001–008**, **011**, **016**).
+3. Follow documented patterns EXACTLY; if no pattern exists, add an ADR first.
 
-Entry points for humans: **`src/app/README.md`**, **`src/components/README.md`**.
+## Redux — zero selector functions
 
-Before editing **user-facing copy** (landing, metadata, empty states, onboarding, labels), read **`mentorai-server/data/context/lead-studio-copy-voice.md`** and **`mentorai-server/data/context/drafting-constraints.md`**.
+- **No** `createSelector`, Reselect, `src/store/selectors/`, or `**/selectors.ts`.
+- **`useAppSelector` only** as `(state) => state.<sliceKey>` — one whole top-level slice per call, **no** transforms inside the callback.
+- **Derive** with `useMemo` in components (`Object.values`, `[id]` lookup, filters, joins).
+- **No** view-models or joined row types stored in Redux.
 
-## Non-Negotiable Rules
+## Routing — static detail pages
+
+- **Never** `src/app/{entity}/[id]/page.tsx` or `[orderId]` dynamic segments.
+- **Use** `src/app/{entity}-detail-page/page.tsx` (e.g. `/lead-detail-page`, `/lead-contact-detail-page`).
+- Detail screen reads **`current*`** from Redux; open via thunk + `router.push(DETAIL_PAGE_PATH)`.
+- **No** `useParams` / `useSearchParams` for entity id on detail pages.
+
+## Utils — generic only
+
+- `src/utils/{capability}/` — `date/`, `string/`, `number/` (formatters, parsers, clamps).
+- **Not** `src/utils/{table}/` — no `utils/leads/format-lead-status.ts`.
+- Table/screen-specific formatters live in **`src/packages/{feature}/`**.
+
+## Non-negotiable rules
 
 ### Redux
-1. You MUST keep Redux logic in `src/store/` and feature state close to its slice.
-2. You MUST use Redux Toolkit slice patterns; NEVER write ad-hoc mutable global state.
-3. You MUST expose typed store hooks/selectors from `src/store/` and ALWAYS reuse them.
-4. You MUST keep async side effects out of components; ALWAYS place them in thunks/services.
+1. Flat layers: `dumps/`, `current/`, `builders/`, `config/` (and `filters/` when needed) per [001](../architecture/001-redux-patterns.md).
+2. Manual thunks only (`AppThunk<Promise<200 | 400 | 500>>`); no `createAsyncThunk`.
+3. Async side effects in thunks only, not components.
 
 ### Components
-1. You MUST keep route segments in `src/app/`; shared UI MUST live in `src/components/`.
-2. You MUST keep components focused and composable; NEVER mix data orchestration with presentational markup.
-3. You MUST default to Server Components and ONLY use `"use client"` when browser APIs/state are required.
-4. You MUST pass explicit typed props; NEVER use `any` in component public interfaces.
+1. Thin `src/app/**/page.tsx`; feature UI in `src/packages/<feature>/`.
+2. Shared UI in `src/components/`.
+3. Call thunks directly — no custom hooks that only wrap thunks.
+4. `export const` components; `type` not `interface`.
 
 ### Styling
-1. You MUST use the approved styling approach from architecture ADRs (Tailwind/utilities + globals).
-2. You MUST keep design tokens and global rules in `src/app/globals.css`.
-3. You MUST avoid inline style objects except truly dynamic one-off values.
-4. You MUST keep class composition predictable; NEVER hide core layout rules in JS helpers without ADR approval.
+1. Styles object pattern per [003](../architecture/003-styling-rules.md).
+2. No inline `style={{}}` except truly dynamic one-off values; no per-component CSS modules.
 
 ### API
-1. You MUST place HTTP handlers in `src/app/api/**/route.ts`.
-2. You MUST add JSDoc to every router factory, each exported handler (`GET`, `POST`, etc.), and all business-logic functions they call.
-3. You MUST keep handlers thin: validate input, delegate business logic, map errors to HTTP responses.
-4. You MUST NEVER access request bodies/query params directly in business logic; pass typed DTOs.
+1. Domain APIs MUST use `requestApi` from `src/api/_shared/`; NEVER bare `fetch` or `getApiClient` in domain files.
+2. Domain APIs MUST return `ApiResult<T>`; thunks MUST map failures with `mapApiFailureToThunkStatus`.
+3. Components never call `src/api/**` directly.
 
 ### Files
-1. You MUST colocate files by feature/domain and keep naming explicit (`*.slice.ts`, `*.service.ts`, `*.types.ts`).
-2. You MUST keep one primary responsibility per file; split files once they mix UI, state, and API concerns.
-3. You MUST use barrel exports (`index.ts`) only when they reduce coupling and preserve clear ownership.
-4. You MUST keep import boundaries clean; NEVER create circular dependencies.
+1. kebab-case, one export per file, barrel `index.ts` per folder per [005](../architecture/005-file-organization.md).
 
-## Quick reference (ADRs in *this* repo)
+Before editing **user-facing copy**, read mentorai-server copy-voice and drafting-constraints docs when applicable.
+
+## Quick reference
 
 - Architecture index → `.cursor/architecture/README.md`
 - Redux → `.cursor/architecture/001-redux-patterns.md`
-- Component composition & thin pages → `.cursor/architecture/002-component-composition.md`
+- Components → `.cursor/architecture/002-component-composition.md`
 - Styling → `.cursor/architecture/003-styling-rules.md`
-- API integration & UI/data separation → `.cursor/architecture/004-api-integration.md`
-- File organization (`app/`, `packages/`, `components/`) → `.cursor/architecture/005-file-organization.md`
-- Constants & utilities → `.cursor/architecture/006-constants-utilities.md`
-- Dashboard breadcrumbs & `AppLayout` → `.cursor/architecture/007-redux-dashboard-breadcrumbs.md`
-- Standalone chat studio UI (when applicable) → `.cursor/architecture/016-standalone-chat-studio-ui-contract.md`
+- API integration → `.cursor/architecture/004-api-integration.md`
+- File organization → `.cursor/architecture/005-file-organization.md`
+- Constants / utilities → `.cursor/architecture/006-constants-utilities.md`
+- Dashboard breadcrumbs → `.cursor/architecture/007-redux-dashboard-breadcrumbs.md`
+- Detail page routing → `.cursor/architecture/008-detail-page-routing.md`
+- Client API error handling → `.cursor/architecture/011-client-api-error-handling.md`
+- Chat studio UI contract → `.cursor/architecture/016-standalone-chat-studio-ui-contract.md`

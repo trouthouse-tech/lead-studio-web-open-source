@@ -6,7 +6,8 @@ import { ContactEditForm } from '../components/ContactEditForm';
 
 export const LeadContactEditModal = () => {
   const dispatch = useAppDispatch();
-  const isEditing = useAppSelector((state) => state.leadContactBuilder.isEditing);
+  const leadContactBuilder = useAppSelector((state) => state.leadContactBuilder);
+  const isEditing = leadContactBuilder.isEditing;
 
   if (!isEditing) return null;
 

@@ -45,6 +45,4 @@ export type {
   PostLeadAutoCategorizeBatchResponseBody,
 } from './postLeadAutoCategorizeBatch.types';
 export { postLeadWebsiteResearchForLead } from './postLeadWebsiteResearchForLead';
-export { postLeadDictationNotesResearchForLead } from './postLeadDictationNotesResearchForLead';
-export { postLeadLovableDesignPromptForLead } from './postLeadLovableDesignPromptForLead';
 export { getLeadAiExchangeCostsForLead } from './getLeadAiExchangeCostsForLead';

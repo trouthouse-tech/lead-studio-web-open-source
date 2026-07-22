@@ -1,4 +1,6 @@
 import { API_CONFIG } from '@/config/api';
+import { requestApi } from '../_shared';
+import type { ApiResult } from '../types';
 
 export type LeadGoogleSearchPlatform = 'facebook' | 'instagram' | 'linkedin';
 
@@ -16,7 +18,7 @@ type PostOptions = {
 export const postLeadGoogleSearchForLead = async (
   leadId: string,
   options: PostOptions
-): Promise<Response> => {
+): Promise<ApiResult<{ success?: boolean; error?: string }>> => {
   const body: {
     leadId: string;
     facebookRequestSource?: FacebookGoogleSearchRequestSource;
@@ -25,12 +27,9 @@ export const postLeadGoogleSearchForLead = async (
     body.facebookRequestSource = options.facebookRequestSource;
   }
 
-  return fetch(
-    `${API_CONFIG.SERVER_URL}/api/services/lead-google-search/${options.platform}`,
-    {
+  return requestApi<{ success?: boolean; error?: string }>(`${API_CONFIG.SERVER_URL}/api/services/lead-google-search/${options.platform}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
-    }
-  );
+    });
 };

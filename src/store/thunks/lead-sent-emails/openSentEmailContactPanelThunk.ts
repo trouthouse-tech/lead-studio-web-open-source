@@ -1,5 +1,5 @@
 import type { AppThunk } from '../../store';
-import { buildLeadContactDetailHref } from '@/config/routes';
+import { LEAD_CONTACT_DETAIL_PATH } from '@/config/routes';
 import {
   CurrentLeadContactActions,
   CurrentLeadContactEmailActions,
@@ -37,7 +37,7 @@ export const openSentEmailContactPanelThunk = (
     );
 
     if (typeof window !== 'undefined') {
-      window.location.assign(buildLeadContactDetailHref(contact.lead_id, contact.id));
+      window.location.assign(LEAD_CONTACT_DETAIL_PATH);
     }
     return 200;
   };

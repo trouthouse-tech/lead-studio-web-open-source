@@ -1,33 +1,20 @@
+import { requestApi } from '../_shared';
 import type { LeadCategory } from '@/model';
-import type { ApiResponse } from '../types';
+import type { ApiResult } from '../types';
 
 /**
  * Fetch categories with explicit base URL (server-side scraper upload).
  */
 export const getAllLeadCategoriesWithBaseUrl = async (
   apiBaseUrl: string
-): Promise<ApiResponse<LeadCategory[]>> => {
-  try {
-    const response = await fetch(`${apiBaseUrl}/api/data/lead-categories`, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    });
-
-    if (!response.ok) {
-      const data = await response.json().catch(() => ({}));
-      return {
-        success: false,
-        error: (data as { error?: string }).error || 'Failed to get lead categories',
-      };
-    }
-
-    const json = await response.json();
-    const list = (json.data ?? json ?? []) as LeadCategory[];
-    return { success: true, data: Array.isArray(list) ? list : [] };
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Failed to get lead categories',
-    };
+): Promise<ApiResult<LeadCategory[]>> => {
+  const result = await requestApi<LeadCategory[]>(`${apiBaseUrl}/api/data/lead-categories`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  if (!result.success || result.httpStatus >= 400) {
+    return { ...result, error: result.error ?? 'Failed to get lead categories' };
   }
+  const list = result.data ?? [];
+  return { ...result, data: Array.isArray(list) ? list : [] };
 };

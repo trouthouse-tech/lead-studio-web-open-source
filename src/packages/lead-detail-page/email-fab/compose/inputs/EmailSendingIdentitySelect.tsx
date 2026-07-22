@@ -1,36 +1,31 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { listEmailSendingIdentities } from '@/api/email-sending-identities';
-import type { EmailSendingIdentity } from '@/model/email-sending-identity';
+import { useEffect, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { CurrentLeadContactEmailActions } from '@/store/current';
+import { getAllEmailSendingIdentitiesThunk } from '@/store/thunks/email-sending-identities';
 
 /**
  * From-address picker when email_sending_identities rows exist on the server.
  */
 export const EmailSendingIdentitySelect = () => {
   const dispatch = useAppDispatch();
-  const selectedId = useAppSelector((s) => s.currentLeadContactEmail.email_sending_identity_id);
-  const [identities, setIdentities] = useState<EmailSendingIdentity[]>([]);
-  const [loaded, setLoaded] = useState(false);
+  const currentLeadContactEmail = useAppSelector((s) => s.currentLeadContactEmail);
+  const selectedId = currentLeadContactEmail.email_sending_identity_id;
+  const identitiesRecord = useAppSelector((s) => s.emailSendingIdentities);
+  const identities = useMemo(
+    () =>
+      Object.values(identitiesRecord).sort(
+        (a, b) => a.sort_order - b.sort_order || a.label.localeCompare(b.label),
+      ),
+    [identitiesRecord],
+  );
 
   useEffect(() => {
-    let cancelled = false;
-    void (async () => {
-      const res = await listEmailSendingIdentities();
-      if (cancelled) return;
-      setLoaded(true);
-      if (res.success && res.data?.length) {
-        setIdentities(res.data);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+    void dispatch(getAllEmailSendingIdentitiesThunk());
+  }, [dispatch]);
 
-  if (!loaded || identities.length === 0) {
+  if (identities.length === 0) {
     return (
       <p className={styles.hint}>
         Default From uses <code className={styles.code}>GMAIL_SEND_AS_EMAIL</code> on

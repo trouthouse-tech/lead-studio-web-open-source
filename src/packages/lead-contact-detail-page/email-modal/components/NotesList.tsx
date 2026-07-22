@@ -5,7 +5,8 @@ import { useAppSelector } from '@/store/hooks';
 
 /** Contact notes in the email modal top bar. */
 export const NotesList = () => {
-  const notes = useAppSelector((s) => s.currentLeadContact.notes);
+  const currentLeadContact = useAppSelector((s) => s.currentLeadContact);
+  const notes = currentLeadContact.notes;
   if (!notes?.trim()) {
     return (
       <div className={styles.empty}>

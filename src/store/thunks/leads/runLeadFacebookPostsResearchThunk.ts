@@ -1,10 +1,10 @@
-import type { AppThunk } from '../../store';
 import {
   getLeadById,
   postLeadFacebookPostsResearchForLead,
   type LeadFacebookPostsResearchStep,
 } from '@/api/leads';
 import { LeadsActions } from '../../dumps/leads';
+import type { AppThunk } from '../../store';
 import { refreshCurrentLeadThunk } from './refreshCurrentLeadThunk';
 
 export type LeadFacebookPostsResearchOutcome =
@@ -32,74 +32,35 @@ export const runLeadFacebookPostsResearchThunk = (
 
     const step = options?.step;
 
-    try {
-      const res = await postLeadFacebookPostsResearchForLead(leadId, step ? { step } : undefined);
-      const text = await res.text();
-      let json: {
-        success?: boolean;
-        skipped?: boolean;
-        reason?: string;
-        error?: string;
-      } = {};
-      try {
-        json = JSON.parse(text) as {
-          success?: boolean;
-          skipped?: boolean;
-          reason?: string;
-          error?: string;
-        };
-      } catch {
-        return { ok: false, message: 'Invalid response from server' };
-      }
+    const result = await postLeadFacebookPostsResearchForLead(leadId, step ? { step } : undefined);
+    const json = (result.data ?? result) as {
+      success?: boolean;
+      skipped?: boolean;
+      reason?: string;
+      error?: string;
+    };
 
-      if (res.status === 401) {
-        return {
-          ok: false,
-          message: 'Unauthorized. Check CRON_SECRET configuration.',
-        };
-      }
+    if (result.httpStatus === 401) {
+      return {
+        ok: false,
+        message: 'Unauthorized. Check CRON_SECRET configuration.',
+      };
+    }
 
-      if (!res.ok) {
-        return {
-          ok: false,
-          message: json.error || `Request failed (${res.status})`,
-        };
-      }
+    if (!result.success) {
+      return {
+        ok: false,
+        message: json.error || result.error || `Request failed (${result.httpStatus})`,
+      };
+    }
 
-      if (
-        step !== 'fetch_posts' &&
-        step !== 'score_posts' &&
-        json.skipped &&
-        json.reason === 'already_succeeded' &&
-        json.success
-      ) {
-        if (state.currentLead.id === leadId) {
-          await dispatch(refreshCurrentLeadThunk(leadId));
-        } else {
-          const refreshed = await getLeadById(leadId);
-          if (refreshed.success && refreshed.data) {
-            dispatch(LeadsActions.updateLead(refreshed.data));
-          }
-        }
-        return { ok: true, reusedExisting: true };
-      }
-
-      if (json.skipped) {
-        return {
-          ok: false,
-          message: json.reason
-            ? `Skipped: ${json.reason}`
-            : 'Facebook posts research was skipped',
-        };
-      }
-
-      if (json.success === false) {
-        return {
-          ok: false,
-          message: json.error || 'Facebook posts research failed',
-        };
-      }
-
+    if (
+      step !== 'fetch_posts' &&
+      step !== 'score_posts' &&
+      json.skipped &&
+      json.reason === 'already_succeeded' &&
+      json.success
+    ) {
       if (state.currentLead.id === leadId) {
         await dispatch(refreshCurrentLeadThunk(leadId));
       } else {
@@ -108,14 +69,34 @@ export const runLeadFacebookPostsResearchThunk = (
           dispatch(LeadsActions.updateLead(refreshed.data));
         }
       }
+      return { ok: true, reusedExisting: true };
+    }
 
-      return { ok: true };
-    } catch (error: unknown) {
-      console.error('runLeadFacebookPostsResearchThunk:', error);
+    if (json.skipped) {
       return {
         ok: false,
-        message: error instanceof Error ? error.message : 'Network error',
+        message: json.reason
+          ? `Skipped: ${json.reason}`
+          : 'Facebook posts research was skipped',
       };
     }
+
+    if (json.success === false) {
+      return {
+        ok: false,
+        message: json.error || 'Facebook posts research failed',
+      };
+    }
+
+    if (state.currentLead.id === leadId) {
+      await dispatch(refreshCurrentLeadThunk(leadId));
+    } else {
+      const refreshed = await getLeadById(leadId);
+      if (refreshed.success && refreshed.data) {
+        dispatch(LeadsActions.updateLead(refreshed.data));
+      }
+    }
+
+    return { ok: true };
   };
 };

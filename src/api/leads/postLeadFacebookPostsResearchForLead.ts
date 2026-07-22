@@ -1,4 +1,6 @@
 import { API_CONFIG } from '@/config/api';
+import { requestApi } from '../_shared';
+import type { ApiResult } from '../types';
 
 export type LeadFacebookPostsResearchStep = 'fetch_posts' | 'score_posts' | 'full';
 
@@ -14,7 +16,7 @@ type PostLeadFacebookPostsResearchOptions = {
 export const postLeadFacebookPostsResearchForLead = async (
   leadId: string,
   options?: PostLeadFacebookPostsResearchOptions
-): Promise<Response> => {
+): Promise<ApiResult<{ success?: boolean; error?: string }>> => {
   const body: {
     leadId: string;
     step?: LeadFacebookPostsResearchStep;
@@ -26,7 +28,8 @@ export const postLeadFacebookPostsResearchForLead = async (
   if (options?.force === true) {
     body.force = true;
   }
-  return fetch(`${API_CONFIG.SERVER_URL}/api/services/lead-facebook-posts-research`, {
+
+  return requestApi<{ success?: boolean; error?: string }>(`${API_CONFIG.SERVER_URL}/api/services/lead-facebook-posts-research`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),

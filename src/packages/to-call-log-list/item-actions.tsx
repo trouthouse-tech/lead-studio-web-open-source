@@ -5,9 +5,11 @@ import { createPortal } from 'react-dom';
 import { MoreHorizontal } from 'lucide-react';
 import type { ToCallLog, ToCallLogStatus } from '@/model/to-call-log';
 import type { LeadContact } from '@/model/lead-contact';
-import { deleteToCallLog, updateToCallLog } from '@/api/to-call-log';
 import { useAppDispatch } from '@/store/hooks';
-import { ToCallLogsActions } from '@/store/dumps/toCallLogs';
+import {
+  updateToCallLogThunk,
+  deleteToCallLogThunk,
+} from '@/store/thunks/to-call-log';
 
 type Props = {
   item: ToCallLog;
@@ -79,14 +81,11 @@ export const ToCallLogItemActions = (props: Props) => {
       return;
     }
     setIsSavingPreCallNotes(true);
-    const res = await updateToCallLog(item.id, { notes: trimmed });
+    const status = await dispatch(updateToCallLogThunk(item.id, { notes: trimmed }));
     setIsSavingPreCallNotes(false);
-    if (!res.success) {
-      alert(res.error || 'Failed to save pre-call notes');
+    if (status !== 200) {
+      alert('Failed to save pre-call notes');
       return;
-    }
-    if (res.data) {
-      dispatch(ToCallLogsActions.upsertToCallLog(res.data));
     }
     setIsEditPreCallNotesOpen(false);
   };
@@ -100,16 +99,15 @@ export const ToCallLogItemActions = (props: Props) => {
   const handleSaveCallNotes = async () => {
     setIsSavingCallNotes(true);
     const trimmed = callNotesDraft.trim();
-    const res = await updateToCallLog(item.id, {
-      call_notes: trimmed ? trimmed : null,
-    });
+    const status = await dispatch(
+      updateToCallLogThunk(item.id, {
+        call_notes: trimmed ? trimmed : null,
+      }),
+    );
     setIsSavingCallNotes(false);
-    if (!res.success) {
-      alert(res.error || 'Failed to save call notes');
+    if (status !== 200) {
+      alert('Failed to save call notes');
       return;
-    }
-    if (res.data) {
-      dispatch(ToCallLogsActions.upsertToCallLog(res.data));
     }
     setIsEditCallNotesOpen(false);
   };
@@ -134,13 +132,10 @@ export const ToCallLogItemActions = (props: Props) => {
   };
 
   const handleSetStatus = async (call_status: ToCallLogStatus) => {
-    const res = await updateToCallLog(item.id, { call_status });
-    if (!res.success) {
-      alert(res.error || 'Failed to update status');
+    const status = await dispatch(updateToCallLogThunk(item.id, { call_status }));
+    if (status !== 200) {
+      alert('Failed to update status');
       return;
-    }
-    if (res.data) {
-      dispatch(ToCallLogsActions.upsertToCallLog(res.data));
     }
     setIsStatusOpen(false);
   };
@@ -149,13 +144,11 @@ export const ToCallLogItemActions = (props: Props) => {
     closeMenu();
     if (!window.confirm('Remove this row from the call log?')) return;
     setIsDeleting(true);
-    const res = await deleteToCallLog(item.id);
+    const status = await dispatch(deleteToCallLogThunk(item.id));
     setIsDeleting(false);
-    if (!res.success) {
-      alert(res.error || 'Failed to delete');
-      return;
+    if (status !== 200) {
+      alert('Failed to delete');
     }
-    dispatch(ToCallLogsActions.removeToCallLog(item.id));
   };
 
   const portalTarget = typeof window !== 'undefined' ? document.body : null;

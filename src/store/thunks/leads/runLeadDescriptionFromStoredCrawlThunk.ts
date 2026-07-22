@@ -1,5 +1,5 @@
-import type { AppThunk } from '../../store';
 import { postLeadDescriptionFromStoredCrawl } from '@/api/leads';
+import type { AppThunk } from '../../store';
 
 export type LeadDescriptionFromStoredCrawlOutcome =
   | { ok: true }
@@ -17,52 +17,42 @@ export const runLeadDescriptionFromStoredCrawlThunk = (): AppThunk<
       return { ok: false, message: 'No lead selected' };
     }
 
-    try {
-      const res = await postLeadDescriptionFromStoredCrawl(leadId);
-      const text = await res.text();
-      let json: { success?: boolean; error?: string; message?: string } = {};
-      try {
-        json = JSON.parse(text) as { success?: boolean; error?: string; message?: string };
-      } catch {
-        return { ok: false, message: 'Invalid response from server' };
-      }
+    const result = await postLeadDescriptionFromStoredCrawl(leadId);
+    const json = (result.data ?? result) as {
+      success?: boolean;
+      error?: string;
+      message?: string;
+    };
 
-      if (res.status === 401) {
-        return {
-          ok: false,
-          message: 'Unauthorized. Check CRON_SECRET configuration.',
-        };
-      }
-
-      if (json.error === 'no_stored_crawl' || json.error === 'no_pages_in_stored_crawl') {
-        return {
-          ok: false,
-          message:
-            json.message || 'No stored website crawl. Run web research first.',
-        };
-      }
-
-      if (!res.ok) {
-        return {
-          ok: false,
-          message: json.message || json.error || 'Request failed',
-        };
-      }
-
-      if (json.success === false) {
-        return {
-          ok: false,
-          message: json.error || 'AI summarization failed',
-        };
-      }
-
-      return { ok: true };
-    } catch (error: unknown) {
-      console.error('runLeadDescriptionFromStoredCrawlThunk:', error);
+    if (result.httpStatus === 401) {
       return {
         ok: false,
-        message: error instanceof Error ? error.message : 'Network error',
+        message: 'Unauthorized. Check CRON_SECRET configuration.',
       };
     }
+
+    if (json.error === 'no_stored_crawl' || json.error === 'no_pages_in_stored_crawl') {
+      return {
+        ok: false,
+        message:
+          json.message || 'No stored website crawl. Run web research first.',
+      };
+    }
+
+    if (!result.success) {
+      return {
+        ok: false,
+        message: json.message || json.error || result.error || 'Request failed',
+      };
+    }
+
+    if (json.success === false) {
+      return {
+        ok: false,
+        message: json.error || 'AI summarization failed',
+      };
+    }
+
+    return { ok: true };
   };
 };

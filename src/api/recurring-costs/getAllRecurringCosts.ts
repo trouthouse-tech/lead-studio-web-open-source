@@ -1,6 +1,7 @@
-import { getApiClient } from '@/api/client';
+import { API_CONFIG } from '@/config/api';
+import { requestApi } from '../_shared';
 import type { RecurringCost } from './types';
-import type { ApiResponse } from '../types';
+import type { ApiResult } from '../types';
 
 type RecurringCostsResponseBody = {
   success: boolean;
@@ -11,17 +12,14 @@ type RecurringCostsResponseBody = {
 /**
  * GET /api/data/recurring-costs
  */
-export const getAllRecurringCosts = async (): Promise<ApiResponse<RecurringCost[]>> => {
-  try {
-    const { data } = await getApiClient().get<RecurringCostsResponseBody>('/api/data/recurring-costs');
-    if (!data.success) {
-      return { success: false, error: data.error ?? 'Failed to load recurring costs' };
-    }
-    return { success: true, data: data.data ?? [] };
-  } catch (error: unknown) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Failed to load recurring costs',
-    };
-  }
+export const getAllRecurringCosts = async (): Promise<ApiResult<RecurringCost[]>> => {
+  const result = await requestApi<RecurringCost[]>(
+    `${API_CONFIG.SERVER_URL}/api/data/recurring-costs`,
+    {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    },
+  );
+  if (!result.success) return result;
+  return { ...result, data: result.data ?? [] };
 };

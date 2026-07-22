@@ -7,9 +7,8 @@ import { LEAD_STATUSES } from '@/utils/leads/constants';
 
 export const LeadsFiltersStatusInput = () => {
   const dispatch = useAppDispatch();
-  const selectedStatus = useAppSelector(
-    (state) => state.leadsFilters.selectedStatus
-  );
+  const leadsFilters = useAppSelector((state) => state.leadsFilters);
+  const selectedStatus = leadsFilters.selectedStatus;
 
   const handleStatusChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {

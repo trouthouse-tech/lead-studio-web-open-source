@@ -1,3 +1,5 @@
+import { mapApiFailureToThunkStatus } from '@/api/_shared';
+import { coerceErrorFields, reportThunkError } from '@/api/thunk-errors';
 import type { AppThunk } from '@/store';
 import {
   getLeadFacebookResearch,
@@ -19,10 +21,20 @@ export const loadLeadFacebookResearchThunk = (leadId: string): AppThunk<Response
     try {
       const res = await getLeadFacebookResearch(leadId);
       if (!res.success || !res.data) {
-        return { status: 400, error: res.error || 'Failed to load Facebook research' };
+        return {
+          status: mapApiFailureToThunkStatus(res),
+          error: res.error || 'Failed to load Facebook research',
+        };
       }
       return { status: 200, data: res.data };
     } catch (error: unknown) {
+      const { message, stack } = coerceErrorFields(error);
+      reportThunkError({
+        event: 'failedToLoadLeadFacebookResearch',
+        message,
+        stack,
+        thunkName: 'loadLeadFacebookResearchThunk',
+      });
       console.error('❌ loadLeadFacebookResearchThunk error:', error);
       return {
         status: 500,

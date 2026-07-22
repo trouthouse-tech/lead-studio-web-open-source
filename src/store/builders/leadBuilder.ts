@@ -1,12 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { WebsiteScrapeLatestSummary } from '@/api/leads';
 
-export const LEAD_RESEARCH_RUN_PHASES = ['idle', 'website', 'description'] as const;
+export const LEAD_RESEARCH_RUN_PHASES = [
+  'idle',
+  'site_pages',
+  'website',
+  'social',
+  'description',
+] as const;
 
 export type LeadResearchRunPhase = (typeof LEAD_RESEARCH_RUN_PHASES)[number];
-
-/** Leads table row: Playwright URL discovery vs Facebook Google search (mutually exclusive per lead). */
-export type LeadsTableRowResearchBusyKind = 'facebook' | 'siteUrls';
 
 type LeadBuilderState = {
   selectedLeadIds: string[];
@@ -25,15 +28,18 @@ type LeadBuilderState = {
   /** True while deleteLeadThunk is in flight from that modal. */
   isDeletingLead: boolean;
   isAddLeadModalOpen: boolean;
+  /** Find leads (Google Maps search) modal on the commercial leads list. */
+  isFindLeadsModalOpen: boolean;
   /** True while batch AI auto-categorize (uncategorized header action) is running. */
   isUncategorizedBatchCategorizing: boolean;
-  /**
-   * Leads table: per-lead mutex for Facebook search vs site URL discovery (avoids local row state).
-   * Key = lead id; omit key when idle for that lead.
-   */
-  leadsTableRowResearchBusyByLeadId: Record<string, LeadsTableRowResearchBusyKind>;
-  /** Leads table: per-lead website research (summarize) spinner while POST is in flight. */
+  /** True while leads-list batch full research is running (once per unresearched lead). */
+  isLeadsListFullResearchBatchBusy: boolean;
+  /** True while leads-list bulk Facebook/Instagram social search is running. */
+  isLeadsListSocialSearchBatchBusy: boolean;
+  /** Leads table: per-lead full-research spinner while discovery + crawl are in flight. */
   leadsTableRowSummaryBusyByLeadId: Record<string, boolean>;
+  /** Leads table: per-lead social search spinner. */
+  leadsTableRowSocialBusyByLeadId: Record<string, boolean>;
 };
 
 const initialState: LeadBuilderState = {
@@ -48,9 +54,12 @@ const initialState: LeadBuilderState = {
   isLeadDeleteConfirmModalOpen: false,
   isDeletingLead: false,
   isAddLeadModalOpen: false,
+  isFindLeadsModalOpen: false,
   isUncategorizedBatchCategorizing: false,
-  leadsTableRowResearchBusyByLeadId: {},
+  isLeadsListFullResearchBatchBusy: false,
+  isLeadsListSocialSearchBatchBusy: false,
   leadsTableRowSummaryBusyByLeadId: {},
+  leadsTableRowSocialBusyByLeadId: {},
 };
 
 export const leadBuilderSlice = createSlice({
@@ -108,19 +117,17 @@ export const leadBuilderSlice = createSlice({
     setAddLeadModalOpen: (state, action: PayloadAction<boolean>) => {
       state.isAddLeadModalOpen = action.payload;
     },
+    setFindLeadsModalOpen: (state, action: PayloadAction<boolean>) => {
+      state.isFindLeadsModalOpen = action.payload;
+    },
     setUncategorizedBatchCategorizing: (state, action: PayloadAction<boolean>) => {
       state.isUncategorizedBatchCategorizing = action.payload;
     },
-    setLeadsTableRowResearchBusy: (
-      state,
-      action: PayloadAction<{ leadId: string; kind: LeadsTableRowResearchBusyKind | null }>
-    ) => {
-      const { leadId, kind } = action.payload;
-      if (kind === null) {
-        delete state.leadsTableRowResearchBusyByLeadId[leadId];
-      } else {
-        state.leadsTableRowResearchBusyByLeadId[leadId] = kind;
-      }
+    setLeadsListFullResearchBatchBusy: (state, action: PayloadAction<boolean>) => {
+      state.isLeadsListFullResearchBatchBusy = action.payload;
+    },
+    setLeadsListSocialSearchBatchBusy: (state, action: PayloadAction<boolean>) => {
+      state.isLeadsListSocialSearchBatchBusy = action.payload;
     },
     setLeadsTableRowSummaryBusy: (
       state,
@@ -131,6 +138,17 @@ export const leadBuilderSlice = createSlice({
         delete state.leadsTableRowSummaryBusyByLeadId[leadId];
       } else {
         state.leadsTableRowSummaryBusyByLeadId[leadId] = true;
+      }
+    },
+    setLeadsTableRowSocialBusy: (
+      state,
+      action: PayloadAction<{ leadId: string; busy: boolean }>
+    ) => {
+      const { leadId, busy } = action.payload;
+      if (!busy) {
+        delete state.leadsTableRowSocialBusyByLeadId[leadId];
+      } else {
+        state.leadsTableRowSocialBusyByLeadId[leadId] = true;
       }
     },
     reset: () => initialState,

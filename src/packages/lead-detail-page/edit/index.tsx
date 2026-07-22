@@ -6,7 +6,8 @@ import { LeadDetailEditForm } from './LeadDetailEditForm';
 
 export const EditModal = () => {
   const dispatch = useAppDispatch();
-  const isEditing = useAppSelector((state) => state.leadBuilder.isEditing);
+  const leadBuilder = useAppSelector((state) => state.leadBuilder);
+  const isEditing = leadBuilder.isEditing;
 
   if (!isEditing) return null;
 

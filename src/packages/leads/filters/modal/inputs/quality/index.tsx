@@ -10,7 +10,8 @@ import {
 
 export const LeadsFiltersQualityInput = () => {
   const dispatch = useAppDispatch();
-  const qualityFilter = useAppSelector((state) => state.leadsFilters.qualityFilter);
+  const leadsFilters = useAppSelector((state) => state.leadsFilters);
+  const qualityFilter = leadsFilters.qualityFilter;
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {

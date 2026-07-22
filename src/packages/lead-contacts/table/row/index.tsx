@@ -19,7 +19,8 @@ export const LeadContactsTableRow = (props: LeadContactsTableRowProps) => {
   const { contact, index } = props;
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const lead = useAppSelector((state) => state.leads[contact.lead_id]);
+  const leads = useAppSelector((state) => state.leads);
+  const lead = leads[contact.lead_id];
   const statusKey = contact.status ?? 'not_contacted';
   const statusMeta = STATUS_CONFIG[statusKey];
 

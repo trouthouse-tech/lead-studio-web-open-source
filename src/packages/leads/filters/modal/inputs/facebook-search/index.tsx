@@ -10,9 +10,8 @@ import {
 
 export const LeadsFiltersFacebookSearchInput = () => {
   const dispatch = useAppDispatch();
-  const facebookGoogleSearchFilter = useAppSelector(
-    (state) => state.leadsFilters.facebookGoogleSearchFilter
-  );
+  const leadsFilters = useAppSelector((state) => state.leadsFilters);
+  const facebookGoogleSearchFilter = leadsFilters.facebookGoogleSearchFilter;
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {

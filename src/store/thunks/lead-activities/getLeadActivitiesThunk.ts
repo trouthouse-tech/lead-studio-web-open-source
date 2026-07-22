@@ -1,3 +1,4 @@
+import { coerceErrorFields, reportThunkError } from '@/api/thunk-errors';
 import type { AppThunk } from '../../store';
 import { LeadActivitiesActions } from '../../dumps';
 import { getAllLeadActivities } from '@/api';
@@ -12,6 +13,13 @@ export const getLeadActivitiesThunk = (): AppThunk<ResponseType> => {
       dispatch(LeadActivitiesActions.setLeadActivities(data));
       return 200;
     } catch (error) {
+      const { message, stack } = coerceErrorFields(error);
+      reportThunkError({
+        event: 'failedToGetLeadActivities',
+        message,
+        stack,
+        thunkName: 'getLeadActivitiesThunk',
+      });
       console.error('❌ getLeadActivitiesThunk error:', error);
       return 500;
     }

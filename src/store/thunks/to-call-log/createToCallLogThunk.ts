@@ -1,3 +1,4 @@
+import { coerceErrorFields, reportThunkError } from '@/api/thunk-errors';
 import type { AppThunk } from '../../store';
 import { createToCallLog, type CreateToCallLogInput } from '@/api/to-call-log';
 import { ToCallLogsActions } from '../../dumps/toCallLogs';
@@ -26,6 +27,13 @@ export const createToCallLogThunk = (
       dispatch(ToCallLogsActions.upsertToCallLog(response.data));
       return { ok: true };
     } catch (error: unknown) {
+      const { message, stack } = coerceErrorFields(error);
+      reportThunkError({
+        event: 'failedToCreateToCallLog',
+        message,
+        stack,
+        thunkName: 'createToCallLogThunk',
+      });
       console.error('❌ createToCallLogThunk error:', error);
       return {
         ok: false,

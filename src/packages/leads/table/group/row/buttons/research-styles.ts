@@ -22,7 +22,5 @@ export const leadsTableResearchStyles = {
     transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0
   `,
   researchIcon: `h-3.5 w-3.5`,
-  facebookGlyph: `
-    text-[11px] font-bold leading-none text-[#1877F2] font-sans
-  `,
 };
+

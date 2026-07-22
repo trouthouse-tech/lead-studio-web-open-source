@@ -3,11 +3,10 @@
 import { useAppSelector } from '@/store/hooks';
 
 export const SuggestedWorkflowsSection = () => {
-  const workflows = useAppSelector(
-    (state) =>
-      state.currentLead.summary?.recommended_workflows?.filter((w) => w?.workflow_name?.trim()) ??
-      [],
-  );
+  const currentLead = useAppSelector((state) => state.currentLead);
+  const workflows =
+    currentLead.summary?.recommended_workflows?.filter((w) => w?.workflow_name?.trim()) ??
+    [];
 
   if (workflows.length === 0) {
     return null;

@@ -1,5 +1,6 @@
 export { getLeadContactsByLeadIdThunk } from './getLeadContactsByLeadIdThunk';
 export { loadLeadContactDetailThunk } from './loadLeadContactDetailThunk';
+export { openLeadContactDetailThunk } from './openLeadContactDetailThunk';
 export { checkQueueStatusThunk } from './checkQueueStatusThunk';
 export { updateLeadContactStatusThunk } from './updateLeadContactStatusThunk';
 export { updateLeadContactFieldsThunk } from './updateLeadContactFieldsThunk';

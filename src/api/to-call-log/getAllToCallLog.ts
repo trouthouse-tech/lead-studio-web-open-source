@@ -1,6 +1,7 @@
 import { API_CONFIG } from '@/config/api';
+import { requestApi } from '../_shared';
 import type { ToCallLog, ToCallLogStatus } from '@/model/to-call-log';
-import type { ApiResponse } from '../types';
+import type { ApiResult } from '../types';
 
 export type GetAllToCallLogFilters = {
   lead_id?: string;
@@ -13,9 +14,8 @@ export type GetAllToCallLogFilters = {
 
 export const getAllToCallLog = async (
   filters?: GetAllToCallLogFilters
-): Promise<ApiResponse<ToCallLog[]>> => {
-  try {
-    const params = new URLSearchParams();
+): Promise<ApiResult<ToCallLog[]>> => {
+  const params = new URLSearchParams();
     if (filters?.lead_id) params.set('lead_id', filters.lead_id);
     if (filters?.lead_contact_id) {
       params.set('lead_contact_id', filters.lead_contact_id);
@@ -30,26 +30,8 @@ export const getAllToCallLog = async (
     }
 
     const queryString = params.toString();
-    const response = await fetch(
-      `${API_CONFIG.SERVER_URL}/api/data/to-call-log${queryString ? `?${queryString}` : ''}`
-    );
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      return {
-        success: false,
-        error:
-          errorData.error ||
-          errorData.message ||
-          `HTTP error! status: ${response.status}`,
-      };
-    }
-
-    return await response.json();
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
-  }
+  const result = await requestApi<ToCallLog[]>(`${API_CONFIG.SERVER_URL}/api/data/to-call-log${queryString ? `?${queryString}` : ''}`, {});
+  if (!result.success || result.httpStatus >= 400) return result;
+  return { ...result, data: result.data ?? [] };
 };

@@ -5,9 +5,8 @@ import { useAppSelector } from '@/store/hooks';
 const LABEL = 'Certifications / licenses';
 
 export const CertificationsOrLicensesFact = () => {
-  const raw = useAppSelector(
-    (s) => s.currentLead.summary?.facts?.certifications_or_licenses,
-  );
+  const currentLead = useAppSelector((s) => s.currentLead);
+  const raw = currentLead.summary?.facts?.certifications_or_licenses;
   const value = typeof raw === 'string' ? raw.trim() : '';
   if (!value) return null;
 

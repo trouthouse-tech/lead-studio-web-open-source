@@ -1,6 +1,7 @@
 import { getMentoraiDataApiBaseUrl } from '@/config/api';
+import { requestApi } from '../_shared';
 import type { SavedFilter } from '@/model';
-import type { ApiResponse } from '../types';
+import type { ApiResult } from '../types';
 import { parsePersistedLeadsFiltersPayload } from '@/utils/leads';
 
 type ListJson = {
@@ -34,26 +35,26 @@ const mapRow = (row: NonNullable<ListJson['data']>[number]): SavedFilter | null 
 /**
  * GET `/api/data/saved-filters` — all presets (single-tenant).
  */
-export const getSavedFilters = async (): Promise<ApiResponse<SavedFilter[]>> => {
-  try {
-    const base = getMentoraiDataApiBaseUrl();
-    const res = await fetch(`${base}/api/data/saved-filters`, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    });
-    const json = (await res.json()) as ListJson;
-    if (!res.ok) {
-      return { success: false, error: json.error || `HTTP ${res.status}` };
-    }
-    const raw = json.data ?? [];
-    const mapped: SavedFilter[] = [];
-    for (const row of raw) {
-      const m = mapRow(row);
-      if (m) mapped.push(m);
-    }
-    return { success: true, data: mapped };
-  } catch (e) {
-    const message = e instanceof Error ? e.message : 'Network error';
-    return { success: false, error: message };
+export const getSavedFilters = async (): Promise<ApiResult<SavedFilter[]>> => {
+  const base = getMentoraiDataApiBaseUrl();
+  const result = await requestApi<NonNullable<ListJson['data']>>(`${base}/api/data/saved-filters`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!result.success || result.httpStatus >= 400) {
+    return {
+      success: false,
+      error: result.error ?? `HTTP ${result.httpStatus}`,
+      httpStatus: result.httpStatus,
+    };
   }
+
+  const raw = result.data ?? [];
+  const mapped: SavedFilter[] = [];
+  for (const row of raw) {
+    const m = mapRow(row);
+    if (m) mapped.push(m);
+  }
+  return { ...result, data: mapped };
 };

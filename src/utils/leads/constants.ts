@@ -2,10 +2,6 @@
 export const FACEBOOK_GOOGLE_SEARCH_RUN_DISABLED_TITLE =
   'Facebook search from this row can only be run once per lead. Open the lead to search again from Online profiles, or edit the Facebook URL manually.';
 
-/** Native `title` when Playwright site URL discovery is disabled (one run per lead). */
-export const PLAYWRIGHT_WEBSITE_URL_DISCOVERY_RUN_DISABLED_TITLE =
-  'Site page URL discovery can only be run once per lead. Edit same-domain URLs on the lead manually if needed.';
-
 export const LEAD_STATUSES: { value: string; label: string }[] = [
   { value: 'not_contacted', label: 'Not contacted' },
   { value: 'contacted', label: 'Contacted' },

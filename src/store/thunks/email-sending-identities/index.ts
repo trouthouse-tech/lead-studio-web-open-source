@@ -1,0 +1,1 @@
+export { getAllEmailSendingIdentitiesThunk } from './getAllEmailSendingIdentitiesThunk';

@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import type { RecentLeadRow } from '@/store/selectors';
+import type { RecentLeadRow } from '../../../build-dashboard-lead-rows';
 import { useAppDispatch } from '@/store/hooks';
 import { setCurrentLeadThunk } from '@/store/thunks/leads';
 import { LEAD_DETAIL_PATH } from '@/config';

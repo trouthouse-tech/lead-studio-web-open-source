@@ -1,5 +1,6 @@
-import type { AppThunk } from '../../store';
+import { mapApiFailureToThunkStatus } from '@/api/_shared';
 import { postLeadWebsiteResearchForLead } from '@/api/leads';
+import type { AppThunk } from '../../store';
 
 type ResponseType = Promise<200 | 400 | 500>;
 
@@ -14,28 +15,16 @@ export const runLeadWebsiteResearchThunk = (targetLeadId?: string): AppThunk<Res
       return 400;
     }
 
-    try {
-      const res = await postLeadWebsiteResearchForLead(leadId);
-      const text = await res.text();
-      let json: { success?: boolean } = {};
-      try {
-        json = JSON.parse(text) as { success?: boolean };
-      } catch {
-        return 400;
-      }
+    const result = await postLeadWebsiteResearchForLead(leadId);
+    if (!result.success) {
+      return mapApiFailureToThunkStatus(result);
+    }
 
-      if (!res.ok) {
-        return res.status >= 500 ? 500 : 400;
-      }
-
-      if (json.success === false) {
-        return 400;
-      }
-
-      return 200;
-    } catch (error: unknown) {
-      console.error('runLeadWebsiteResearchThunk:', error);
+    const json = (result.data ?? result) as { success?: boolean };
+    if (json.success === false) {
       return 500;
     }
+
+    return 200;
   };
 };

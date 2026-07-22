@@ -1,47 +1,25 @@
 import { API_CONFIG } from '@/config/api';
+import { requestApi } from '../_shared';
 import type { Lead } from '@/model';
-import type { ApiResponse } from '../types';
+import type { ApiResult } from '../types';
 
-export const getAllLeads = async (): Promise<ApiResponse<Lead[]>> => {
-  try {
-    const response = await fetch(`${API_CONFIG.SERVER_URL}/api/data/leads`, {
+export const getAllLeads = async (): Promise<ApiResult<Lead[]>> => {
+  const result = await requestApi<Lead[]>(`${API_CONFIG.SERVER_URL}/api/data/leads`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
     });
-
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      if (response.status === 404) {
-        return { success: true, data: [] };
-      }
-      const text = await response.text();
-      console.error('❌ Non-JSON response:', text.substring(0, 200));
-      return {
-        success: false,
-        error: 'API endpoint not found or returned invalid response',
-      };
-    }
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return {
-        success: false,
-        error: data.error || 'Failed to get leads',
-      };
-    }
-
-    return {
-      success: true,
-      data: data.data ?? data ?? [],
-    };
-  } catch (error: unknown) {
-    console.error('❌ Failed to get leads:', error);
+  if (!result.success && result.httpStatus === 404) {
+    return { success: true, data: [], httpStatus: 404 };
+  }
+  if (!result.success && result.error?.includes('Invalid JSON')) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Failed to get leads',
+      error: 'API endpoint not found or returned invalid response',
+      httpStatus: result.httpStatus,
     };
   }
+  if (!result.success || result.httpStatus >= 400) return result;
+  return { ...result, data: result.data ?? [] };
 };

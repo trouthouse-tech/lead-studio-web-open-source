@@ -21,8 +21,20 @@ export {
   type RunLeadPlaywrightWebsiteUrlDiscoveryResult,
 } from './runLeadPlaywrightWebsiteUrlDiscoveryThunk';
 export { runLeadWebsiteResearchThunk } from './runLeadWebsiteResearchThunk';
-export { runLeadDictationNotesResearchThunk } from './runLeadDictationNotesResearchThunk';
-export { runLeadLovableDesignPromptThunk } from './runLeadLovableDesignPromptThunk';
+export { runLeadOnlineProfilesResearchThunk } from './runLeadOnlineProfilesResearchThunk';
+export {
+  runLeadSocialProfilesResearchThunk,
+  type RunLeadSocialProfilesResearchOptions,
+  type LeadSocialSearchPlatform,
+} from './runLeadSocialProfilesResearchThunk';
+export {
+  runSocialSearchForLeadsBatchThunk,
+  leadNeedsSocialSearchFromList,
+  leadNeedsFacebookSearchFromList,
+  leadNeedsInstagramSearchFromList,
+  type RunSocialSearchForLeadsBatchResult,
+  type SocialSearchBatchPlatform,
+} from './runSocialSearchForLeadsBatchThunk';
 export {
   runLeadDescriptionFromStoredCrawlThunk,
   type LeadDescriptionFromStoredCrawlOutcome,
@@ -47,6 +59,10 @@ export {
   runLeadResearchPipelineThunk,
   type RunLeadResearchPipelineResult,
 } from './runLeadResearchPipelineThunk';
+export {
+  runFullResearchForUnresearchedLeadsBatchThunk,
+  type RunFullResearchForUnresearchedLeadsBatchResult,
+} from './runFullResearchForUnresearchedLeadsBatchThunk';
 export {
   loadLeadFacebookResearchThunk,
   type LoadLeadFacebookResearchResult,

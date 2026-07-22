@@ -1,6 +1,7 @@
 import { API_CONFIG } from '@/config/api';
+import { requestApi } from '../_shared';
 import type { LeadContactEmailQueue } from '@/model/lead-contact-email-queue';
-import type { ApiResponse } from '../types';
+import type { ApiResult } from '../types';
 
 export type GetQueueItemsFilters = {
   status?: 'queued' | 'sending' | 'sent' | 'failed';
@@ -17,9 +18,8 @@ export type GetQueueItemsFilters = {
  */
 export const getAllQueueItems = async (
   filters?: GetQueueItemsFilters
-): Promise<ApiResponse<LeadContactEmailQueue[]>> => {
-  try {
-    const params = new URLSearchParams();
+): Promise<ApiResult<LeadContactEmailQueue[]>> => {
+  const params = new URLSearchParams();
     if (filters?.status) params.append('status', filters.status);
     if (filters?.lead_id) params.append('lead_id', filters.lead_id);
     if (filters?.lead_contact_id)
@@ -29,36 +29,17 @@ export const getAllQueueItems = async (
     if (filters?.offset) params.append('offset', String(filters.offset));
 
     const url = `${API_CONFIG.SERVER_URL}/api/data/lead-contact-email-queue${params.toString() ? `?${params.toString()}` : ''}`;
-    const response = await fetch(url, {
+
+  const result = await requestApi<LeadContactEmailQueue[]>(url, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     });
-
-    if (response.status === 404) return { success: true, data: [] };
-
-    const contentType = response.headers.get('content-type');
-    if (!contentType?.includes('application/json')) {
-      return { success: true, data: [] };
-    }
-
-    const data = await response.json();
-    if (!response.ok) {
-      return {
-        success: false,
-        error: data.error || data.message || 'Failed to get queue items',
-      };
-    }
-
-    return {
-      success: true,
-      data: data.data ?? data ?? [],
-    };
-  } catch (error: unknown) {
-    console.error('❌ getAllQueueItems error:', error);
-    return {
-      success: false,
-      error:
-        error instanceof Error ? error.message : 'Failed to get queue items',
-    };
+  if (!result.success && result.httpStatus === 404) {
+    return { success: true, data: [], httpStatus: 404 };
   }
+  if (!result.success && result.error?.includes('Invalid JSON')) {
+    return { success: true, data: [], httpStatus: result.httpStatus };
+  }
+  if (!result.success || result.httpStatus >= 400) return result;
+  return { ...result, data: result.data ?? [] };
 };

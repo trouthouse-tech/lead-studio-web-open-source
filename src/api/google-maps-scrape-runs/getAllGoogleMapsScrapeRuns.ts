@@ -1,6 +1,7 @@
 import { API_CONFIG } from '@/config/api';
+import { requestApi } from '../_shared';
 import type { GoogleMapsScrapeRun } from '@/model';
-import type { ApiResponse } from '../types';
+import type { ApiResult } from '../types';
 
 const convertToModel = (data: Record<string, unknown>): GoogleMapsScrapeRun => ({
   id: data.id as string,
@@ -19,34 +20,17 @@ const convertToModel = (data: Record<string, unknown>): GoogleMapsScrapeRun => (
 });
 
 export const getAllGoogleMapsScrapeRuns = async (): Promise<
-  ApiResponse<GoogleMapsScrapeRun[]>
+  ApiResult<GoogleMapsScrapeRun[]>
 > => {
-  try {
-    const response = await fetch(
-      `${API_CONFIG.SERVER_URL}/api/data/google-maps-scrape-runs`,
-      { method: 'GET', headers: { 'Content-Type': 'application/json' } }
-    );
+  const result = await requestApi<Record<string, unknown>[]>(
+    `${API_CONFIG.SERVER_URL}/api/data/google-maps-scrape-runs`,
+    { method: 'GET', headers: { 'Content-Type': 'application/json' } },
+  );
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      return {
-        success: false,
-        error:
-          (errorData as { error?: string }).error ||
-          `HTTP error! status: ${response.status}`,
-      };
-    }
-
-    const result = await response.json();
-    const rows = (result.data ?? []) as Record<string, unknown>[];
-    return {
-      success: true,
-      data: rows.map(convertToModel),
-    };
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
+  if (!result.success || result.httpStatus >= 400) {
+    return result as ApiResult<GoogleMapsScrapeRun[]>;
   }
+
+  const rows = (result.data ?? []) as Record<string, unknown>[];
+  return { ...result, data: rows.map(convertToModel) };
 };

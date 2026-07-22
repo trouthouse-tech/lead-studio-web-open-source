@@ -10,9 +10,8 @@ import {
 
 export const LeadsFiltersWebsiteResearchInput = () => {
   const dispatch = useAppDispatch();
-  const websiteResearchFilter = useAppSelector(
-    (state) => state.leadsFilters.websiteResearchFilter
-  );
+  const leadsFilters = useAppSelector((state) => state.leadsFilters);
+  const websiteResearchFilter = leadsFilters.websiteResearchFilter;
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {

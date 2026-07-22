@@ -51,6 +51,7 @@ export const hasWebsiteSummaryRecord = (lead: Lead): boolean =>
 
 export type LeadResearchIndicators = {
   facebook: boolean;
+  instagram: boolean;
   googleDiscovery: boolean;
   atAGlance: boolean;
   websiteSummaryRecord: boolean;
@@ -61,6 +62,7 @@ export type LeadResearchIndicators = {
  */
 export const getLeadResearchIndicators = (lead: Lead): LeadResearchIndicators => ({
   facebook: hasFacebookProfileLink(lead),
+  instagram: Boolean(lead.instagram_url?.trim()),
   googleDiscovery: hasSameDomainDiscoveryResults(lead),
   atAGlance: hasAtAGlanceContent(lead),
   websiteSummaryRecord: hasWebsiteSummaryRecord(lead),

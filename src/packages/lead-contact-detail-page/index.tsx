@@ -1,54 +1,25 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useAppSelector } from '@/store/hooks';
 import { useRouter } from 'next/navigation';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { loadLeadContactDetailThunk } from '@/store/thunks/lead-contacts';
 import { LEAD_DETAIL_PATH } from '@/config/routes';
 import { LeadContactChatColumn } from './chat-column';
 import { LeadContactBuilderColumn } from './builder-column';
 import { LeadContactEditModal } from './edit';
 import { LeadContactEmailModal } from './email-modal';
 
-type Props = {
-  leadId: string;
-  contactId: string;
-};
-
 /**
  * Lead contact studio: chat column + builder column (session context = `currentLeadContact`).
+ * Open via `openLeadContactDetailThunk` then `router.push(LEAD_CONTACT_DETAIL_PATH)` (ADR 008).
  */
-export const LeadContactDetailPage = (props: Props) => {
-  const { leadId, contactId } = props;
-  const dispatch = useAppDispatch();
+export const LeadContactDetailPage = () => {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [notFound, setNotFound] = useState(false);
   const currentLeadContact = useAppSelector((s) => s.currentLeadContact);
 
-  useEffect(() => {
-    const run = async () => {
-      setLoading(true);
-      setNotFound(false);
-      const code = await dispatch(loadLeadContactDetailThunk(leadId, contactId));
-      setLoading(false);
-      if (code === 404) setNotFound(true);
-    };
-    void run();
-  }, [dispatch, leadId, contactId]);
-
-  if (loading) {
+  if (!currentLeadContact.id) {
     return (
       <div className={styles.fallback}>
-        <p className={styles.muted}>Loading contact…</p>
-      </div>
-    );
-  }
-
-  if (notFound || !currentLeadContact.id) {
-    return (
-      <div className={styles.fallback}>
-        <p className={styles.muted}>Contact not found.</p>
+        <p className={styles.muted}>No contact selected.</p>
         <button
           type="button"
           className={styles.linkBtn}

@@ -1,3 +1,5 @@
+import { mapApiFailureToThunkStatus } from '@/api/_shared';
+import { coerceErrorFields, reportThunkError } from '@/api/thunk-errors';
 import type { AppThunk } from '@/store';
 import { processNextQueueItem } from '@/api/lead-contact-email-queue';
 
@@ -13,10 +15,15 @@ export const processEmailQueueThunk = (): AppThunk<ResponseType> => {
       const response = await processNextQueueItem();
 
       if (response.success) return 200;
-      return response.error?.includes('404') || response.error?.includes('501')
-        ? 400
-        : 500;
+      return mapApiFailureToThunkStatus(response);
     } catch (error: unknown) {
+      const { message, stack } = coerceErrorFields(error);
+      reportThunkError({
+        event: 'failedToProcessEmailQueue',
+        message,
+        stack,
+        thunkName: 'processEmailQueueThunk',
+      });
       console.error('❌ processEmailQueueThunk error:', error);
       return 500;
     }

@@ -1,4 +1,6 @@
 import { API_CONFIG } from '@/config/api';
+import { requestApi } from '../_shared';
+import type { ApiResult } from '../types';
 
 export type CommercialLeadResearchQueueItem = {
   id: string;
@@ -24,12 +26,13 @@ export type GetCommercialLeadResearchQueueResponse =
  */
 export const getCommercialLeadResearchQueue = async (
   limit?: number
-): Promise<Response> => {
+): Promise<ApiResult<{ success?: boolean; error?: string }>> => {
   const qs =
     typeof limit === 'number' && Number.isFinite(limit)
       ? `?limit=${encodeURIComponent(String(limit))}`
       : '';
-  return fetch(`${API_CONFIG.SERVER_URL}/api/data/commercial-lead-research-queue${qs}`, {
+
+  return requestApi<{ success?: boolean; error?: string }>(`${API_CONFIG.SERVER_URL}/api/data/commercial-lead-research-queue${qs}`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   });

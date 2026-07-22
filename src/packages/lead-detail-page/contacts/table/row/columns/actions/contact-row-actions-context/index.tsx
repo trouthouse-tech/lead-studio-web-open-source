@@ -58,7 +58,8 @@ type ContactRowActionsProviderProps = {
 export const ContactRowActionsProvider = (props: ContactRowActionsProviderProps) => {
   const { contact, children } = props;
   const dispatch = useAppDispatch();
-  const leadId = useAppSelector((state) => state.currentLead.id);
+  const currentLead = useAppSelector((state) => state.currentLead);
+  const leadId = currentLead.id;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isCallLogModalOpen, setIsCallLogModalOpen] = useState(false);

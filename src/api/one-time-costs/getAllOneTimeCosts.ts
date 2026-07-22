@@ -1,6 +1,7 @@
-import { getApiClient } from '@/api/client';
+import { API_CONFIG } from '@/config/api';
+import { requestApi } from '../_shared';
 import type { OneTimeCost } from './types';
-import type { ApiResponse } from '../types';
+import type { ApiResult } from '../types';
 
 type OneTimeCostsResponseBody = {
   success: boolean;
@@ -11,17 +12,14 @@ type OneTimeCostsResponseBody = {
 /**
  * GET /api/data/one-time-costs
  */
-export const getAllOneTimeCosts = async (): Promise<ApiResponse<OneTimeCost[]>> => {
-  try {
-    const { data } = await getApiClient().get<OneTimeCostsResponseBody>('/api/data/one-time-costs');
-    if (!data.success) {
-      return { success: false, error: data.error ?? 'Failed to load one-time costs' };
-    }
-    return { success: true, data: data.data ?? [] };
-  } catch (error: unknown) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Failed to load one-time costs',
-    };
-  }
+export const getAllOneTimeCosts = async (): Promise<ApiResult<OneTimeCost[]>> => {
+  const result = await requestApi<OneTimeCost[]>(
+    `${API_CONFIG.SERVER_URL}/api/data/one-time-costs`,
+    {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    },
+  );
+  if (!result.success) return result;
+  return { ...result, data: result.data ?? [] };
 };

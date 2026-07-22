@@ -3,6 +3,3 @@ export const DASHBOARD_ONBOARDING_MIN_POSTAL_LENGTH = 3;
 
 /** Max Places results per business type during onboarding batch scrapes */
 export const DASHBOARD_ONBOARDING_MAX_RESULTS_PER_TYPE = 50;
-
-/** Max lead rows shown per scrape section on the dashboard preview */
-export const DASHBOARD_ONBOARDING_PREVIEW_ROWS_PER_SECTION = 5;

@@ -22,18 +22,11 @@ const resolveLeadIdForSentEmail = (
 export const LeadSentEmailsList = () => {
   const leadSentEmailsRecord = useAppSelector((state) => state.leadSentEmails);
   const leadContactsById = useAppSelector((state) => state.leadContacts);
-  const dateRangeFilter = useAppSelector(
-    (state) => state.leadSentEmailsBuilder.dateRangeFilter
-  );
-  const statCardFilter = useAppSelector(
-    (state) => state.leadSentEmailsBuilder.statCardFilter
-  );
-  const onlySingleSentPerLead = useAppSelector(
-    (state) => state.leadSentEmailsBuilder.onlySingleSentPerLead
-  );
-  const coldEmailOfferingFilterId = useAppSelector(
-    (state) => state.leadSentEmailsBuilder.coldEmailOfferingFilterId
-  );
+  const leadSentEmailsBuilder = useAppSelector((state) => state.leadSentEmailsBuilder);
+  const dateRangeFilter = leadSentEmailsBuilder.dateRangeFilter;
+  const statCardFilter = leadSentEmailsBuilder.statCardFilter;
+  const onlySingleSentPerLead = leadSentEmailsBuilder.onlySingleSentPerLead;
+  const coldEmailOfferingFilterId = leadSentEmailsBuilder.coldEmailOfferingFilterId;
 
   const [sortColumn, setSortColumn] = useState<SortColumn>('sent_at');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');

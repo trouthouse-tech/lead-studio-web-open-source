@@ -5,6 +5,9 @@ import { useAppSelector } from '@/store/hooks';
 
 const STEPS = ['Locating businesses', 'Fetching details', 'Preparing your list'];
 
+/**
+ * Onboarding modal phase: Maps scrape in progress.
+ */
 export const OnboardingSearching = () => {
   const draftTypes = useAppSelector(
     (s) => s.dashboardBuilder.draftBusinessTypes
@@ -14,18 +17,21 @@ export const OnboardingSearching = () => {
   );
   const total = draftTypes.length;
   const stepIdx =
-    total === 0 ? 0 : Math.min(STEPS.length - 1, Math.floor((index / total) * STEPS.length));
+    total === 0
+      ? 0
+      : Math.min(STEPS.length - 1, Math.floor((index / total) * STEPS.length));
+
+  const progressPercent = total ? Math.min(100, (index / total) * 100) : 0;
 
   return (
-    <div className={styles.card}>
-      <div className={styles.cardHeader}>
+    <>
+      <div className={styles.header}>
         <div className={styles.titleRow}>
           <Loader2 className={styles.spinner} aria-hidden />
           <h2 className={styles.title}>Finding businesses…</h2>
         </div>
         <p className={styles.description}>
-          Searching Google Maps for your criteria. This may take a minute if you
-          added several business types.
+          Searching Google Maps for your criteria. This may take a minute.
         </p>
         {total > 0 && (
           <p className={styles.progressMeta}>
@@ -33,19 +39,17 @@ export const OnboardingSearching = () => {
           </p>
         )}
       </div>
-      <div className={styles.cardBody}>
+      <div className={styles.body}>
         <div
           className={styles.progressTrack}
           role="progressbar"
           aria-valuemin={0}
           aria-valuemax={100}
-          aria-valuenow={total ? Math.round((index / total) * 100) : 0}
+          aria-valuenow={Math.round(progressPercent)}
         >
           <div
             className={styles.progressFill}
-            style={{
-              width: total ? `${Math.min(100, (index / total) * 100)}%` : '0%',
-            }}
+            style={{ width: `${progressPercent}%` }}
           />
         </div>
         <ul className={styles.stepList}>
@@ -69,15 +73,12 @@ export const OnboardingSearching = () => {
           ))}
         </ul>
       </div>
-    </div>
+    </>
   );
 };
 
 const styles = {
-  card: `
-    rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden
-  `,
-  cardHeader: `
+  header: `
     px-5 py-4 border-b border-slate-100 bg-slate-50
   `,
   titleRow: `
@@ -95,7 +96,7 @@ const styles = {
   progressMeta: `
     mt-2 text-sm font-medium text-slate-700
   `,
-  cardBody: `
+  body: `
     px-5 py-4 space-y-4
   `,
   progressTrack: `
@@ -125,4 +126,4 @@ const styles = {
   stepLabelTodo: `
     text-slate-500
   `,
-};
+} as const;

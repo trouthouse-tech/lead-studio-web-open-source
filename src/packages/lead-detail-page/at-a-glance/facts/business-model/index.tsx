@@ -5,7 +5,8 @@ import { useAppSelector } from '@/store/hooks';
 const LABEL = 'Business model';
 
 export const BusinessModelFact = () => {
-  const raw = useAppSelector((s) => s.currentLead.summary?.facts?.business_model);
+  const currentLead = useAppSelector((s) => s.currentLead);
+  const raw = currentLead.summary?.facts?.business_model;
   const value = typeof raw === 'string' ? raw.trim() : '';
   if (!value) return null;
 

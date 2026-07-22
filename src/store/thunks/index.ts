@@ -13,3 +13,4 @@ export * from './leads';
 export * from './saved-filters';
 export * from './to-call-log';
 export * from './cold-email-offerings';
+export * from './email-sending-identities';

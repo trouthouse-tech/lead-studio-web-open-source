@@ -22,9 +22,8 @@ export const LeadsFilters = () => {
    */
   const leadsFilters = useAppSelector((state) => state.leadsFilters, shallowEqual);
 
-  const isFiltersModalOpen = useAppSelector(
-    (state) => state.leadsFiltersBuilder.isFiltersModalOpen
-  );
+  const leadsFiltersBuilder = useAppSelector((state) => state.leadsFiltersBuilder);
+  const isFiltersModalOpen = leadsFiltersBuilder.isFiltersModalOpen;
 
   /**
    * Hydrate persisted filters before paint so the first client render matches localStorage and the

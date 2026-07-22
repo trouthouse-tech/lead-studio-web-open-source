@@ -5,16 +5,15 @@ import { useAppDispatch } from '@/store/hooks';
 import { AppLayout } from '@/components';
 import { initializeDashboardOnboardingThunk } from '@/store/thunks/dashboard';
 import {
-  getAllLeadContactEmailQueueThunk,
   getAllLeadContactsThunk,
   getAllLeadSentEmailsThunk,
   getAllLeadsThunk,
   getAllToCallLogThunk,
 } from '@/store/thunks';
+import { getAllLeadCategoriesThunk } from '@/store/thunks/lead-categories';
 import { NewUser } from './new-user';
-import { DashboardQueuedCallLogPanel } from './queued-call-log-panel';
 import { DashboardLatestLeadsGrid } from './latest-leads-grid';
-import { DashboardEmailOverview } from './email-overview';
+import { DashboardMetrics } from './metrics';
 
 export const Dashboard = () => {
   const dispatch = useAppDispatch();
@@ -22,29 +21,29 @@ export const Dashboard = () => {
   useEffect(() => {
     dispatch(initializeDashboardOnboardingThunk());
     void dispatch(getAllLeadsThunk());
+    void dispatch(getAllLeadCategoriesThunk());
     void dispatch(getAllLeadContactsThunk());
     void dispatch(getAllToCallLogThunk());
-    void dispatch(getAllLeadContactEmailQueueThunk());
     void dispatch(getAllLeadSentEmailsThunk());
   }, [dispatch]);
 
   return (
     <>
+      <NewUser />
       <AppLayout fullWidth={true}>
         <div className={styles.page}>
-          <NewUser />
-
           <header className={styles.header}>
             <div>
-              <h1 className={styles.title}>Dashboard</h1>
-              <p className={styles.subtitle}>Pipeline snapshot, call queue, and outbound email.</p>
+              <h1 className={styles.title}>Welcome</h1>
+              <p className={styles.subtitle}>
+                Pipeline overview and your latest leads.
+              </p>
             </div>
           </header>
 
           <div className={styles.sections}>
+            <DashboardMetrics />
             <DashboardLatestLeadsGrid />
-            <DashboardQueuedCallLogPanel />
-            <DashboardEmailOverview />
           </div>
         </div>
       </AppLayout>
@@ -68,4 +67,4 @@ const styles = {
   subtitle: `
     text-sm text-slate-500 mt-1 max-w-2xl
   `,
-};
+} as const;

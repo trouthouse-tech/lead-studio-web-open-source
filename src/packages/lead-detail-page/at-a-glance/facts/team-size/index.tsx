@@ -5,7 +5,8 @@ import { useAppSelector } from '@/store/hooks';
 const LABEL = 'Team size';
 
 export const TeamSizeFact = () => {
-  const raw = useAppSelector((s) => s.currentLead.summary?.facts?.team_size);
+  const currentLead = useAppSelector((s) => s.currentLead);
+  const raw = currentLead.summary?.facts?.team_size;
   const value = typeof raw === 'string' ? raw.trim() : '';
   if (!value) return null;
 

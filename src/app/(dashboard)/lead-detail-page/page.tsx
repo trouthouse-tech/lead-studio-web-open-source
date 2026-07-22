@@ -8,7 +8,8 @@ import { BreadcrumbBuilderActions } from '@/store/builders';
 
 export default function LeadDetailRoute() {
   const dispatch = useAppDispatch();
-  const currentLeadId = useAppSelector((state) => state.currentLead?.id ?? '');
+  const currentLead = useAppSelector((state) => state.currentLead);
+  const currentLeadId = currentLead?.id ?? '';
 
   useEffect(() => {
     if (!currentLeadId) {

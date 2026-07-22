@@ -79,7 +79,8 @@ const styles = {
 
 export const ContactsAddButton = () => {
   const dispatch = useAppDispatch();
-  const leadId = useAppSelector((state) => state.currentLead.id);
+  const currentLead = useAppSelector((state) => state.currentLead);
+  const leadId = currentLead.id;
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleCloseModal = () => {

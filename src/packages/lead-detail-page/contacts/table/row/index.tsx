@@ -3,7 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { logLeadContactActivityThunk } from '@/store/thunks';
-import { buildLeadContactDetailHref } from '@/config/routes';
+import { openLeadContactDetailThunk } from '@/store/thunks/lead-contacts';
+import { LEAD_CONTACT_DETAIL_PATH } from '@/config/routes';
 import type { LeadContact } from '@/model/lead-contact';
 import {
   ActionsColumn,
@@ -20,10 +21,9 @@ type ContactsTableRowProps = {
 export const ContactsTableRow = (props: ContactsTableRowProps) => {
   const { contact } = props;
   const dispatch = useAppDispatch();
-  const leadId = useAppSelector((state) => state.currentLead.id);
-  const leadBusinessName = useAppSelector(
-    (state) => state.currentLead.business_name || 'Unknown customer'
-  );
+  const currentLead = useAppSelector((state) => state.currentLead);
+  const leadId = currentLead.id;
+  const leadBusinessName = currentLead.business_name || 'Unknown customer';
   const router = useRouter();
 
   const handleRowClick = () => {
@@ -34,7 +34,11 @@ export const ContactsTableRow = (props: ContactsTableRowProps) => {
         customerName: leadBusinessName,
       }),
     );
-    router.push(buildLeadContactDetailHref(leadId, contact.id));
+    void dispatch(openLeadContactDetailThunk(leadId, contact.id)).then((status) => {
+      if (status === 200) {
+        router.push(LEAD_CONTACT_DETAIL_PATH);
+      }
+    });
   };
 
   return (

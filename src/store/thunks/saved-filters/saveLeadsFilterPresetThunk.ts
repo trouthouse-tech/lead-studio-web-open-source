@@ -1,9 +1,11 @@
+import { coerceErrorFields, reportThunkError } from '@/api/thunk-errors';
 import { createSavedFilter, updateSavedFilter } from '@/api/saved-filters';
 import type { LeadsFiltersState } from '@/store/filters';
 import type { PersistedLeadsFilters } from '@/utils/leads';
 import type { AppThunk } from '../../store';
 import { LeadsFiltersActions } from '@/store/filters';
 import { SavedFiltersActions } from '@/store/dumps/savedFilters';
+import { mapApiFailureToThunkStatus } from '@/api/_shared';
 
 type ResponseType = Promise<200 | 400 | 500>;
 
@@ -29,7 +31,7 @@ export const saveLeadsFilterPresetThunk = (name?: string): AppThunk<ResponseType
           ...(typeof name === 'string' && name.trim() ? { name: name.trim() } : {}),
         });
         if (!res.success || !res.data) {
-          return 400;
+          return mapApiFailureToThunkStatus(res);
         }
         dispatch(SavedFiltersActions.upsertSavedFilter(res.data));
         dispatch(LeadsFiltersActions.setActiveSavedFilterId(res.data.id));
@@ -42,12 +44,19 @@ export const saveLeadsFilterPresetThunk = (name?: string): AppThunk<ResponseType
       }
       const res = await createSavedFilter({ name: trimmed, filters });
       if (!res.success || !res.data) {
-        return 400;
+        return mapApiFailureToThunkStatus(res);
       }
       dispatch(SavedFiltersActions.upsertSavedFilter(res.data));
       dispatch(LeadsFiltersActions.setActiveSavedFilterId(res.data.id));
       return 200;
     } catch (e) {
+      const { message, stack } = coerceErrorFields(e);
+      reportThunkError({
+        event: 'failedToSaveLeadsFilterPreset',
+        message,
+        stack,
+        thunkName: 'saveLeadsFilterPresetThunk',
+      });
       console.error('saveLeadsFilterPresetThunk', e);
       return 500;
     }

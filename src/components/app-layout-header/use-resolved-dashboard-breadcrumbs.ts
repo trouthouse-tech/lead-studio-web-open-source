@@ -13,8 +13,10 @@ import type { AppLayoutBreadcrumb } from './app-layout-breadcrumb';
  */
 export const useResolvedDashboardBreadcrumbs = (): AppLayoutBreadcrumb[] => {
   const dispatch = useAppDispatch();
-  const base = useAppSelector((state) => state.breadcrumbBuilder.base);
-  const segments = useAppSelector((state) => state.breadcrumbBuilder.segments);
+  const breadcrumbBuilder = useAppSelector((state) => state.breadcrumbBuilder);
+  const base = breadcrumbBuilder.base;
+  const segments = breadcrumbBuilder.segments;
+
   const leads = useAppSelector((state) => state.leads);
 
   return useMemo(() => {

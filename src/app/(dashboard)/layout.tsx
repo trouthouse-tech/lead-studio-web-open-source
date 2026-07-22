@@ -1,8 +1,10 @@
 'use client';
 
-import { OssSetupGate } from '@/packages/oss-setup/oss-setup-gate';
+import { ErrorBoundary } from '@/components/error-boundary';
 
 export default function DashboardLayout(props: { children: React.ReactNode }) {
   const { children } = props;
-  return <OssSetupGate>{children}</OssSetupGate>;
+  return (
+    <ErrorBoundary componentName="DashboardLayout">{children}</ErrorBoundary>
+  );
 }

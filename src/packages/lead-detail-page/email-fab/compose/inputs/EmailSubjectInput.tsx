@@ -5,7 +5,8 @@ import { CurrentLeadContactEmailActions } from '@/store/current';
 
 export const EmailSubjectInput = () => {
   const dispatch = useAppDispatch();
-  const subject = useAppSelector((s) => s.currentLeadContactEmail.subject);
+  const currentLeadContactEmail = useAppSelector((s) => s.currentLeadContactEmail);
+  const subject = currentLeadContactEmail.subject;
   return (
     <label className={styles.wrap}>
       <span className={styles.label}>Subject</span>

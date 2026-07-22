@@ -5,7 +5,8 @@ import { CurrentLeadActions } from '@/store/current';
 
 export const CreateLeadAddressInput = () => {
   const dispatch = useAppDispatch();
-  const address = useAppSelector((state) => state.currentLead.address ?? '');
+  const currentLead = useAppSelector((state) => state.currentLead);
+  const address = currentLead.address ?? '';
 
   return (
     <label className={styles.label}>

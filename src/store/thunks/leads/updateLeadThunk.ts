@@ -1,8 +1,10 @@
+import { coerceErrorFields, reportThunkError } from '@/api/thunk-errors';
 import type { AppThunk } from '../../store';
 import { updateLead } from '@/api/leads';
 import { LeadsActions } from '../../dumps/leads';
 import { CurrentLeadActions } from '../../current';
 import type { Lead } from '@/model';
+import { mapApiFailureToThunkStatus } from '@/api/_shared';
 
 type ResponseType = Promise<200 | 400 | 500>;
 
@@ -20,8 +22,15 @@ export const updateLeadThunk = (
         return 200;
       }
 
-      return 400;
+      return mapApiFailureToThunkStatus(response);
     } catch (error: unknown) {
+      const { message, stack } = coerceErrorFields(error);
+      reportThunkError({
+        event: 'failedToUpdateLead',
+        message,
+        stack,
+        thunkName: 'updateLeadThunk',
+      });
       console.error('❌ updateLeadThunk error:', error);
       return 500;
     }

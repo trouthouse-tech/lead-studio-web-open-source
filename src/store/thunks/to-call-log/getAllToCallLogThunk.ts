@@ -1,7 +1,9 @@
+import { coerceErrorFields, reportThunkError } from '@/api/thunk-errors';
 import type { AppThunk } from '../../store';
 import { getAllToCallLog } from '@/api/to-call-log';
 import { ToCallLogBuilderActions } from '@/store/builders/toCallLogBuilder';
 import { ToCallLogsActions } from '@/store/dumps/toCallLogs';
+import { mapApiFailureToThunkStatus } from '@/api/_shared';
 
 type Status = 200 | 400 | 500;
 type ResponseType = Promise<Status>;
@@ -51,8 +53,15 @@ export const getAllToCallLogThunk =
             return 200;
           }
 
-          return 400;
+          return mapApiFailureToThunkStatus(response);
         } catch (error: unknown) {
+          const { message, stack } = coerceErrorFields(error);
+          reportThunkError({
+            event: 'failedToGetAllToCallLog',
+            message,
+            stack,
+            thunkName: 'getAllToCallLogThunk',
+          });
           console.error('❌ getAllToCallLogThunk error:', error);
           return 500;
         } finally {

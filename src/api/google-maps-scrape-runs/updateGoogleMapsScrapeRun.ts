@@ -1,6 +1,7 @@
 import { API_CONFIG } from '@/config/api';
+import { requestApi } from '../_shared';
 import type { GoogleMapsScrapeRun } from '@/model';
-import type { ApiResponse } from '../types';
+import type { ApiResult } from '../types';
 
 const convertToModel = (data: Record<string, unknown>): GoogleMapsScrapeRun => ({
   id: data.id as string,
@@ -30,9 +31,8 @@ export type UpdateGoogleMapsScrapeRunInput = {
 export const updateGoogleMapsScrapeRun = async (
   id: string,
   updates: UpdateGoogleMapsScrapeRunInput
-): Promise<ApiResponse<GoogleMapsScrapeRun>> => {
-  try {
-    const payload: Record<string, unknown> = {};
+): Promise<ApiResult<GoogleMapsScrapeRun>> => {
+  const payload: Record<string, unknown> = {};
     if (updates.status !== undefined) payload.status = updates.status;
     if (updates.resultsCount !== undefined)
       payload.results_count = updates.resultsCount;
@@ -46,31 +46,11 @@ export const updateGoogleMapsScrapeRun = async (
     if (updates.error !== undefined) payload.error = updates.error;
     if (updates.duration !== undefined) payload.duration = updates.duration;
 
-    const response = await fetch(
-      `${API_CONFIG.SERVER_URL}/api/data/google-maps-scrape-runs/${id}`,
-      {
+  const result = await requestApi<GoogleMapsScrapeRun>(`${API_CONFIG.SERVER_URL}/api/data/google-maps-scrape-runs/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      return {
-        success: false,
-        error:
-          (errorData as { error?: string }).error ||
-          `HTTP error! status: ${response.status}`,
-      };
-    }
-
-    const result = await response.json();
-    return { success: true, data: convertToModel(result.data as Record<string, unknown>) };
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
-  }
+      });
+  if (!result.success || result.httpStatus >= 400) return result;
+  return result;
 };

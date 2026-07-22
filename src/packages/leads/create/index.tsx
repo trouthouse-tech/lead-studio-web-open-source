@@ -16,7 +16,8 @@ import {
 
 export const CreateLeadModal = () => {
   const dispatch = useAppDispatch();
-  const isOpen = useAppSelector((state) => state.leadBuilder.isAddLeadModalOpen);
+  const leadBuilder = useAppSelector((state) => state.leadBuilder);
+  const isOpen = leadBuilder.isAddLeadModalOpen;
   const currentLead = useAppSelector((state) => state.currentLead);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);

@@ -46,3 +46,6 @@ export { ToCallLogsActions } from './toCallLogs';
 
 export { default as coldEmailOfferings } from './coldEmailOfferings';
 export { ColdEmailOfferingsActions } from './coldEmailOfferings';
+
+export { default as emailSendingIdentities } from './emailSendingIdentities';
+export { EmailSendingIdentitiesActions } from './emailSendingIdentities';

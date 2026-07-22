@@ -49,6 +49,14 @@ export const runOnboardingMapsScrapesThunk = (): AppThunk<ResponseType> => {
       const searchQuery = buildOnboardingMapsSearchQuery(businessType, postal);
       const name = buildOnboardingScrapeRunName(businessType);
 
+      console.log('🚀 [web.runOnboardingMapsScrapes] scrape type', {
+        index: i + 1,
+        of: types.length,
+        businessType,
+        searchQuery,
+        name,
+      });
+
       const result = await dispatch(
         scrapeGoogleMapsThunk(
           name,
@@ -56,6 +64,15 @@ export const runOnboardingMapsScrapesThunk = (): AppThunk<ResponseType> => {
           DASHBOARD_ONBOARDING_MAX_RESULTS_PER_TYPE
         )
       );
+
+      console.log('📥 [web.runOnboardingMapsScrapes] scrape result', {
+        businessType,
+        success: result.success,
+        scrapeRunId: result.scrapeRunId,
+        businessesScraped: result.businessesScraped,
+        leadsCreated: result.leadsCreated,
+        error: result.error,
+      });
 
       if (!result.success || !result.scrapeRunId) {
         const message =
@@ -69,6 +86,12 @@ export const runOnboardingMapsScrapesThunk = (): AppThunk<ResponseType> => {
         DashboardBuilderActions.appendOnboardingScrapeRunId(result.scrapeRunId)
       );
     }
+
+    const runIds = getState().dashboardBuilder.onboardingScrapeRunIds;
+    console.log('✅ [web.runOnboardingMapsScrapes] moving to preview', {
+      runIds,
+      leadsInStore: Object.keys(getState().leads).length,
+    });
 
     dispatch(DashboardBuilderActions.setOnboardingScrapeIndex(0));
     dispatch(DashboardBuilderActions.setOnboardingPhase('preview'));

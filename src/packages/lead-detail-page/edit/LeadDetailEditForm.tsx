@@ -16,7 +16,8 @@ export const LeadDetailEditForm = () => {
   const dispatch = useAppDispatch();
   const currentLead = useAppSelector((state) => state.currentLead);
   const leadsRecord = useAppSelector((state) => state.leads);
-  const isSaving = useAppSelector((state) => state.leadBuilder.isSavingLeadDetail);
+  const leadBuilder = useAppSelector((state) => state.leadBuilder);
+  const isSaving = leadBuilder.isSavingLeadDetail;
 
   const handleSave = () => {
     if (!currentLead.id || isSaving) return;
@@ -24,7 +25,7 @@ export const LeadDetailEditForm = () => {
   };
 
   const handleCancel = () => {
-    const id = currentLead.id;
+  const id = currentLead.id;
     if (id && leadsRecord[id]) {
       dispatch(CurrentLeadActions.setCurrentLead(leadsRecord[id]));
     }

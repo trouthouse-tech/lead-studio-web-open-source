@@ -5,9 +5,8 @@ import { useAppSelector } from '@/store/hooks';
 const LABEL = 'Residential vs commercial';
 
 export const ResidentialVsCommercialFact = () => {
-  const raw = useAppSelector(
-    (s) => s.currentLead.summary?.facts?.residential_vs_commercial,
-  );
+  const currentLead = useAppSelector((s) => s.currentLead);
+  const raw = currentLead.summary?.facts?.residential_vs_commercial;
   const value = typeof raw === 'string' ? raw.trim() : '';
   if (!value) return null;
 

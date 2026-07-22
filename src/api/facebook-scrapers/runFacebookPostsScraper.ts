@@ -1,5 +1,6 @@
 import { API_CONFIG } from '@/config/api';
-import type { ApiResponse } from '../types';
+import { requestApi } from '../_shared';
+import type { ApiResult } from '../types';
 import type { FacebookScraperProfileInput } from './types';
 
 export type { FacebookScraperProfileInput } from './types';
@@ -9,43 +10,30 @@ export type { FacebookScraperProfileInput } from './types';
  */
 export const runFacebookPostsScraper = async (
   input: FacebookScraperProfileInput
-): Promise<ApiResponse<unknown>> => {
-  try {
-    const response = await fetch(`${API_CONFIG.SERVER_URL}/api/scrapers/facebook-posts/run`, {
+): Promise<ApiResult<unknown>> => {
+  const result = await requestApi<unknown>(
+    `${API_CONFIG.SERVER_URL}/api/scrapers/facebook-posts/run`,
+    {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ profileUrl: input.profileUrl.trim() }),
-    });
+    },
+  );
 
-    const raw = await response.text();
-    const trimmed = raw.trim();
-    const looksLikeJson = trimmed.startsWith('{') || trimmed.startsWith('[');
-
-    if (!looksLikeJson) {
-      return {
-        success: false,
-        error: `Expected JSON (HTTP ${response.status})`,
-      };
-    }
-
-    const json = JSON.parse(raw) as {
-      success?: boolean;
-      data?: unknown;
-      error?: string;
-    };
-
-    if (!response.ok || !json.success) {
-      return {
-        success: false,
-        error: json.error || `Request failed (${response.status})`,
-      };
-    }
-
-    return { success: true, data: json.data };
-  } catch (error) {
+  if (result.error?.includes('Invalid JSON')) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: `Expected JSON (HTTP ${result.httpStatus})`,
+      httpStatus: result.httpStatus,
     };
   }
+
+  if (!result.success || result.httpStatus >= 400) {
+    return {
+      ...result,
+      error: result.error ?? `Request failed (${result.httpStatus})`,
+    };
+  }
+
+  return result;
 };

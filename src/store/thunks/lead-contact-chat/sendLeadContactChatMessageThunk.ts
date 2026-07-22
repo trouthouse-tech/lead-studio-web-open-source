@@ -1,5 +1,6 @@
-import type { AppThunk } from '@/store';
+import { mapApiFailureToThunkStatus } from '@/api/_shared';
 import { postLeadContactChatMessage } from '@/api/services';
+import type { AppThunk } from '@/store';
 import { LeadContactChatActions } from '../../dumps';
 
 type Status = Promise<200 | 400 | 500>;
@@ -24,21 +25,24 @@ export const sendLeadContactChatMessageThunk = (
     );
 
     try {
-      const messages = await postLeadContactChatMessage(leadContactId, content);
+      const result = await postLeadContactChatMessage(leadContactId, content);
+      if (!result.success || !result.data) {
+        dispatch(
+          LeadContactChatActions.setErrorForContact({
+            leadContactId,
+            error: result.error ?? 'Failed to send contact message',
+          }),
+        );
+        return mapApiFailureToThunkStatus(result);
+      }
+
       dispatch(
-        LeadContactChatActions.setMessagesForContact({ leadContactId, messages }),
-      );
-      return 200;
-    } catch (error: unknown) {
-      const message =
-        error instanceof Error ? error.message : 'Failed to send contact message';
-      dispatch(
-        LeadContactChatActions.setErrorForContact({
+        LeadContactChatActions.setMessagesForContact({
           leadContactId,
-          error: message,
+          messages: result.data,
         }),
       );
-      return 500;
+      return 200;
     } finally {
       dispatch(
         LeadContactChatActions.setPostingForContact({

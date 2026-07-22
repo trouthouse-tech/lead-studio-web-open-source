@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useMemo } from 'react';
 import { LEAD_DETAIL_PATH } from '@/config';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { selectDashboardLatestLeadRows } from '@/store/selectors';
 import { setCurrentLeadThunk } from '@/store/thunks/leads';
 import { getLeadStatusLabel } from '@/packages/leads/table/group/row/columns/lead-status-label';
 import { formatDateMedium } from '@/utils/date-time';
+import { buildDashboardLatestLeadRows } from '../build-dashboard-lead-rows';
 
 const truncate = (text: string, maxLen: number) => {
   const t = text.trim();
@@ -21,7 +22,13 @@ const truncate = (text: string, maxLen: number) => {
 export const DashboardLatestLeadsGrid = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const rows = useAppSelector(selectDashboardLatestLeadRows);
+  const leads = useAppSelector((state) => state.leads);
+  const leadContacts = useAppSelector((state) => state.leadContacts);
+
+  const rows = useMemo(
+    () => buildDashboardLatestLeadRows(leads, leadContacts),
+    [leads, leadContacts],
+  );
 
   const handleOpenLead = (leadId: string) => {
     dispatch(setCurrentLeadThunk(leadId));

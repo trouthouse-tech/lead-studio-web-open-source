@@ -13,7 +13,8 @@ type Props = {
 export const LeadsFiltersSearchInput = (props: Props) => {
   const { variant = 'default', dense = false } = props;
   const dispatch = useAppDispatch();
-  const searchFilter = useAppSelector((state) => state.leadsFilters.searchFilter);
+  const leadsFilters = useAppSelector((state) => state.leadsFilters);
+  const searchFilter = leadsFilters.searchFilter;
   const [localSearch, setLocalSearch] = useState(searchFilter);
 
   useEffect(() => {

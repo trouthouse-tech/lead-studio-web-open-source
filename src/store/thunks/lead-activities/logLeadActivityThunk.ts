@@ -1,3 +1,4 @@
+import { coerceErrorFields, reportThunkError } from '@/api/thunk-errors';
 import type { AppThunk } from '../../store';
 import { LeadActivitiesActions } from '../../dumps';
 import { createLeadActivity } from '@/api';
@@ -25,6 +26,13 @@ export const logLeadActivityThunk = (
       }
       return 200;
     } catch (error) {
+      const { message, stack } = coerceErrorFields(error);
+      reportThunkError({
+        event: 'failedToLogLeadActivity',
+        message,
+        stack,
+        thunkName: 'logLeadActivityThunk',
+      });
       console.error('❌ logLeadActivityThunk error:', error);
       return 500;
     }

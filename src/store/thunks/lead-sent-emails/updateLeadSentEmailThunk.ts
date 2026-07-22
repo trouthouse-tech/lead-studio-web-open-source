@@ -1,3 +1,5 @@
+import { coerceErrorFields, reportThunkError } from '@/api/thunk-errors';
+import { mapApiFailureToThunkStatus } from '@/api/_shared';
 import type { AppThunk } from '@/store';
 import { LeadSentEmailsActions } from '../../dumps/leadSentEmails';
 import {
@@ -24,8 +26,15 @@ export const updateLeadSentEmailThunk = (
         return 200;
       }
 
-      return 400;
+      return mapApiFailureToThunkStatus(response);
     } catch (error: unknown) {
+      const { message, stack } = coerceErrorFields(error);
+      reportThunkError({
+        event: 'failedToUpdateLeadSentEmail',
+        message,
+        stack,
+        thunkName: 'updateLeadSentEmailThunk',
+      });
       console.error('❌ updateLeadSentEmailThunk error:', error);
       return 500;
     }

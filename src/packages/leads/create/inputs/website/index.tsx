@@ -5,7 +5,8 @@ import { CurrentLeadActions } from '@/store/current';
 
 export const CreateLeadWebsiteInput = () => {
   const dispatch = useAppDispatch();
-  const website = useAppSelector((state) => state.currentLead.website ?? '');
+  const currentLead = useAppSelector((state) => state.currentLead);
+  const website = currentLead.website ?? '';
 
   return (
     <label className={styles.label}>

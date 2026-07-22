@@ -7,7 +7,7 @@ Central place for **URL construction** (Express vs Next), **`process.env` wiring
 | File | Role |
 |------|------|
 | **`api.ts`** | `API_CONFIG` (`DEFAULT`, `SERVER_URL`), production guards, helpers (`getMentoraiDataApiBaseUrl`, `getMentoraiServerBaseUrl` for optional Next BFF / server-only code). |
-| **`routes.ts`** | Path string constants (`DASHBOARD_PATH`, `FIND_LEADS_PATH`, `LEAD_CONTACT_DETAIL_PATH`, `buildLeadContactDetailHref`, …)—avoid scattering `'\/foo'` across packages. |
+| **`routes.ts`** | Path string constants (`DASHBOARD_PATH`, `FIND_LEADS_PATH`, `LEAD_CONTACT_DETAIL_PATH`, …)—avoid scattering path strings across packages. |
 | **`landing-links.ts`** | Marketing URLs (`GITHUB_WEB_REPO_URL`, `DOCS_HUB_URL`, `LUCKEE_URL`, …) and `DASHBOARD_PATH` (re-exported from `routes.ts`). |
 | **`index.ts`** | Barrel re-export. |
 
@@ -30,7 +30,7 @@ Central place for **URL construction** (Express vs Next), **`process.env` wiring
 ## Routes constants
 
 - Prefer **`routes.ts`** imports for **`router.push`**, **`Link href`**, breadcrumbs, and emails—keeps renames and typos localized.
-- **`buildLeadContactDetailHref`** already **`encodeURIComponent`** query ids—use it instead of manual string concat when linking contacts.
+- Open contact detail via **`openLeadContactDetailThunk`** then **`router.push(LEAD_CONTACT_DETAIL_PATH)`** (ADR **008**)—no query-string entity ids.
 
 When you add a new **App Router** segment under **`src/app/(dashboard)/`**, add or update a matching constant here if more than one package references the path.
 

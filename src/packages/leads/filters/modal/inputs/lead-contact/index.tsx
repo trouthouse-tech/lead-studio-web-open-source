@@ -10,9 +10,8 @@ import {
 
 export const LeadsFiltersLeadContactInput = () => {
   const dispatch = useAppDispatch();
-  const leadContactFilter = useAppSelector(
-    (state) => state.leadsFilters.leadContactFilter
-  );
+  const leadsFilters = useAppSelector((state) => state.leadsFilters);
+  const leadContactFilter = leadsFilters.leadContactFilter;
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {

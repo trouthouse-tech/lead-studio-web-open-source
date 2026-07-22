@@ -1,6 +1,6 @@
 'use client';
 
-import type { RecentLeadRow } from '@/store/selectors';
+import type { RecentLeadRow } from '../../build-dashboard-lead-rows';
 import { RecentLeadsListRow } from './row';
 
 type RecentLeadsListProps = {

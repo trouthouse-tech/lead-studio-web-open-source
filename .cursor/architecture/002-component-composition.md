@@ -4,7 +4,7 @@
 Accepted
 
 ## Context
-This document defines component composition rules for **roads-seller-web** to keep routing, feature logic, and shared UI consistent and scalable.
+This document defines component composition rules for **lead-studio-web-open-source** to keep routing, feature logic, and shared UI consistent and scalable.
 
 ## Decision
 
@@ -13,7 +13,7 @@ This document defines component composition rules for **roads-seller-web** to ke
 
 - No business logic
 - No data orchestration
-- No Redux selector/thunk wiring
+- No Redux thunk wiring (dispatch lives in packages)
 - No large JSX trees
 
 ✅ **Do**
@@ -56,24 +56,14 @@ Each feature is self-contained in its own package directory.
 
 Suggested structure:
 ```text
-src/packages/orders/
+src/packages/leads/
   index.tsx                # main package component (required)
-  ui/
-    OrdersView.tsx
-    OrdersToolbar.tsx
-  model/
-    selectors.ts
-    types.ts
-  store/
-    slice.ts
-    thunks.ts
-  api/
-    client.ts
-  server/
-    router.ts
-    handlers.ts
-    service.ts
+  table/
+  filters/
+  header/
 ```
+
+Redux lives in `src/store/` (not in-package). API lives in `src/api/`. **No** `selectors.ts` in packages.
 
 ✅ **Do**
 ```text

@@ -41,7 +41,7 @@ Legacy `mentorai-server` Luckee-only routes removed from the private server (res
 
 `/dashboard`, `/leads`, `/leads/find`, `/leads/to-call-log`, `/lead-detail-page`, `/lead-contacts`, `/lead-contact-detail-page`, `/lead-emails`, `/lead-emails/queue`, `/lead-emails/sent`, `/settings/email`
 
-**`routes.ts` exports** (`DASHBOARD_PATH`, `FIND_LEADS_PATH`, `LEAD_DETAIL_PATH`, `TO_CALL_LOG_PATH`, email paths, `LEAD_CONTACT_DETAIL_PATH`, `buildLeadContactDetailHref`) match the segments above. External marketing links live in **`src/config/landing-links.ts`**. When you add or remove a route, update **`routes.ts`**, **`landing-links.ts`** (if applicable), and this list.
+**`routes.ts` exports** (`DASHBOARD_PATH`, `FIND_LEADS_PATH`, `LEAD_DETAIL_PATH`, `TO_CALL_LOG_PATH`, email paths, `LEAD_CONTACT_DETAIL_PATH`) match the segments above. Contact detail navigation uses Redux + a static path: see [ADR 008](../.cursor/architecture/008-detail-page-routing.md) and `openLeadContactDetailThunk` (set `currentLeadContact`, then `router.push(LEAD_CONTACT_DETAIL_PATH)`). External marketing links live in **`src/config/landing-links.ts`**. When you add or remove a route, update **`routes.ts`**, **`landing-links.ts`** (if applicable), and this list.
 
 ## Related
 

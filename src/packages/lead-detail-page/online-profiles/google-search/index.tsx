@@ -3,10 +3,7 @@
 import { useState } from 'react';
 import { ExternalLink, Loader2, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
-import {
-  getPrimaryWebsiteForLead,
-  PLAYWRIGHT_WEBSITE_URL_DISCOVERY_RUN_DISABLED_TITLE,
-} from '@/utils/leads';
+import { getPrimaryWebsiteForLead } from '@/utils/leads';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
   refreshCurrentLeadThunk,
@@ -38,8 +35,6 @@ export const OnlineProfilesGoogleSearchRow = () => {
 
   const busy = isSearching;
   const isMissingRequiredWebsite = !website;
-  const playwrightDiscoveryAlreadyUsed =
-    lead.playwright_website_url_discovery_attempted === true;
 
   const googleQuery = buildGoogleSearchQuery(lead);
   const googleSearchUrl = googleQuery
@@ -75,65 +70,56 @@ export const OnlineProfilesGoogleSearchRow = () => {
                 <ExternalLink className="h-3.5 w-3.5" aria-hidden />
               </button>
             )}
-          <button
-            type="button"
-            className={styles.refreshButton}
-            disabled={isMissingRequiredWebsite || playwrightDiscoveryAlreadyUsed || busy}
-            title={
-              isMissingRequiredWebsite
-                ? 'Add a website on the lead before discovering extra page URLs'
-                : playwrightDiscoveryAlreadyUsed
-                  ? PLAYWRIGHT_WEBSITE_URL_DISCOVERY_RUN_DISABLED_TITLE
+            <button
+              type="button"
+              className={styles.refreshButton}
+              disabled={isMissingRequiredWebsite || busy}
+              title={
+                isMissingRequiredWebsite
+                  ? 'Add a website on the lead before discovering extra page URLs'
                   : 'Discover extra page URLs from this site’s navigation and footer (Playwright)'
-            }
-            aria-label="Discover site page URLs with Playwright"
-            onClick={async (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-
-              if (!lead.id || !website || isSearching || playwrightDiscoveryAlreadyUsed) {
-                return;
               }
+              aria-label="Discover site page URLs with Playwright"
+              onClick={async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
 
-              setIsSearching(true);
-              try {
-                const result = await dispatch(runLeadPlaywrightWebsiteUrlDiscoveryThunk());
-                if (!result.ok) {
-                  if (result.error === 'playwright_website_url_discovery_already_attempted') {
-                    toast.error(
-                      result.message ??
-                        'Site page URL discovery can only be run once per lead. Edit URLs on the lead manually if needed.'
-                    );
+                if (!lead.id || !website || isSearching) {
+                  return;
+                }
+
+                setIsSearching(true);
+                try {
+                  const result = await dispatch(runLeadPlaywrightWebsiteUrlDiscoveryThunk());
+                  if (!result.ok) {
+                    toast.error(result.message ?? 'Site page URL discovery failed');
                     return;
                   }
-                  toast.error(result.message ?? 'Site page URL discovery failed');
-                  return;
-                }
 
-                const refreshStatus = await dispatch(refreshCurrentLeadThunk(lead.id));
-                if (refreshStatus !== 200) {
-                  toast.error('Site page discovery finished but refreshing the lead failed');
-                  return;
-                }
+                  const refreshStatus = await dispatch(refreshCurrentLeadThunk(lead.id));
+                  if (refreshStatus !== 200) {
+                    toast.error('Site page discovery finished but refreshing the lead failed');
+                    return;
+                  }
 
-                if (result.leadUpdated) {
-                  toast.success(
-                    `Found ${result.linkCount} page URL${result.linkCount === 1 ? '' : 's'} from the site`
-                  );
-                } else {
-                  toast.success('Site page discovery finished — no new URLs added');
+                  if (result.leadUpdated) {
+                    toast.success(
+                      `Found ${result.linkCount} page URL${result.linkCount === 1 ? '' : 's'} from the site`
+                    );
+                  } else {
+                    toast.success('Site page discovery finished — no new URLs added');
+                  }
+                } finally {
+                  setIsSearching(false);
                 }
-              } finally {
-                setIsSearching(false);
-              }
-            }}
-          >
-            {busy ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
-            ) : (
-              <RefreshCw className="h-3.5 w-3.5" aria-hidden />
-            )}
-          </button>
+              }}
+            >
+              {busy ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
+              ) : (
+                <RefreshCw className="h-3.5 w-3.5" aria-hidden />
+              )}
+            </button>
           </div>
         </div>
         {discoveredWebsiteUrls.length > 0 ? (

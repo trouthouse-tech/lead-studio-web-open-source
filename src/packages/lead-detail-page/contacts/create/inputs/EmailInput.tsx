@@ -5,7 +5,8 @@ import { CurrentLeadContactActions } from '@/store/current';
 
 export const ContactEmailInput = () => {
   const dispatch = useAppDispatch();
-  const email = useAppSelector((state) => state.currentLeadContact.email ?? '');
+  const currentLeadContact = useAppSelector((state) => state.currentLeadContact);
+  const email = currentLeadContact.email ?? '';
 
   return (
     <label className={styles.fieldGroup}>

@@ -39,7 +39,7 @@ export const useCostsRowTooltip = () => {
   };
 
   const updateTooltipPosition = useCallback(() => {
-    const el = anchorRef.current;
+  const el = anchorRef.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
     const viewportW = window.innerWidth;

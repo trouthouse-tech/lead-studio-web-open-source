@@ -1,4 +1,6 @@
 import { API_CONFIG } from '@/config/api';
+import { requestApi } from '../_shared';
+import type { ApiResult } from '../types';
 
 export type PostCommercialLeadResearchQueueEnqueueResponseBody = {
   success?: boolean;
@@ -13,8 +15,8 @@ export type PostCommercialLeadResearchQueueEnqueueResponseBody = {
  */
 export const postCommercialLeadResearchQueueEnqueue = async (
   leadIds: string[]
-): Promise<Response> => {
-  return fetch(`${API_CONFIG.SERVER_URL}/api/data/commercial-lead-research-queue/enqueue`, {
+): Promise<ApiResult<{ success?: boolean; error?: string }>> => {
+  return requestApi<{ success?: boolean; error?: string }>(`${API_CONFIG.SERVER_URL}/api/data/commercial-lead-research-queue/enqueue`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ leadIds }),

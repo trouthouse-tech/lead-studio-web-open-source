@@ -1,3 +1,5 @@
+import { coerceErrorFields, reportThunkError } from '@/api/thunk-errors';
+import { mapApiFailureToThunkStatus } from '@/api/_shared';
 import {
   createColdEmailOffering,
   generateColdEmailOfferingFromNotes,
@@ -22,11 +24,18 @@ export const getAllColdEmailOfferingsThunk = (
     try {
       const response = await getAllColdEmailOfferings(includeArchived);
       if (!response.success || !response.data) {
-        return 400;
+        return mapApiFailureToThunkStatus(response);
       }
       dispatch(ColdEmailOfferingsActions.setColdEmailOfferings(response.data));
       return 200;
     } catch (error) {
+      const { message, stack } = coerceErrorFields(error);
+      reportThunkError({
+        event: 'failedToGetAllColdEmailOfferings',
+        message,
+        stack,
+        thunkName: 'getAllColdEmailOfferingsThunk',
+      });
       console.error('getAllColdEmailOfferingsThunk:', error);
       return 500;
     }
@@ -45,10 +54,17 @@ export const generateColdEmailOfferingThunk = (
     try {
       const response = await generateColdEmailOfferingFromNotes(sourceNotes);
       if (!response.success || !response.data) {
-        return 400;
+        return mapApiFailureToThunkStatus(response);
       }
       return { status: 200, data: response.data };
     } catch (error) {
+      const { message, stack } = coerceErrorFields(error);
+      reportThunkError({
+        event: 'failedToGenerateColdEmailOffering',
+        message,
+        stack,
+        thunkName: 'generateColdEmailOfferingThunk',
+      });
       console.error('generateColdEmailOfferingThunk:', error);
       return 500;
     }
@@ -65,11 +81,18 @@ export const saveColdEmailOfferingThunk = (
     try {
       const response = await createColdEmailOffering(input);
       if (!response.success || !response.data) {
-        return 400;
+        return mapApiFailureToThunkStatus(response);
       }
       dispatch(ColdEmailOfferingsActions.addColdEmailOffering(response.data));
       return 200;
     } catch (error) {
+      const { message, stack } = coerceErrorFields(error);
+      reportThunkError({
+        event: 'failedToSaveColdEmailOffering',
+        message,
+        stack,
+        thunkName: 'saveColdEmailOfferingThunk',
+      });
       console.error('saveColdEmailOfferingThunk:', error);
       return 500;
     }
@@ -87,11 +110,18 @@ export const updateColdEmailOfferingThunk = (
     try {
       const response = await updateColdEmailOffering(id, input);
       if (!response.success || !response.data) {
-        return 400;
+        return mapApiFailureToThunkStatus(response);
       }
       dispatch(ColdEmailOfferingsActions.updateColdEmailOffering(response.data));
       return 200;
     } catch (error) {
+      const { message, stack } = coerceErrorFields(error);
+      reportThunkError({
+        event: 'failedToUpdateColdEmailOffering',
+        message,
+        stack,
+        thunkName: 'updateColdEmailOfferingThunk',
+      });
       console.error('updateColdEmailOfferingThunk:', error);
       return 500;
     }
@@ -106,11 +136,18 @@ export const deleteColdEmailOfferingThunk = (id: string): AppThunk<ResponseType>
     try {
       const response = await deleteColdEmailOffering(id);
       if (!response.success) {
-        return 400;
+        return mapApiFailureToThunkStatus(response);
       }
       dispatch(ColdEmailOfferingsActions.removeColdEmailOffering(id));
       return 200;
     } catch (error) {
+      const { message, stack } = coerceErrorFields(error);
+      reportThunkError({
+        event: 'failedToDeleteColdEmailOffering',
+        message,
+        stack,
+        thunkName: 'deleteColdEmailOfferingThunk',
+      });
       console.error('deleteColdEmailOfferingThunk:', error);
       return 500;
     }

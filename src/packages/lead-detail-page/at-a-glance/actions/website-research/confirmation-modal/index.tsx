@@ -3,29 +3,26 @@
 import { toast } from 'sonner';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { LeadBuilderActions } from '@/store/builders/leadBuilder';
-import {
-  loadLeadWebsiteScrapeLatestSummaryThunk,
-  refreshCurrentLeadThunk,
-  runLeadWebsiteResearchThunk,
-} from '@/store/thunks/leads';
-import { getLeadContactsByLeadIdThunk } from '@/store/thunks/lead-contacts';
+import { runLeadOnlineProfilesResearchThunk } from '@/store/thunks/leads';
 import { leadHasWebsiteForCrawl } from '../lead-has-website-for-crawl';
 
-const MODAL_TITLE_ID = 'website-research-confirm-title';
+const MODAL_TITLE_ID = 'online-profiles-research-confirm-title';
 
 /**
- * Explains server-side website crawl + description AI before starting the run.
+ * Confirms site-pages discovery + website crawl/AI before starting the run.
  * Open state: {@link LeadBuilderActions.setWebsiteResearchConfirmModalOpen}.
  */
 export const WebsiteResearchConfirmationModal = () => {
   const dispatch = useAppDispatch();
-  const isOpen = useAppSelector(
-    (state) => state.leadBuilder.isWebsiteResearchConfirmModalOpen
-  );
-  const phase = useAppSelector((state) => state.leadBuilder.researchRunPhase);
-  const leadId = useAppSelector((state) => state.currentLead.id);
-  const website = useAppSelector((state) => state.currentLead.website);
-  const websiteUrls = useAppSelector((state) => state.currentLead.website_urls);
+  const leadBuilder = useAppSelector((state) => state.leadBuilder);
+  const isOpen = leadBuilder.isWebsiteResearchConfirmModalOpen;
+  const phase = leadBuilder.researchRunPhase;
+
+  const currentLead = useAppSelector((state) => state.currentLead);
+  const leadId = currentLead.id;
+  const website = currentLead.website;
+  const websiteUrls = currentLead.website_urls;
+
   if (!isOpen) return null;
 
   const canRun = leadHasWebsiteForCrawl({ website, websiteUrls });
@@ -38,27 +35,14 @@ export const WebsiteResearchConfirmationModal = () => {
     close();
     void (async () => {
       if (!leadId || phase !== 'idle' || !canRun) return;
-      dispatch(LeadBuilderActions.setResearchRunPhase('website'));
-      try {
-        const status = await dispatch(runLeadWebsiteResearchThunk());
-        if (status !== 200) {
-          toast.error('Website research failed');
-          return;
-        }
 
-        const refreshStatus = await dispatch(refreshCurrentLeadThunk(leadId));
-        if (refreshStatus !== 200) {
-          toast.error('Website research finished but refreshing the lead failed');
-          return;
-        }
-
-        await dispatch(getLeadContactsByLeadIdThunk(leadId));
-
-        await dispatch(loadLeadWebsiteScrapeLatestSummaryThunk());
-        toast.success('Website research finished');
-      } finally {
-        dispatch(LeadBuilderActions.setResearchRunPhase('idle'));
+      const status = await dispatch(runLeadOnlineProfilesResearchThunk());
+      if (status !== 200) {
+        toast.error('Research failed');
+        return;
       }
+
+      toast.success('Research finished');
     })();
   };
 
@@ -71,16 +55,18 @@ export const WebsiteResearchConfirmationModal = () => {
     >
       <div className={styles.modal}>
         <h3 id={MODAL_TITLE_ID} className={styles.title}>
-          Run website research?
+          Run research?
         </h3>
         <div className={styles.body}>
           <p className={styles.p}>
-            The server will visit this lead&apos;s primary website and any extra URLs stored on the
-            lead (for example from Google search), capture page text, and save a website scrape run.
+            The server will discover extra site pages from this lead&apos;s website (and Facebook /
+            Instagram links in the nav or footer when present), crawl those pages plus the primary
+            site, and save a website scrape run.
           </p>
           <p className={styles.p}>
-            If the crawl succeeds, an AI step may rewrite the lead&apos;s <strong>description</strong>{' '}
-            from that content. This can take a minute.
+            If the crawl succeeds, AI fills <strong>at a glance</strong> on the lead and may add
+            contacts found on the site. Then it searches Facebook (and scrapes the page for email /
+            phone) and Instagram. This can take a few minutes.
           </p>
         </div>
         <div className={styles.buttons}>
@@ -88,7 +74,7 @@ export const WebsiteResearchConfirmationModal = () => {
             Cancel
           </button>
           <button type="button" className={styles.confirm} onClick={handleConfirm}>
-            Start website research
+            Start research
           </button>
         </div>
       </div>

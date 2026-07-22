@@ -10,8 +10,9 @@ export const LeadDeleteConfirmModal = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const currentLead = useAppSelector((state) => state.currentLead);
-  const isOpen = useAppSelector((state) => state.leadBuilder.isLeadDeleteConfirmModalOpen);
-  const isDeleting = useAppSelector((state) => state.leadBuilder.isDeletingLead);
+  const leadBuilder = useAppSelector((state) => state.leadBuilder);
+  const isOpen = leadBuilder.isLeadDeleteConfirmModalOpen;
+  const isDeleting = leadBuilder.isDeletingLead;
 
   if (!isOpen || !currentLead.id) {
     return null;

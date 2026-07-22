@@ -1,10 +1,11 @@
-import type { AppThunk } from '../../store';
+import { mapApiFailureToThunkStatus } from '@/api/_shared';
 import {
   postLeadGoogleSearchForLead,
   type FacebookGoogleSearchRequestSource,
   type LeadGoogleSearchPlatform,
   type PostLeadGoogleSearchResponseBody,
 } from '@/api/leads';
+import type { AppThunk } from '../../store';
 
 export type RunLeadGoogleSearchResearchResult =
   | {
@@ -45,62 +46,53 @@ export const runLeadGoogleSearchResearchThunk = (
       return { ok: false, status: 400 };
     }
 
-    try {
-      const res = await postLeadGoogleSearchForLead(leadId, {
-        platform,
-        ...(platform === 'facebook' && thunkOptions?.facebookRequestSource
-          ? { facebookRequestSource: thunkOptions.facebookRequestSource }
-          : {}),
-      });
-      const text = await res.text();
-      let json: PostLeadGoogleSearchResponseBody = {};
-      try {
-        json = JSON.parse(text) as PostLeadGoogleSearchResponseBody;
-      } catch {
-        return { ok: false, status: 400 };
-      }
+    const result = await postLeadGoogleSearchForLead(leadId, {
+      platform,
+      ...(platform === 'facebook' && thunkOptions?.facebookRequestSource
+        ? { facebookRequestSource: thunkOptions.facebookRequestSource }
+        : {}),
+    });
 
-      if (!res.ok) {
-        return {
-          ok: false,
-          status: res.status >= 500 ? 500 : 400,
-          error: typeof json.error === 'string' ? json.error : undefined,
-          message: typeof json.message === 'string' ? json.message : undefined,
-        };
-      }
-
-      if (json.success === false) {
-        return {
-          ok: false,
-          status: 400,
-          error: typeof json.error === 'string' ? json.error : undefined,
-          message: typeof json.message === 'string' ? json.message : undefined,
-        };
-      }
-
-      if (json.skipped) {
-        return { ok: true, leadUpdated: false };
-      }
-
-      const linkCount = typeof json.linkCount === 'number' ? json.linkCount : undefined;
-
+    if (!result.success) {
+      const json = (result.data ?? result) as PostLeadGoogleSearchResponseBody;
       return {
-        ok: true,
-        leadUpdated: json.leadUpdated === true,
-        linkCount,
-        hasProfiles: json.hasProfiles === true,
-        facebookApifySkipped:
-          typeof json.facebookApifySkipped === 'string'
-            ? json.facebookApifySkipped
-            : undefined,
-        facebookApifyError:
-          typeof json.facebookApifyError === 'string' ? json.facebookApifyError : undefined,
-        facebookContactCreated: json.facebookContactCreated === true,
-        facebookContactMerged: json.facebookContactMerged === true,
+        ok: false,
+        status: mapApiFailureToThunkStatus(result),
+        error: typeof json.error === 'string' ? json.error : result.error,
+        message: typeof json.message === 'string' ? json.message : undefined,
       };
-    } catch (error: unknown) {
-      console.error('runLeadGoogleSearchResearchThunk:', error);
-      return { ok: false, status: 500 };
     }
+
+    const json = (result.data ?? result) as PostLeadGoogleSearchResponseBody;
+
+    if (json.success === false) {
+      return {
+        ok: false,
+        status: 500,
+        error: typeof json.error === 'string' ? json.error : undefined,
+        message: typeof json.message === 'string' ? json.message : undefined,
+      };
+    }
+
+    if (json.skipped) {
+      return { ok: true, leadUpdated: false };
+    }
+
+    const linkCount = typeof json.linkCount === 'number' ? json.linkCount : undefined;
+
+    return {
+      ok: true,
+      leadUpdated: json.leadUpdated === true,
+      linkCount,
+      hasProfiles: json.hasProfiles === true,
+      facebookApifySkipped:
+        typeof json.facebookApifySkipped === 'string'
+          ? json.facebookApifySkipped
+          : undefined,
+      facebookApifyError:
+        typeof json.facebookApifyError === 'string' ? json.facebookApifyError : undefined,
+      facebookContactCreated: json.facebookContactCreated === true,
+      facebookContactMerged: json.facebookContactMerged === true,
+    };
   };
 };

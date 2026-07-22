@@ -1,3 +1,4 @@
+import { coerceErrorFields, reportThunkError } from '@/api/thunk-errors';
 import type { AppThunk } from '@/store';
 import { sendNow, type SendNowInput } from '@/api/lead-contact-emails';
 
@@ -24,6 +25,13 @@ export const sendLeadContactEmailNowThunk = (
       }
       return { ok: true };
     } catch (error: unknown) {
+      const { message, stack } = coerceErrorFields(error);
+      reportThunkError({
+        event: 'failedToSendLeadContactEmailNow',
+        message,
+        stack,
+        thunkName: 'sendLeadContactEmailNowThunk',
+      });
       console.error('❌ sendLeadContactEmailNowThunk error:', error);
       return {
         ok: false,

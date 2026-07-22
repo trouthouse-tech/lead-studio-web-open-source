@@ -15,24 +15,18 @@ export const LeadsHeaderAutoCategorizeUncategorizedButton = () => {
   const leadsRecord = useAppSelector((state) => state.leads);
   const leadContactsRecord = useAppSelector((state) => state.leadContacts);
   const leadCategories = useAppSelector((state) => state.leadCategories);
-  const selectedCategoryIds = useAppSelector(
-    (state) => state.leadsFilters.selectedCategoryIds
-  );
-  const selectedStatus = useAppSelector((state) => state.leadsFilters.selectedStatus);
-  const searchFilter = useAppSelector((state) => state.leadsFilters.searchFilter);
-  const qualityFilter = useAppSelector((state) => state.leadsFilters.qualityFilter);
-  const websiteFilter = useAppSelector((state) => state.leadsFilters.websiteFilter);
-  const leadContactFilter = useAppSelector((state) => state.leadsFilters.leadContactFilter);
-  const facebookGoogleSearchFilter = useAppSelector(
-    (state) => state.leadsFilters.facebookGoogleSearchFilter
-  );
-  const playwrightUrlDiscoveryFilter = useAppSelector(
-    (state) => state.leadsFilters.playwrightUrlDiscoveryFilter
-  );
-  const websiteResearchFilter = useAppSelector(
-    (state) => state.leadsFilters.websiteResearchFilter
-  );
-  const busy = useAppSelector((state) => state.leadBuilder.isUncategorizedBatchCategorizing);
+  const leadsFilters = useAppSelector((state) => state.leadsFilters);
+  const selectedCategoryIds = leadsFilters.selectedCategoryIds;
+  const selectedStatus = leadsFilters.selectedStatus;
+  const searchFilter = leadsFilters.searchFilter;
+  const qualityFilter = leadsFilters.qualityFilter;
+  const websiteFilter = leadsFilters.websiteFilter;
+  const leadContactFilter = leadsFilters.leadContactFilter;
+  const facebookGoogleSearchFilter = leadsFilters.facebookGoogleSearchFilter;
+  const playwrightUrlDiscoveryFilter = leadsFilters.playwrightUrlDiscoveryFilter;
+  const websiteResearchFilter = leadsFilters.websiteResearchFilter;
+  const leadBuilder = useAppSelector((state) => state.leadBuilder);
+  const busy = leadBuilder.isUncategorizedBatchCategorizing;
 
   const visible =
     selectedCategoryIds.includes('uncategorized') && leadCategories.length > 0;

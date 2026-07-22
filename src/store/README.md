@@ -14,8 +14,9 @@ Single **`configureStore`** for the app: **normalized entity dumps**, **`current
 | **`builders/`** | UI builders (e.g. **`breadcrumbBuilder`**) — **serializable** only (ADR **007**) |
 | **`filters/`** | List / table filter state |
 | **`thunks/<domain>/`** | Async side effects; call **`src/api`**, dispatch slice actions |
-| **`selectors/`** | Memoized views of state when needed |
 | **`config/`** | Store-level config if any |
+
+**No `selectors/`** — derive with `useMemo` in packages (ADR **001**).
 
 ## Conventions (see `.cursor/architecture/`)
 
@@ -43,5 +44,5 @@ Single **`configureStore`** for the app: **normalized entity dumps**, **`current
 
 - **`src/packages/README.md`** — dispatches thunks from UI.
 - **`src/api/README.md`** — HTTP clients thunks call.
-- **`src/utils/README.md`** — pure helpers used inside thunks and selectors.
+- **`src/utils/README.md`** — pure helpers used inside thunks and packages.
 - **`src/model/README.md`** — types for entities in dumps / `current*`.

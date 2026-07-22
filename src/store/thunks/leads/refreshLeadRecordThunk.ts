@@ -3,6 +3,7 @@ import { getLeadById } from '@/api/leads';
 import { CurrentLeadActions } from '../../current';
 import { LeadsActions } from '../../dumps/leads';
 import { loadLeadWebsiteScrapeLatestSummaryThunk } from './loadLeadWebsiteScrapeLatestSummaryThunk';
+import { mapApiFailureToThunkStatus } from '@/api/_shared';
 
 type RefreshLeadRecordOptions = {
   /** When the open detail lead is this id, refresh latest scrape panel data (e.g. after website research). */
@@ -22,7 +23,7 @@ export const refreshLeadRecordThunk = (
   return async (dispatch, getState): ResponseType => {
     const res = await getLeadById(leadId);
     if (!res.success || !res.data) {
-      return 400;
+      return mapApiFailureToThunkStatus(res);
     }
     dispatch(LeadsActions.updateLead(res.data));
     if (getState().currentLead?.id === leadId) {

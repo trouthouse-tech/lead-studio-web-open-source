@@ -5,7 +5,8 @@ import { useAppSelector } from '@/store/hooks';
 const LABEL = 'Years in business';
 
 export const YearsInBusinessFact = () => {
-  const raw = useAppSelector((s) => s.currentLead.summary?.facts?.years_in_business);
+  const currentLead = useAppSelector((s) => s.currentLead);
+  const raw = currentLead.summary?.facts?.years_in_business;
   const value = typeof raw === 'string' ? raw.trim() : '';
   if (!value) return null;
 

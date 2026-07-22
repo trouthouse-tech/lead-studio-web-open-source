@@ -28,9 +28,6 @@ export {
   type DashboardOnboardingPhase,
 } from './dashboardBuilder';
 
-export { default as ossSetupBuilder } from './ossSetupBuilder';
-export { OssSetupBuilderActions, type OssSetupStep } from './ossSetupBuilder';
-
 export { default as leadDetailEmailFab } from './leadDetailEmailFab';
 export { LeadDetailEmailFabActions } from './leadDetailEmailFab';
 

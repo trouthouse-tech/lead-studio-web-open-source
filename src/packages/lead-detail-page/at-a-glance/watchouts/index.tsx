@@ -3,9 +3,9 @@
 import { useAppSelector } from '@/store/hooks';
 
 export const WatchoutsSection = () => {
-  const concerns = useAppSelector(
-    (state) => state.currentLead.summary?.concerns?.filter((c) => c?.trim()) ?? [],
-  );
+  const currentLead = useAppSelector((state) => state.currentLead);
+  const concerns =
+    currentLead.summary?.concerns?.filter((c) => c?.trim()) ?? [];
 
   if (concerns.length === 0) {
     return null;

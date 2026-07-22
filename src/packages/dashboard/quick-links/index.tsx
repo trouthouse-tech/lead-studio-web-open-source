@@ -16,7 +16,7 @@ const LINKS = [
     Icon: Users,
   },
   {
-    label: 'To Call Log',
+    label: 'Call List',
     description: 'Queued calls',
     href: TO_CALL_LOG_PATH,
     Icon: Phone,

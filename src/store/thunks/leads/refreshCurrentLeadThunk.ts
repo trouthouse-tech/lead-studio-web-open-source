@@ -2,6 +2,7 @@ import type { AppThunk } from '../../store';
 import { getLeadById } from '@/api/leads';
 import { CurrentLeadActions } from '../../current';
 import { LeadsActions } from '../../dumps/leads';
+import { mapApiFailureToThunkStatus } from '@/api/_shared';
 
 type ResponseType = Promise<200 | 400 | 500>;
 
@@ -12,7 +13,7 @@ export const refreshCurrentLeadThunk = (leadId: string): AppThunk<ResponseType> 
   return async (dispatch): ResponseType => {
     const res = await getLeadById(leadId);
     if (!res.success || !res.data) {
-      return 400;
+      return mapApiFailureToThunkStatus(res);
     }
     dispatch(CurrentLeadActions.setCurrentLead(res.data));
     dispatch(LeadsActions.updateLead(res.data));

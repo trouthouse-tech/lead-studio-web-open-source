@@ -30,9 +30,8 @@ export const LeadsTableRow = (props: LeadsTableRowProps) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const leadContactsRecord = useAppSelector((state) => state.leadContacts);
-  const selectedLeadIds = useAppSelector(
-    (state) => state.leadBuilder.selectedLeadIds
-  );
+  const leadBuilder = useAppSelector((state) => state.leadBuilder);
+  const selectedLeadIds = leadBuilder.selectedLeadIds;
 
   const isSelected = selectedLeadIds.includes(lead.id);
 

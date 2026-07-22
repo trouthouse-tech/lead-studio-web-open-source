@@ -10,9 +10,8 @@ import {
 
 export const LeadsFiltersUrlDiscoveryInput = () => {
   const dispatch = useAppDispatch();
-  const playwrightUrlDiscoveryFilter = useAppSelector(
-    (state) => state.leadsFilters.playwrightUrlDiscoveryFilter
-  );
+  const leadsFilters = useAppSelector((state) => state.leadsFilters);
+  const playwrightUrlDiscoveryFilter = leadsFilters.playwrightUrlDiscoveryFilter;
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {

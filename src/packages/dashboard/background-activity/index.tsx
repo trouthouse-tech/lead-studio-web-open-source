@@ -1,11 +1,18 @@
 'use client';
 
+import { useMemo } from 'react';
 import { useAppSelector } from '@/store/hooks';
-import { selectRecentLeadRows } from '@/store/selectors';
+import { buildRecentLeadRows } from '../build-dashboard-lead-rows';
 import { RecentLeadsList } from './list';
 
 export const DashboardBackgroundActivity = () => {
-  const recentLeadRows = useAppSelector(selectRecentLeadRows);
+  const leadActivities = useAppSelector((state) => state.leadActivities);
+  const leads = useAppSelector((state) => state.leads);
+
+  const recentLeadRows = useMemo(
+    () => buildRecentLeadRows(leadActivities, leads),
+    [leadActivities, leads],
+  );
 
   return (
     <div className={styles.stack}>

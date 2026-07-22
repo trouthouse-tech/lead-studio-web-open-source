@@ -9,12 +9,10 @@ import type { LeadSentEmail } from '@/model/lead-sent-email';
 export const UniqueOpensStatCard = () => {
   const dispatch = useAppDispatch();
   const leadSentEmailsRecord = useAppSelector((state) => state.leadSentEmails);
-  const dateRangeFilter = useAppSelector(
-    (state) => state.leadSentEmailsBuilder.dateRangeFilter
-  );
-  const statCardFilter = useAppSelector(
-    (state) => state.leadSentEmailsBuilder.statCardFilter
-  );
+  const leadSentEmailsBuilder = useAppSelector((state) => state.leadSentEmailsBuilder);
+  const dateRangeFilter = leadSentEmailsBuilder.dateRangeFilter;
+  const statCardFilter = leadSentEmailsBuilder.statCardFilter;
+  
 
   const isActive = statCardFilter === 'unique_opens';
 

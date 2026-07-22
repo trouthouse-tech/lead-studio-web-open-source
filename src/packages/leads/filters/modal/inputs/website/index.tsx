@@ -10,7 +10,8 @@ import {
 
 export const LeadsFiltersWebsiteInput = () => {
   const dispatch = useAppDispatch();
-  const websiteFilter = useAppSelector((state) => state.leadsFilters.websiteFilter);
+  const leadsFilters = useAppSelector((state) => state.leadsFilters);
+  const websiteFilter = leadsFilters.websiteFilter;
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {

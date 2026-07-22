@@ -2,27 +2,23 @@
 
 import type { Lead } from '@/model';
 import { leadsTableResearchStyles as rs } from './research-styles';
-import { LeadsTableRowResearchFacebook } from './facebook';
-import { LeadsTableRowResearchDiscoverUrls } from './discover-urls';
-import { LeadsTableRowResearchSummarize } from './summarize';
+import { LeadsTableRowResearchFull } from './full-research';
+import { LeadsTableRowResearchSocial } from './social';
 
 type Props = {
   lead: Lead;
 };
 
 /**
- * Leads table research actions (Facebook SERP, Playwright URL discovery, website summarize).
- * Busy flags for the first two live in `leadBuilder.leadsTableRowResearchBusyByLeadId`; summarize uses
- * `leadsTableRowSummaryBusyByLeadId` plus global `researchRunPhase`.
+ * Leads table research actions — full website research, then social (FB + IG).
  */
 export const LeadsTableRowResearchButtons = (props: Props) => {
   const { lead } = props;
 
   return (
     <div className={rs.researchButtons}>
-      <LeadsTableRowResearchFacebook lead={lead} />
-      <LeadsTableRowResearchDiscoverUrls lead={lead} />
-      <LeadsTableRowResearchSummarize lead={lead} />
+      <LeadsTableRowResearchFull lead={lead} />
+      <LeadsTableRowResearchSocial lead={lead} />
     </div>
   );
 };

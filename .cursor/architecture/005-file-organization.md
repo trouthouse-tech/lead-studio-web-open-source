@@ -4,7 +4,7 @@
 Accepted
 
 ## Context
-This ADR defines the required file-organization standard for **roads-seller-web** so module ownership, exports, and imports stay predictable as the codebase grows.
+This ADR defines the required file-organization standard for **lead-studio-web-open-source** so module ownership, exports, and imports stay predictable as the codebase grows.
 
 ## Decision
 
@@ -17,8 +17,8 @@ src/
   packages/     # feature packages (domain-owned code)
   components/   # cross-feature reusable UI
   utils/        # pure utilities and shared constants
-  store/        # Redux store, slices, selectors, thunks
-  api/          # API clients/services and API contracts
+  store/        # Redux store, dumps/current/builders, thunks (no selectors/)
+  api/          # Domain API wrappers + _shared requestApi
 ```
 
 ✅ **Do**

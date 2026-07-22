@@ -1,5 +1,6 @@
 import { API_CONFIG } from '@/config/api';
-import type { ApiResponse } from '../types';
+import { requestApi } from '../_shared';
+import type { ApiResult } from '../types';
 
 type ProcessNextResult = {
   success: boolean;
@@ -10,35 +11,17 @@ type ProcessNextResult = {
 };
 
 export const processNextQueueItem = async (): Promise<
-  ApiResponse<ProcessNextResult>
+  ApiResult<ProcessNextResult>
 > => {
-  try {
-    const response = await fetch(
-      `${API_CONFIG.SERVER_URL}/api/data/lead-contact-email-queue/process-next`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({}),
-      }
-    );
+  const result = await requestApi<ProcessNextResult>(
+    `${API_CONFIG.SERVER_URL}/api/data/lead-contact-email-queue/process-next`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    },
+  );
 
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) {
-      return {
-        success: false,
-        error: data.error || data.message || `HTTP ${response.status}`,
-      };
-    }
-
-    return { success: true, data: data };
-  } catch (error: unknown) {
-    console.error('❌ processNextQueueItem error:', error);
-    return {
-      success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : 'Failed to process next queue item',
-    };
-  }
+  if (!result.success || result.httpStatus >= 400) return result;
+  return { ...result, data: (result.data ?? result) as ProcessNextResult };
 };

@@ -25,9 +25,8 @@ export const LeadContactsFilters = () => {
     shallowEqual
   );
 
-  const hasActiveFilters = useAppSelector(
-    (state) => state.leadContactsFiltersBuilder.hasActiveFilters
-  );
+  const leadContactsFiltersBuilder = useAppSelector((state) => state.leadContactsFiltersBuilder);
+  const hasActiveFilters = leadContactsFiltersBuilder.hasActiveFilters;
 
   useLayoutEffect(() => {
     if (hasHydratedFiltersRef.current) {

@@ -1,6 +1,7 @@
 import { API_CONFIG } from '@/config/api';
+import { requestApi } from '../_shared';
 import type { LeadContact } from '@/model/lead-contact';
-import type { ApiResponse } from '../types';
+import type { ApiResult } from '../types';
 
 /**
  * Fetches all lead contacts from the server.
@@ -8,44 +9,22 @@ import type { ApiResponse } from '../types';
  * If the endpoint is missing (404) or returns HTML, returns empty array so the app keeps working.
  */
 export const getAllLeadContacts = async (): Promise<
-  ApiResponse<LeadContact[]>
+  ApiResult<LeadContact[]>
 > => {
-  try {
-    const response = await fetch(
-      `${API_CONFIG.SERVER_URL}/api/data/lead-contacts`,
-      {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
+  const result = await requestApi<LeadContact[]>(
+    `${API_CONFIG.SERVER_URL}/api/data/lead-contacts`,
+    {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    },
+  );
 
-    if (response.status === 404) {
-      return { success: true, data: [] };
-    }
-
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      return { success: true, data: [] };
-    }
-
-    const data = await response.json();
-    if (!response.ok) {
-      return {
-        success: false,
-        error: data.error || data.message || 'Failed to get lead contacts',
-      };
-    }
-
-    return {
-      success: true,
-      data: data.data ?? data ?? [],
-    };
-  } catch (error: unknown) {
-    console.error('❌ getAllLeadContacts error:', error);
-    return {
-      success: false,
-      error:
-        error instanceof Error ? error.message : 'Failed to get lead contacts',
-    };
+  if (!result.success && result.httpStatus === 404) {
+    return { success: true, data: [], httpStatus: 404 };
   }
+  if (!result.success && result.error?.includes('Invalid JSON')) {
+    return { success: true, data: [], httpStatus: result.httpStatus };
+  }
+  if (!result.success || result.httpStatus >= 400) return result;
+  return { ...result, data: result.data ?? [] };
 };

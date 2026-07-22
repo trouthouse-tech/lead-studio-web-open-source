@@ -1,6 +1,7 @@
 import { API_CONFIG } from '@/config/api';
+import { requestApi } from '../_shared';
 import type { Lead, LeadStatus } from '@/model';
-import type { ApiResponse } from '../types';
+import type { ApiResult } from '../types';
 
 /**
  * POST body for `/api/data/leads` — matches mentorai-server `CreateLeadInput` (only
@@ -28,35 +29,18 @@ export type CreateLeadRequestBody = {
 export const createLead = async (
   lead: CreateLeadRequestBody,
   apiBaseUrl?: string
-): Promise<ApiResponse<Lead>> => {
+): Promise<ApiResult<Lead>> => {
   const baseUrl = apiBaseUrl ?? API_CONFIG.SERVER_URL;
 
-  try {
-    const response = await fetch(`${baseUrl}/api/data/leads`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(lead),
-    });
+  const result = await requestApi<Lead>(`${baseUrl}/api/data/leads`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(lead),
+  });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      return {
-        success: false,
-        error:
-          (errorData as { error?: string }).error ||
-          (errorData as { message?: string }).message ||
-          `HTTP error! status: ${response.status}`,
-      };
-    }
-
-    const result = (await response.json()) as { data?: Lead } | Lead;
-    const data = 'data' in result && result.data ? result.data : (result as Lead);
-    return { success: true, data };
-  } catch (error) {
-    console.error('Error creating lead:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error occurred',
-    };
+  if (!result.success || result.httpStatus >= 400) {
+    return { ...result, success: false, error: result.error ?? 'Failed to create lead' };
   }
+
+  return { ...result, data: result.data ?? (result as ApiResult<Lead>).data! };
 };

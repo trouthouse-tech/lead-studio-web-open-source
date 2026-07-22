@@ -5,7 +5,8 @@ import { useAppSelector } from '@/store/hooks';
 const LABEL = 'Service area';
 
 export const ServiceAreaFact = () => {
-  const raw = useAppSelector((s) => s.currentLead.summary?.facts?.service_area);
+  const currentLead = useAppSelector((s) => s.currentLead);
+  const raw = currentLead.summary?.facts?.service_area;
   const value = typeof raw === 'string' ? raw.trim() : '';
   if (!value) return null;
 

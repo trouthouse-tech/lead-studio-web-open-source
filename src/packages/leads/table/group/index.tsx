@@ -15,9 +15,8 @@ export const LeadsTableGroup = (props: LeadsTableGroupProps) => {
   const { categoryId, leads } = props;
   const dispatch = useAppDispatch();
   const [isExpanded, setIsExpanded] = useState(true);
-  const selectedLeadIds = useAppSelector(
-    (state) => state.leadBuilder.selectedLeadIds
-  );
+  const leadBuilder = useAppSelector((state) => state.leadBuilder);
+  const selectedLeadIds = leadBuilder.selectedLeadIds;
   const leadCategories = useAppSelector((state) => state.leadCategories);
 
   const category = useMemo(

@@ -1,30 +1,17 @@
 import { API_CONFIG } from '@/config/api';
+import { requestApi } from '../_shared';
 import type { LeadContactEmail } from '@/model/lead-contact-email';
-import type { ApiResponse } from '../types';
+import type { ApiResult } from '../types';
 
 export const getLeadContactEmailsByContactId = async (
   contactId: string
-): Promise<ApiResponse<LeadContactEmail[]>> => {
-  try {
-    const url = `${API_CONFIG.SERVER_URL}/api/data/lead-contact-emails/contact/${contactId}`;
-    const response = await fetch(url, {
+): Promise<ApiResult<LeadContactEmail[]>> => {
+  const url = `${API_CONFIG.SERVER_URL}/api/data/lead-contact-emails/contact/${contactId}`;
+
+  const result = await requestApi<LeadContactEmail[]>(url, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     });
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({}));
-      return {
-        success: false,
-        error: err.error || err.message || `HTTP ${response.status}`,
-      };
-    }
-    const result = await response.json();
-    const list = result.data ?? result ?? [];
-    return { success: true, data: Array.isArray(list) ? list : [] };
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
-  }
+  if (!result.success || result.httpStatus >= 400) return result;
+  return { ...result, data: result.data ?? [] };
 };

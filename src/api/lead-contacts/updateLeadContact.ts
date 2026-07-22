@@ -1,45 +1,20 @@
 import { API_CONFIG } from '@/config/api';
+import { requestApi } from '../_shared';
 import type { LeadContact } from '@/model/lead-contact';
-import type { ApiResponse } from '../types';
+import type { ApiResult } from '../types';
 
 export const updateLeadContact = async (
   contactId: string,
   payload: Partial<Omit<LeadContact, 'id' | 'lead_id' | 'created_at'>>
-): Promise<ApiResponse<LeadContact>> => {
-  try {
-    const response = await fetch(
-      `${API_CONFIG.SERVER_URL}/api/data/lead-contacts/${contactId}`,
-      {
+): Promise<ApiResult<LeadContact>> => {
+  const result = await requestApi<LeadContact>(`${API_CONFIG.SERVER_URL}/api/data/lead-contacts/${contactId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
-      }
-    );
-
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      const text = await response.text();
-      console.error('❌ Non-JSON response:', text.substring(0, 200));
-      return { success: false, error: 'Invalid response' };
-    }
-
-    const data = await response.json();
-    if (!response.ok) {
-      return {
-        success: false,
-        error: data.error || 'Failed to update lead contact',
-      };
-    }
-
-    return {
-      success: true,
-      data: data.data ?? data,
-    };
-  } catch (error: unknown) {
-    console.error('❌ updateLeadContact error:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Failed to update lead contact',
-    };
+      });
+  if (!result.success && result.error?.includes('Invalid JSON')) {
+    return { ...result, error: 'Invalid response' };
   }
+  if (!result.success || result.httpStatus >= 400) return result;
+  return { ...result, data: result.data ?? (result as ApiResult<LeadContact>).data! };
 };
